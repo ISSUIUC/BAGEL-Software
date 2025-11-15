@@ -1,0 +1,8 @@
+{
+	"InstallScripts" : 
+	[
+		"C:/ISS/Switch_Board/build/Debug/cmake_install.cmake",
+		"C:/ISS/Switch_Board/build/Debug/cmake/stm32cubemx/cmake_install.cmake"
+	],
+	"Parallel" : false
+}
