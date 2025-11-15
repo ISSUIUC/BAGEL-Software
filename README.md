@@ -1,3 +1,3 @@
 # Bluetooth Switch Board Software
 
-This is an epic README
+Here's the epic location for the software for our Bluetooth Switch Board!
