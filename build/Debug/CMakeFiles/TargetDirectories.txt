@@ -1,8 +1,0 @@
-C:/ISS/Switch_Board/build/Debug/CMakeFiles/Switch_Board.dir
-C:/ISS/Switch_Board/build/Debug/CMakeFiles/edit_cache.dir
-C:/ISS/Switch_Board/build/Debug/CMakeFiles/rebuild_cache.dir
-C:/ISS/Switch_Board/build/Debug/cmake/stm32cubemx/CMakeFiles/STM32_Drivers.dir
-C:/ISS/Switch_Board/build/Debug/cmake/stm32cubemx/CMakeFiles/Utilities.dir
-C:/ISS/Switch_Board/build/Debug/cmake/stm32cubemx/CMakeFiles/STM32_WPAN.dir
-C:/ISS/Switch_Board/build/Debug/cmake/stm32cubemx/CMakeFiles/edit_cache.dir
-C:/ISS/Switch_Board/build/Debug/cmake/stm32cubemx/CMakeFiles/rebuild_cache.dir

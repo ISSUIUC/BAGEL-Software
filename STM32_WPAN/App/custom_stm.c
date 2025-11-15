@@ -138,7 +138,7 @@ static SVCCTL_EvtAckStatus_t Custom_STM_Event_Handler(void *Event)
       {
         case ACI_GATT_ATTRIBUTE_MODIFIED_VSEVT_CODE:
           /* USER CODE BEGIN EVT_BLUE_GATT_ATTRIBUTE_MODIFIED_BEGIN */
-
+        
           /* USER CODE END EVT_BLUE_GATT_ATTRIBUTE_MODIFIED_BEGIN */
           attribute_modified = (aci_gatt_attribute_modified_event_rp0*)blecore_evt->data;
           if (attribute_modified->Attr_Handle == (CustomContext.CustomCharwriteHdle + CHARACTERISTIC_VALUE_ATTRIBUTE_OFFSET))
