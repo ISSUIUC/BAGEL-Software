@@ -7,14 +7,14 @@
       "request": "launch",
       "servertype": "openocd",
       "cwd": "${workspaceFolder}",
-      "executable": "${workspaceFolder}/build/MyProject.elf",
+      "executable": "${workspaceFolder}/build/debug/Switch_Board.elf",
       "device": "STM32WB15CC",
       "configFiles": [
         "interface/stlink.cfg",
         "target/stm32wbx.cfg"
       ],
       "runToEntryPoint": "main",
-      "preLaunchTask": "build"
+      // "preLaunchTask": "build"
     }
   ]
 }

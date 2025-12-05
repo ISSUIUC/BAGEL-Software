@@ -203,7 +203,7 @@ void PeriphCommonClock_Config(void)
   /** Initializes the peripherals clock
   */
   PeriphClkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_SMPS|RCC_PERIPHCLK_RFWAKEUP;
-  PeriphClkInitStruct.RFWakeUpClockSelection = RCC_RFWKPCLKSOURCE_LSI;
+  PeriphClkInitStruct.RFWakeUpClockSelection = RCC_RFWKPCLKSOURCE_LSE;
   PeriphClkInitStruct.SmpsClockSelection = RCC_SMPSCLKSOURCE_HSI;
   PeriphClkInitStruct.SmpsDivSelection = RCC_SMPSCLKDIV_RANGE1;
 

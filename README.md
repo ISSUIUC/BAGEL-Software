@@ -1,3 +1,4 @@
 # Bluetooth Switch Board Software
 
-Here's the epic location for the software for our Bluetooth Switch Board!
+Here's the epic GitHub Repo for the software for our Bluetooth Switch Board!
+
