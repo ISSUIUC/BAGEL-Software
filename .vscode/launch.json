@@ -2,19 +2,42 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Debug STM32 (ST-LINK)",
+      "name": "Debug STM32WB (ST-LINK)",
       "type": "cortex-debug",
       "request": "launch",
       "servertype": "openocd",
+
       "cwd": "${workspaceFolder}",
       "executable": "${workspaceFolder}/build/debug/Switch_Board.elf",
       "device": "STM32WB15CC",
+
       "configFiles": [
         "interface/stlink.cfg",
         "target/stm32wbx.cfg"
       ],
-      "runToEntryPoint": "main",
-      // "preLaunchTask": "build"
+
+      "svdFile": "${workspaceFolder}/STM32WB15.svd",
+
+      "preLaunchCommands": [
+        // Force proper reset mode BEFORE OpenOCD init
+        "monitor reset_config srst_only srst_nogate connect_assert_srst",
+
+        // Force SWD
+        "monitor transport select swd",
+
+        // Start OpenOCD internals
+        "monitor init",
+
+        // *** STOP CPU2 FIRST ***
+        "monitor stm32wb cpu2 stop",
+
+        // Now halt CPU1
+        "monitor reset halt"
+      ],
+
+      "postLaunchCommands": [
+        "monitor halt"
+      ]
     }
   ]
 }
