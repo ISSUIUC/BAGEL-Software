@@ -19,25 +19,18 @@
       "svdFile": "${workspaceFolder}/STM32WB15.svd",
 
       "preLaunchCommands": [
-        // Force proper reset mode BEFORE OpenOCD init
         "monitor reset_config srst_only srst_nogate connect_assert_srst",
-
-        // Force SWD
         "monitor transport select swd",
-
-        // Start OpenOCD internals
         "monitor init",
-
-        // *** STOP CPU2 FIRST ***
         "monitor stm32wb cpu2 stop",
-
-        // Now halt CPU1
         "monitor reset halt"
       ],
 
       "postLaunchCommands": [
         "monitor halt"
-      ]
+      ],
+
+      "runToEntryPoint": "main"
     }
   ]
 }
