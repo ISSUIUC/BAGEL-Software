@@ -1,0 +1,84 @@
+/*
+ * TCAL9538.hpp
+ *
+ *  Created on: Dec 20, 2025
+ *      Author: tjmcm
+ */
+
+#ifndef TCAL9538_TCAL9538_HPP_
+#define TCAL9538_TCAL9538_HPP_
+
+#include "stm32wbxx_hal.h"
+#include <stdbool.h>
+
+// add more addresses as needed
+#define GPIO1_ADDRESS 0x71
+#define GPIO2_ADDRESS 0x72
+
+#define int GPIO_BIT_COUNT 8
+
+I2C_HandleTypeDef * gpio_i2c;
+
+typdef struct GpioAddress {
+    GpioAddress(int gpio_id, int pin_id);
+    uint8_t gpio_id; //id of the expander
+    uint8_t gpio_address; //i2c address of expander
+    uint8_t pin_id; // pin_id 0-7
+    bool is_valid; //whether the address is valid
+};
+
+
+inline GpioAddress::GpioAddress(int gpio_id, int pin_id): gpio_id(gpio_id), gpio_address(0), pin_id(pin_id), is_valid(false) {
+    if(gpio_id == 0){
+        gpio_address = GPIO1_ADDRESS;
+    }
+    else if(gpio_id == 1){
+    	gpio_address = GPIO2_ADDRESS;
+    }
+    // add more cases as needed
+    else {
+        return;
+    }
+    if(pin_id < 0 || pin_id >= GPIO_BIT_COUNT){
+        return;
+    }
+    is_valid = true;
+};
+
+enum class GpioError {
+    NoError,
+    I2CError,
+    InvalidPinError,
+    InvalidModeError,
+};
+
+struct GpioReadResult {
+    bool value;
+    GpioError error;
+};
+
+enum IO{
+	INPUT,
+	OUTPUT
+};
+
+enum logic{
+	LOW,
+	HIGH
+};
+
+bool TCAL9538Init(I2C_HandleTypeDef *hi2c, GPIO_TypeDef * reset_gpiox, uint16_t reset_pin);
+
+/**
+ * pin: which pin to write or read signal from
+ * mode: the mode of the pin
+ */
+GpioError gpioPinMode(GpioAddress pin, int mode);
+
+GpioError gpioDigitalWrite(GpioAddress pin, int mode);
+
+GpioReadResult gpioDigitalRead(GpioAddress pin);
+
+
+
+#endif /* TCAL9538_TCAL9538_HPP_ */

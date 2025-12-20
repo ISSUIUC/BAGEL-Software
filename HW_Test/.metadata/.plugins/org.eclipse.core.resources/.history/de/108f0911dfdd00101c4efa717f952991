@@ -1,0 +1,111 @@
+/*
+ * TCAL9538.cpp
+ *
+ *  Created on: Dec 20, 2025
+ *      Author: tjmcm
+ */
+
+#include"TCAL9538.hpp"
+
+static constexpr uint8_t REG_INPUT = 0x0;
+static constexpr uint8_t REG_OUTPUT = 0x1;
+static constexpr uint8_t POLARITY_INVERSION = 0x2;
+static constexpr uint8_t REG_CONFIG = 0x3;
+
+
+
+bool TCAL9538Init(I2C_HandleTypeDef *hi2c, GPIO_TypeDef * reset_gpiox, uint16_t reset_pin){
+	HAL_GPIO_WritePin(reset_gpiox, reset_pin, GPIO_PIN_SET);
+    HAL_Delay(1);
+    HAL_GPIO_WritePin(reset_gpiox, reset_pin, GPIO_PIN_RESET);
+    HAL_Delay(1);
+    HAL_GPIO_WritePin(reset_gpiox, reset_pin, GPIO_PIN_SET);
+
+    gpio_i2c = hi2c;
+
+    uint8_t addrs[] = {GPIO1_ADDRESS, GPIO2_ADDRESS}; // add more addresses as needed
+
+    for(uint8_t i = 0; i < sizeof(addrs)/sizeof(addrs[0]); i++){
+        uint8_t addr = addrs[i];
+
+        uint8_t v;
+        HAL_I2C_Mem_Read(gpio_i2c, addr, REG_OUTPUT, 1, &v, 1, HAL_MAX_DELAY);
+
+
+        //REG_OUTPUT is set all ones on power up
+        if(v != 0xff){
+            return false;
+        }
+    }
+    return true;
+}
+
+// adjust index count to reflect number of expanders and add additional 0xff
+static uint8_t pin_state[2] = {0xff, 0xff};
+static uint8_t pin_config[2] = {0xff, 0xff};
+
+GpioError gpioDigitalWrite(GpioAddress addr, int mode){
+
+
+    if(!addr.is_valid) {
+        return GpioError::InvalidPinError;
+    }
+
+    uint8_t current_state = pin_state[addr.gpio_id];
+    if(mode == HIGH){
+        current_state |= (1 << addr.pin_id);
+    } else if(mode == LOW){
+        current_state &= ~(1 << addr.pin_id);
+    } else {
+        return GpioError::InvalidModeError;
+    }
+
+    HAL_I2C_Mem_Write(gpio_i2c, addr.gpio_address, REG_OUTPUT, 1, &current_state, 1, HAL_MAX_DELAY);
+
+    pin_state[addr.gpio_id] = current_state;
+
+    // add error checking perhaps
+
+    return GpioError::NoError;
+}
+
+GpioReadResult gpioDigitalRead(GpioAddress addr){
+    if(!addr.is_valid) {
+        return GpioReadResult{.value=LOW,.error=GpioError::InvalidPinError};
+    }
+
+
+    uint8_t val;
+    HAL_I2C_Mem_Read(gpio_i2c, addr.gpio_address, REG_INPUT, 1, &val, 1, HAL_MAX_DELAY);
+
+    return GpioReadResult{.value=(val & (1 << addr.pin_id)) != 0,.error=GpioError::NoError};
+}
+
+GpioError gpioPinMode(GpioAddress addr, int mode){
+    if(!addr.is_valid){
+        return GpioError::NoError;
+    }
+
+    uint8_t current_state = pin_config[addr.gpio_id];
+
+    if(mode == INPUT){
+        current_state |= (1 << addr.pin_id);
+    } else if(mode == OUTPUT){
+        current_state &= ~(1 << addr.pin_id);
+    } else {
+        return GpioError::InvalidModeError;
+    }
+
+    GpioError err = gpioDigitalWrite(addr, LOW);
+    if(err != GpioError::NoError){
+        return err;
+    }
+
+    HAL_I2C_Mem_Write(gpio_i2c, addr.gpio_address, REG_CONFIG, 1, &current_state, 1, HAL_MAX_DELAY);
+    pin_config[addr.gpio_id] = current_state;
+
+    return GpioError::NoError;
+}
+
+
+
