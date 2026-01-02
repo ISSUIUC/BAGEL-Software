@@ -167,10 +167,10 @@ int main(void)
 
 	gpioDigitalWrite(GpioAddress(1,5),LOW);
 
-	//toggle clock
-	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_0, GPIO_PIN_SET);
-	HAL_Delay(50);
-	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_0, GPIO_PIN_RESET);
+//	//toggle clock
+//	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_0, GPIO_PIN_SET);
+//	HAL_Delay(50);
+//	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_0, GPIO_PIN_RESET);
 
 	HAL_Delay(750);
 
