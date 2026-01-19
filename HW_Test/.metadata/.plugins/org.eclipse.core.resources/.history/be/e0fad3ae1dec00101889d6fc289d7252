@@ -146,12 +146,7 @@ int main(void)
 	HAL_Delay(50);
 	gpioDigitalWrite(GpioAddress(1, 7), HIGH);
 	HAL_Delay(50);
-	// switch 3
-	gpioDigitalWrite(GpioAddress(0,0),LOW);
-	// switch 4
-	gpioDigitalWrite(GpioAddress(1,5),LOW);
-	// switch 5
-	gpioDigitalWrite(GpioAddress(1,0),LOW);
+	gpioDigitalWrite(GpioAddress(1,5),HIGH);
 
 	//toggle clock
 	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_0, GPIO_PIN_SET);
@@ -169,12 +164,15 @@ int main(void)
 	HAL_Delay(50);
 	gpioDigitalWrite(GpioAddress(0, 6), LOW);
 	HAL_Delay(50);
-	// switch 3
-	gpioDigitalWrite(GpioAddress(0,0),LOW);
-	// switch 4
+
 	gpioDigitalWrite(GpioAddress(1,5),LOW);
-	// switch 5
-	gpioDigitalWrite(GpioAddress(1,0),LOW);
+
+	//toggle clock
+	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_0, GPIO_PIN_SET);
+	HAL_Delay(50);
+	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_0, GPIO_PIN_RESET);
+
+	HAL_Delay(750);
 
 //	//toggle clock
 //	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_0, GPIO_PIN_SET);

@@ -1,17 +1,10 @@
-15:16:10 **** Incremental Build of configuration Debug for project fw ****
+17:28:33 **** Build of configuration Debug for project fw ****
 make -j16 all 
-arm-none-eabi-g++ "../Core/Src/main.cpp" -mcpu=cortex-m4 -std=gnu++14 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32WB1Mxx -c -I../Core/Inc -I../Drivers/STM32WBxx_HAL_Driver/Inc -I../Drivers/STM32WBxx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32WBxx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -fno-exceptions -fno-rtti -fno-use-cxa-atexit -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/main.d" -MT"Core/Src/main.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Src/main.o"
-arm-none-eabi-g++ -o "fw.elf" @"objects.list"   -mcpu=cortex-m4 -T"C:\Users\tjmcm\Documents\Thomas\School\college\Illinois Space Society\BAGEL-Software\HW_Test\fw\STM32WB1MMCHX_FLASH.ld" --specs=nosys.specs -Wl,-Map="fw.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -lstdc++ -lsupc++ -Wl,--end-group
-Finished building target: fw.elf
- 
 arm-none-eabi-size  fw.elf 
-arm-none-eabi-objdump -h -S fw.elf  > "fw.list"
    text	   data	    bss	    dec	    hex	filename
-  23600	    100	   2324	  26024	   65a8	fw.elf
+  23688	    100	   2324	  26112	   6600	fw.elf
 Finished building: default.size.stdout
  
-Finished building: fw.list
- 
 
-15:16:13 Build Finished. 0 errors, 0 warnings. (took 2s.824ms)
+17:28:35 Build Finished. 0 errors, 0 warnings. (took 1s.922ms)
 
