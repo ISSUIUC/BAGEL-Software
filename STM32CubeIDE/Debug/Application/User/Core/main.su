@@ -1,0 +1,12 @@
+../../Drivers/STM32WBxx_HAL_Driver/Inc/stm32wbxx_ll_rcc.h:1679:22:LL_RCC_LSE_SetDriveCapability	16	static
+../../Drivers/STM32WBxx_HAL_Driver/Inc/stm32wbxx_ll_bus.h:539:22:LL_AHB2_GRP1_EnableClock	24	static
+C:/ISS/Switch_Board/Core/Src/main.c:77:5:main	8	static
+C:/ISS/Switch_Board/Core/Src/main.c:152:6:SystemClock_Config	104	static
+C:/ISS/Switch_Board/Core/Src/main.c:214:6:PeriphCommonClock_Config	56	static
+C:/ISS/Switch_Board/Core/Src/main.c:239:13:MX_ADC1_Init	24	static
+C:/ISS/Switch_Board/Core/Src/main.c:295:13:MX_I2C1_Init	8	static
+C:/ISS/Switch_Board/Core/Src/main.c:343:13:MX_IPCC_Init	8	static
+C:/ISS/Switch_Board/Core/Src/main.c:369:13:MX_RF_Init	4	static
+C:/ISS/Switch_Board/Core/Src/main.c:390:13:MX_RTC_Init	8	static
+C:/ISS/Switch_Board/Core/Src/main.c:432:13:MX_GPIO_Init	32	static
+C:/ISS/Switch_Board/Core/Src/main.c:515:6:Error_Handler	4	static,ignoring_inline_asm

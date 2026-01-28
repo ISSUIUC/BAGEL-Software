@@ -74,7 +74,77 @@ static void MX_RF_Init(void);
   * @brief  The application entry point.
   * @retval int
   */
+int main(void)
+{
 
+  /* USER CODE BEGIN 1 */
+
+  /* USER CODE END 1 */
+
+  /* MCU Configuration--------------------------------------------------------*/
+
+  /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
+  HAL_Init();
+  /* Config code for STM32_WPAN (HSE Tuning must be done before system clock configuration) */
+  MX_APPE_Config();
+
+  /* USER CODE BEGIN Init */
+
+  /* USER CODE END Init */
+
+  /* Configure the system clock */
+  SystemClock_Config();
+
+  /* Configure the peripherals common clocks */
+  PeriphCommonClock_Config();
+
+  /* IPCC initialisation */
+  MX_IPCC_Init();
+
+  /* USER CODE BEGIN SysInit */
+
+  /* USER CODE END SysInit */
+
+  /* Initialize all configured peripherals */
+  MX_GPIO_Init();
+  MX_ADC1_Init();
+  MX_I2C1_Init();
+  MX_RTC_Init();
+  MX_RF_Init();
+  /* USER CODE BEGIN 2 */
+
+  /* USER CODE END 2 */
+
+  /* Init code for STM32_WPAN */
+  MX_APPE_Init();
+
+//  SHCI_CmdStatus_t status;
+//  status = SHCI_C2_BLE_Init(&ble_init_cmd_packet);
+//  if (status != SHCI_Success) {
+      // ERROR CHECK: status 0x07 often means "Memory Capacity Exceeded"
+      // This happens if your GATT database is too large for the WB1x "Light" stack.
+//      something ();s
+      HAL_GPIO_WritePin(GPIOB, GPIO_PIN_0, 1);
+
+
+
+
+  /* Infinite loop */
+  /* USER CODE BEGIN WHILE */
+  while (1)
+  {
+	  printf("Hello");
+//	  printf("%d\n", (int)APP_BLE_Get_Server_Connection_Status());
+//    /* USER CODE END WHILE */
+    MX_APPE_Process();
+
+    /* USER CODE BEGIN 3 */
+    printf("hello\n");
+//  }
+  /* USER CODE END 3 */
+  }
+
+}
 /**
   * @brief System Clock Configuration
   * @retval None
@@ -148,7 +218,7 @@ void PeriphCommonClock_Config(void)
   /** Initializes the peripherals clock
   */
   PeriphClkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_SMPS|RCC_PERIPHCLK_RFWAKEUP;
-  PeriphClkInitStruct.RFWakeUpClockSelection = RCC_RFWKPCLKSOURCE_LSI;
+  PeriphClkInitStruct.RFWakeUpClockSelection = RCC_RFWKPCLKSOURCE_LSE;
   PeriphClkInitStruct.SmpsClockSelection = RCC_SMPSCLKSOURCE_HSI;
   PeriphClkInitStruct.SmpsDivSelection = RCC_SMPSCLKDIV_RANGE1;
 
