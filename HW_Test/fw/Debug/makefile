@@ -9,8 +9,19 @@ RM := rm -rf
 
 # All of the sources participating in the build are defined here
 -include sources.mk
+-include Utilities/sequencer/subdir.mk
+-include Utilities/lpm/tiny_lpm/subdir.mk
+-include STM32_WPAN/Target/subdir.mk
+-include STM32_WPAN/App/subdir.mk
+-include Middlewares/ST/STM32_WPAN/utilities/subdir.mk
+-include Middlewares/ST/STM32_WPAN/interface/patterns/ble_thread/tl/subdir.mk
+-include Middlewares/ST/STM32_WPAN/interface/patterns/ble_thread/shci/subdir.mk
+-include Middlewares/ST/STM32_WPAN/ble/svc/Src/subdir.mk
+-include Middlewares/ST/STM32_WPAN/ble/core/template/subdir.mk
+-include Middlewares/ST/STM32_WPAN/ble/core/auto/subdir.mk
 -include Drivers/TCAL9538/subdir.mk
 -include Drivers/STM32WBxx_HAL_Driver/Src/subdir.mk
+-include Drivers/Interface/subdir.mk
 -include Core/Startup/subdir.mk
 -include Core/Src/subdir.mk
 -include objects.mk
@@ -85,8 +96,8 @@ all: main-build
 main-build: fw.elf secondary-outputs
 
 # Tool invocations
-fw.elf fw.map: $(OBJS) $(USER_OBJS) C:\Users\tjmcm\Documents\Thomas\School\college\Illinois\ Space\ Society\BAGEL-Software\HW_Test\fw\STM32WB1MMCHX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-g++ -o "fw.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"C:\Users\tjmcm\Documents\Thomas\School\college\Illinois Space Society\BAGEL-Software\HW_Test\fw\STM32WB1MMCHX_FLASH.ld" --specs=nosys.specs -Wl,-Map="fw.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -lstdc++ -lsupc++ -Wl,--end-group
+fw.elf fw.map: $(OBJS) $(USER_OBJS) C:\ISS\Switch_Board\HW_Test\fw\STM32WB1MMCHX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-g++ -o "fw.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"C:\ISS\Switch_Board\HW_Test\fw\STM32WB1MMCHX_FLASH.ld" --specs=nosys.specs -Wl,-Map="fw.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -lstdc++ -lsupc++ -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 
