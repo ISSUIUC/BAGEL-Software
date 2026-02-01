@@ -57,7 +57,8 @@ UART_HandleTypeDef huart1;
 /* USER CODE BEGIN PV */
 UART_HandleTypeDef * my_huart;
 
-gpio_status status;
+//gpio_status status;
+
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -88,7 +89,6 @@ int main(void)
 {
 
   /* USER CODE BEGIN 1 */
-	led_struct_init();
 
   /* USER CODE END 1 */
 
@@ -160,17 +160,71 @@ int main(void)
     MX_APPE_Process();
 
     /* USER CODE BEGIN 3 */
-
-    if (status.led2_status) {
-    	gpioDigitalWrite(GpioAddress(0, 7), HIGH);
+    // checking for all GPIO_outputs
+    if (gpio_output_status[SWITCH_1] == 1) {
+    	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_12, GPIO_PIN_SET);
     } else {
-    	gpioDigitalWrite(GpioAddress(0, 7), LOW);
+    	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_12, GPIO_PIN_RESET);
     }
-    if (status.led1_status) {
+
+    if (gpio_output_status[SWITCH_2] == 1) {
+    	gpioDigitalWrite(GpioAddress(0, 5), HIGH);
+    } else {
+    	gpioDigitalWrite(GpioAddress(0, 5), LOW);
+    }
+
+    if (gpio_output_status[SWITCH_3] == 1) {
+        gpioDigitalWrite(GpioAddress(0, 0), HIGH);
+	} else {
+		gpioDigitalWrite(GpioAddress(0, 0), LOW);
+	}
+
+    if (gpio_output_status[SWITCH_4] == 1) {
+		gpioDigitalWrite(GpioAddress(1, 5), HIGH);
+	} else {
+		gpioDigitalWrite(GpioAddress(1, 5), LOW);
+	}
+
+    if (gpio_output_status[SWITCH_5] == 1) {
+		gpioDigitalWrite(GpioAddress(1, 0), HIGH);
+	} else {
+		gpioDigitalWrite(GpioAddress(1, 0), LOW);
+	}
+
+    if (gpio_output_status[SWITCH_6] == 1) {
+		HAL_GPIO_WritePin(GPIOA, GPIO_PIN_11, GPIO_PIN_SET);
+	} else {
+		HAL_GPIO_WritePin(GPIOA, GPIO_PIN_11, GPIO_PIN_RESET);
+	}
+
+    if (gpio_output_status[RED_LED] == 1) {
     	gpioDigitalWrite(GpioAddress(0, 6), HIGH);
     } else {
-    	gpioDigitalWrite(GpioAddress(0, 6), LOW);
+        gpioDigitalWrite(GpioAddress(0, 6), LOW);
     }
+
+    if (gpio_output_status[ORANGE_LED] == 1) {
+		gpioDigitalWrite(GpioAddress(0, 7), HIGH);
+	} else {
+		gpioDigitalWrite(GpioAddress(0, 7), LOW);
+	}
+
+    if (gpio_output_status[GREEN_LED] == 1) {
+		gpioDigitalWrite(GpioAddress(1, 6), HIGH);
+	} else {
+		gpioDigitalWrite(GpioAddress(1, 6), LOW);
+	}
+
+	if (gpio_output_status[BLUE_LED] == 1) {
+		gpioDigitalWrite(GpioAddress(1, 7), HIGH);
+	} else {
+		gpioDigitalWrite(GpioAddress(1, 7), LOW);
+	}
+
+
+
+
+
 
 
 //	HAL_UART_Transmit(&huart1, high, sizeof(high), 1000);

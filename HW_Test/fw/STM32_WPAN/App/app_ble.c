@@ -449,7 +449,8 @@ SVCCTL_UserEvtFlowStatus_t SVCCTL_App_Notification(void *p_Pckt)
       }
 
       /* USER CODE BEGIN EVT_DISCONN_COMPLETE_1 */
-      update_led(2, 0);
+      update_gpio_output(ORANGE_LED, 0);
+      set_bluetooth_status(0);
       /* USER CODE END EVT_DISCONN_COMPLETE_1 */
 
       /* restart advertising */
@@ -543,7 +544,8 @@ SVCCTL_UserEvtFlowStatus_t SVCCTL_App_Notification(void *p_Pckt)
           HandleNotification.ConnectionHandle = BleApplicationContext.BleApplicationContext_legacy.connectionHandle;
           Custom_APP_Notification(&HandleNotification);
           /* USER CODE BEGIN HCI_EVT_LE_CONN_COMPLETE */
-          update_led(2, 1);
+          update_gpio_output(ORANGE_LED, 1);
+          set_bluetooth_status(1);
           /* USER CODE END HCI_EVT_LE_CONN_COMPLETE */
           break; /* HCI_LE_CONNECTION_COMPLETE_SUBEVT_CODE */
         }

@@ -1,6 +1,23 @@
 #include "interface.h"
 
 
+gpio_output_status[10] = {
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+};
+
+bluetooth_status = 0;
+
+
+
 uint8_t interface_init(UART_HandleTypeDef * huart1){
 	my_huart = huart1;
 	return 0;
@@ -11,23 +28,26 @@ uint8_t interface_send(uint8_t * data, uint16_t len){
 	return 0;
 }
 
-void led_struct_init(void) {
-	status.led1_status = 0;
-	status.led2_status = 0;
-}
-
-int update_led(int led_num, int newStatus) {
-	if (led_num == 1) {
-		status.led1_status = newStatus;
-	} else if (led_num == 2) {
-		status.led2_status = newStatus;
-	}
+uint8_t set_bluetooth_status(int newStatus) {
+	bluetooth_status = newStatus;
 	return 0;
 }
 
 
-int toggle_led(int led_num) {
-	if (led_num == 1) {
-		status.led1_status = !status.led1_status;
+uint8_t update_gpio_output(int gpio_output, int status) {
+	if (gpio_output < 0 || (gpio_output >= sizeof(gpio_output_status)/sizeof(gpio_output_status[0]))) {
+		return 1;
 	}
+	gpio_output_status[gpio_output] = status;
+	return 0;
+}
+
+
+
+uint8_t toggle_gpio_output(int gpio_output) {
+	if (gpio_output < 0 || gpio_output >= sizeof(gpio_output_status)/sizeof(gpio_output_status[0])) {
+		return 1;
+	}
+	gpio_output_status[gpio_output] = !gpio_output_status[gpio_output];
+	return 0;
 }
