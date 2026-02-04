@@ -1,10 +1,10 @@
-17:28:33 **** Build of configuration Debug for project fw ****
+22:56:28 **** Incremental Build of configuration Debug for project fw ****
 make -j16 all 
 arm-none-eabi-size  fw.elf 
    text	   data	    bss	    dec	    hex	filename
-  23688	    100	   2324	  26112	   6600	fw.elf
+  44532	   2381	   3491	  50404	   c4e4	fw.elf
 Finished building: default.size.stdout
  
 
-17:28:35 Build Finished. 0 errors, 0 warnings. (took 1s.922ms)
+22:56:29 Build Finished. 0 errors, 0 warnings. (took 1s.22ms)
 

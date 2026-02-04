@@ -1,0 +1,27 @@
+/*
+ * interface.h
+ *
+ *  Created on: Jan 30, 2026
+ *      Author: tjmcm
+ */
+
+#ifndef INTERFACE_INTERFACE_H_
+#define INTERFACE_INTERFACE_H_
+
+#include "stm32wbxx_hal.h"
+
+UART_HandleTypeDef * my_huart;
+
+uint8_t interface_init(UART_HandleTypeDef * huart1){
+	huart = huart1;
+	return 0;
+}
+
+uint8_t interface_send(uint8_t * data, uint16_t len){
+	HAL_UART_Transmit(huart, data, len, 1000);
+	return 0;
+}
+
+
+
+#endif /* INTERFACE_INTERFACE_H_ */

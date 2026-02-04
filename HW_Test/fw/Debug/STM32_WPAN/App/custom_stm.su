@@ -1,0 +1,8 @@
+../STM32_WPAN/App/../../Drivers/Interface/Interface.h:15:9:interface_init	16	static
+../STM32_WPAN/App/../../Drivers/Interface/Interface.h:20:9:interface_send	16	static
+../STM32_WPAN/App/custom_stm.c:119:30:Custom_STM_Event_Handler	56	static
+../STM32_WPAN/App/custom_stm.c:229:6:SVCCTL_InitCustomSvc	56	static
+../STM32_WPAN/App/custom_stm.c:318:12:Custom_STM_App_Update_Char	32	static
+../STM32_WPAN/App/custom_stm.c:365:12:Custom_STM_App_Update_Char_Variable_Length	32	static
+../STM32_WPAN/App/custom_stm.c:412:12:Custom_STM_App_Update_Char_Ext	40	static
+../STM32_WPAN/App/custom_stm.c:449:19:Generic_STM_App_Update_Char_Ext	48	static
