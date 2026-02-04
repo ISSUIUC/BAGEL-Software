@@ -147,6 +147,7 @@ int main(void)
 
   uint8_t high[] = "high\r\n";
   uint8_t low[] = "low\r\n";
+
   /* USER CODE END 2 */
 
   /* Init code for STM32_WPAN */
@@ -221,6 +222,10 @@ int main(void)
 		gpioDigitalWrite(GpioAddress(1, 7), LOW);
 	}
 
+	//toggle clock
+	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_0, GPIO_PIN_SET);
+	HAL_Delay(50);
+	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_0, GPIO_PIN_RESET);
 
 
 
@@ -242,10 +247,10 @@ int main(void)
 //	// switch 5
 //	gpioDigitalWrite(GpioAddress(1,0),LOW);
 //
-//	//toggle clock
-//	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_0, GPIO_PIN_SET);
-//	HAL_Delay(50);
-//	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_0, GPIO_PIN_RESET);
+	//toggle clock
+	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_0, GPIO_PIN_SET);
+	HAL_Delay(50);
+	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_0, GPIO_PIN_RESET);
 //
 //	HAL_Delay(750);
 //
@@ -712,8 +717,7 @@ void Error_Handler(void)
   }
   /* USER CODE END Error_Handler_Debug */
 }
-
-#ifdef  USE_FULL_ASSERT
+#ifdef USE_FULL_ASSERT
 /**
   * @brief  Reports the name of the source file and the source line number
   *         where the assert_param error has occurred.

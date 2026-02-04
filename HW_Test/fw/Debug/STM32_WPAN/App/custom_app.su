@@ -1,3 +1,9 @@
-../STM32_WPAN/App/custom_app.c:86:6:Custom_STM_App_Notification	16	static
-../STM32_WPAN/App/custom_app.c:122:6:Custom_APP_Notification	16	static
-../STM32_WPAN/App/custom_app.c:159:6:Custom_APP_Init	4	static
+../STM32_WPAN/App/custom_app.c:97:6:Custom_STM_App_Notification	16	static
+../STM32_WPAN/App/custom_app.c:206:6:Custom_APP_Notification	16	static
+../STM32_WPAN/App/custom_app.c:243:6:Custom_APP_Init	4	static
+../STM32_WPAN/App/custom_app.c:263:13:Custom_Switch_1_Update_Char	16	static
+../STM32_WPAN/App/custom_app.c:282:6:Custom_Switch_1_Send_Notification	16	static
+../STM32_WPAN/App/custom_app.c:302:13:Custom_Switch_2_Update_Char	16	static
+../STM32_WPAN/App/custom_app.c:321:6:Custom_Switch_2_Send_Notification	16	static
+../STM32_WPAN/App/custom_app.c:341:13:Custom_Switch_3_Update_Char	16	static
+../STM32_WPAN/App/custom_app.c:360:6:Custom_Switch_3_Send_Notification	16	static

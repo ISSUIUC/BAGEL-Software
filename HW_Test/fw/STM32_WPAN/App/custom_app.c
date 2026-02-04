@@ -36,6 +36,10 @@
 typedef struct
 {
   /* BG_Service */
+  /* BAGEL_2 */
+  uint8_t               Switch_1_Notification_Status;
+  uint8_t               Switch_2_Notification_Status;
+  uint8_t               Switch_3_Notification_Status;
   /* USER CODE BEGIN CUSTOM_APP_Context_t */
 
   /* USER CODE END CUSTOM_APP_Context_t */
@@ -77,6 +81,13 @@ uint16_t Connection_Handle;
 
 /* Private function prototypes -----------------------------------------------*/
 /* BG_Service */
+/* BAGEL_2 */
+static void Custom_Switch_1_Update_Char(void);
+static void Custom_Switch_1_Send_Notification(void);
+static void Custom_Switch_2_Update_Char(void);
+static void Custom_Switch_2_Send_Notification(void);
+static void Custom_Switch_3_Update_Char(void);
+static void Custom_Switch_3_Send_Notification(void);
 
 /* USER CODE BEGIN PFP */
 
@@ -99,6 +110,79 @@ void Custom_STM_App_Notification(Custom_STM_App_Notification_evt_t *pNotificatio
       /* USER CODE BEGIN CUSTOM_STM_CHARW_WRITE_EVT */
 
       /* USER CODE END CUSTOM_STM_CHARW_WRITE_EVT */
+      break;
+
+    /* BAGEL_2 */
+    case CUSTOM_STM_SWITCH_1_READ_EVT:
+      /* USER CODE BEGIN CUSTOM_STM_SWITCH_1_READ_EVT */
+
+      /* USER CODE END CUSTOM_STM_SWITCH_1_READ_EVT */
+      break;
+
+    case CUSTOM_STM_SWITCH_1_WRITE_EVT:
+      /* USER CODE BEGIN CUSTOM_STM_SWITCH_1_WRITE_EVT */
+
+      /* USER CODE END CUSTOM_STM_SWITCH_1_WRITE_EVT */
+      break;
+
+    case CUSTOM_STM_SWITCH_1_NOTIFY_ENABLED_EVT:
+      /* USER CODE BEGIN CUSTOM_STM_SWITCH_1_NOTIFY_ENABLED_EVT */
+
+      /* USER CODE END CUSTOM_STM_SWITCH_1_NOTIFY_ENABLED_EVT */
+      break;
+
+    case CUSTOM_STM_SWITCH_1_NOTIFY_DISABLED_EVT:
+      /* USER CODE BEGIN CUSTOM_STM_SWITCH_1_NOTIFY_DISABLED_EVT */
+
+      /* USER CODE END CUSTOM_STM_SWITCH_1_NOTIFY_DISABLED_EVT */
+      break;
+
+    case CUSTOM_STM_SWITCH_2_READ_EVT:
+      /* USER CODE BEGIN CUSTOM_STM_SWITCH_2_READ_EVT */
+
+      /* USER CODE END CUSTOM_STM_SWITCH_2_READ_EVT */
+      break;
+
+    case CUSTOM_STM_SWITCH_2_WRITE_EVT:
+      /* USER CODE BEGIN CUSTOM_STM_SWITCH_2_WRITE_EVT */
+
+      /* USER CODE END CUSTOM_STM_SWITCH_2_WRITE_EVT */
+      break;
+
+    case CUSTOM_STM_SWITCH_2_NOTIFY_ENABLED_EVT:
+      /* USER CODE BEGIN CUSTOM_STM_SWITCH_2_NOTIFY_ENABLED_EVT */
+
+      /* USER CODE END CUSTOM_STM_SWITCH_2_NOTIFY_ENABLED_EVT */
+      break;
+
+    case CUSTOM_STM_SWITCH_2_NOTIFY_DISABLED_EVT:
+      /* USER CODE BEGIN CUSTOM_STM_SWITCH_2_NOTIFY_DISABLED_EVT */
+
+      /* USER CODE END CUSTOM_STM_SWITCH_2_NOTIFY_DISABLED_EVT */
+      break;
+
+    case CUSTOM_STM_SWITCH_3_READ_EVT:
+      /* USER CODE BEGIN CUSTOM_STM_SWITCH_3_READ_EVT */
+
+      /* USER CODE END CUSTOM_STM_SWITCH_3_READ_EVT */
+      break;
+
+    case CUSTOM_STM_SWITCH_3_WRITE_EVT:
+      /* USER CODE BEGIN CUSTOM_STM_SWITCH_3_WRITE_EVT */
+
+      /* USER CODE END CUSTOM_STM_SWITCH_3_WRITE_EVT */
+      break;
+
+    case CUSTOM_STM_SWITCH_3_NOTIFY_ENABLED_EVT:
+      /* USER CODE BEGIN CUSTOM_STM_SWITCH_3_NOTIFY_ENABLED_EVT */
+
+      /* USER CODE END CUSTOM_STM_SWITCH_3_NOTIFY_ENABLED_EVT */
+      break;
+
+    case CUSTOM_STM_SWITCH_3_NOTIFY_DISABLED_EVT:
+      /* USER CODE BEGIN CUSTOM_STM_SWITCH_3_NOTIFY_DISABLED_EVT */
+
+      /* USER CODE END CUSTOM_STM_SWITCH_3_NOTIFY_DISABLED_EVT */
       break;
 
     case CUSTOM_STM_NOTIFICATION_COMPLETE_EVT:
@@ -175,6 +259,123 @@ void Custom_APP_Init(void)
  *************************************************************/
 
 /* BG_Service */
+/* BAGEL_2 */
+__USED void Custom_Switch_1_Update_Char(void) /* Property Read */
+{
+  uint8_t updateflag = 0;
+
+  /* USER CODE BEGIN Switch_1_UC_1*/
+
+  /* USER CODE END Switch_1_UC_1*/
+
+  if (updateflag != 0)
+  {
+    Custom_STM_App_Update_Char(CUSTOM_STM_SWITCH_1, (uint8_t *)UpdateCharData);
+  }
+
+  /* USER CODE BEGIN Switch_1_UC_Last*/
+
+  /* USER CODE END Switch_1_UC_Last*/
+  return;
+}
+
+void Custom_Switch_1_Send_Notification(void) /* Property Notification */
+{
+  uint8_t updateflag = 0;
+
+  /* USER CODE BEGIN Switch_1_NS_1*/
+
+  /* USER CODE END Switch_1_NS_1*/
+
+  if (updateflag != 0)
+  {
+    Custom_STM_App_Update_Char(CUSTOM_STM_SWITCH_1, (uint8_t *)NotifyCharData);
+  }
+
+  /* USER CODE BEGIN Switch_1_NS_Last*/
+
+  /* USER CODE END Switch_1_NS_Last*/
+
+  return;
+}
+
+__USED void Custom_Switch_2_Update_Char(void) /* Property Read */
+{
+  uint8_t updateflag = 0;
+
+  /* USER CODE BEGIN Switch_2_UC_1*/
+
+  /* USER CODE END Switch_2_UC_1*/
+
+  if (updateflag != 0)
+  {
+    Custom_STM_App_Update_Char(CUSTOM_STM_SWITCH_2, (uint8_t *)UpdateCharData);
+  }
+
+  /* USER CODE BEGIN Switch_2_UC_Last*/
+
+  /* USER CODE END Switch_2_UC_Last*/
+  return;
+}
+
+void Custom_Switch_2_Send_Notification(void) /* Property Notification */
+{
+  uint8_t updateflag = 0;
+
+  /* USER CODE BEGIN Switch_2_NS_1*/
+
+  /* USER CODE END Switch_2_NS_1*/
+
+  if (updateflag != 0)
+  {
+    Custom_STM_App_Update_Char(CUSTOM_STM_SWITCH_2, (uint8_t *)NotifyCharData);
+  }
+
+  /* USER CODE BEGIN Switch_2_NS_Last*/
+
+  /* USER CODE END Switch_2_NS_Last*/
+
+  return;
+}
+
+__USED void Custom_Switch_3_Update_Char(void) /* Property Read */
+{
+  uint8_t updateflag = 0;
+
+  /* USER CODE BEGIN Switch_3_UC_1*/
+
+  /* USER CODE END Switch_3_UC_1*/
+
+  if (updateflag != 0)
+  {
+    Custom_STM_App_Update_Char(CUSTOM_STM_SWITCH_3, (uint8_t *)UpdateCharData);
+  }
+
+  /* USER CODE BEGIN Switch_3_UC_Last*/
+
+  /* USER CODE END Switch_3_UC_Last*/
+  return;
+}
+
+void Custom_Switch_3_Send_Notification(void) /* Property Notification */
+{
+  uint8_t updateflag = 0;
+
+  /* USER CODE BEGIN Switch_3_NS_1*/
+
+  /* USER CODE END Switch_3_NS_1*/
+
+  if (updateflag != 0)
+  {
+    Custom_STM_App_Update_Char(CUSTOM_STM_SWITCH_3, (uint8_t *)NotifyCharData);
+  }
+
+  /* USER CODE BEGIN Switch_3_NS_Last*/
+
+  /* USER CODE END Switch_3_NS_Last*/
+
+  return;
+}
 
 /* USER CODE BEGIN FD_LOCAL_FUNCTIONS*/
 

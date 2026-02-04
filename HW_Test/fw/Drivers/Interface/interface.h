@@ -18,9 +18,10 @@ extern UART_HandleTypeDef * my_huart;
 
 
 
-extern int gpio_output_status[10];
+extern int gpio_output_status[11];
 
 extern int bluetooth_status; // whether the board is connected to Bluetooth
+
 
 enum GPIO_OUTPUT {
 	SWITCH_1,
@@ -33,7 +34,9 @@ enum GPIO_OUTPUT {
 	ORANGE_LED,
 	GREEN_LED,
 	BLUE_LED,
+	CLOCK
 };
+
 
 
 uint8_t interface_init(UART_HandleTypeDef * huart1);
@@ -44,6 +47,7 @@ uint8_t interface_send(uint8_t * data, uint16_t len);
 uint8_t update_gpio_output(int gpio_output, int status);
 
 uint8_t toggle_gpio_output(int gpio_output);
+
 
 #ifdef __cplusplus
 }

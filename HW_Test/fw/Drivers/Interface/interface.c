@@ -1,7 +1,8 @@
 #include "interface.h"
 
 
-gpio_output_status[10] = {
+gpio_output_status[11] = {
+		0,
 		0,
 		0,
 		0,
@@ -14,8 +15,9 @@ gpio_output_status[10] = {
 		0,
 };
 
-bluetooth_status = 0;
 
+
+bluetooth_status = 0;
 
 
 uint8_t interface_init(UART_HandleTypeDef * huart1){
@@ -51,3 +53,6 @@ uint8_t toggle_gpio_output(int gpio_output) {
 	gpio_output_status[gpio_output] = !gpio_output_status[gpio_output];
 	return 0;
 }
+
+
+

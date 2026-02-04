@@ -13,7 +13,7 @@
 ../Middlewares/ST/STM32_WPAN/ble/core/auto/ble_hci_le.c:286:12:hci_read_rssi	3
 ../Middlewares/ST/STM32_WPAN/ble/core/auto/ble_hci_le.c:312:12:hci_le_set_event_mask	2
 ../Middlewares/ST/STM32_WPAN/ble/core/auto/ble_hci_le.c:333:12:hci_le_read_buffer_size	3
-../Middlewares/ST/STM32_WPAN/ble/core/auto/ble_hci_le.c:353:12:hci_le_read_local_supported_features	3
+../Middlewares/ST/STM32_WPAN/ble/core/auto/ble_hci_le.c:353:12:hci_le_read_local_supported_features_page_0	3
 ../Middlewares/ST/STM32_WPAN/ble/core/auto/ble_hci_le.c:371:12:hci_le_set_random_address	2
 ../Middlewares/ST/STM32_WPAN/ble/core/auto/ble_hci_le.c:392:12:hci_le_set_advertising_parameters	2
 ../Middlewares/ST/STM32_WPAN/ble/core/auto/ble_hci_le.c:434:12:hci_le_read_advertising_physical_channel_tx_power	3
@@ -31,7 +31,7 @@
 ../Middlewares/ST/STM32_WPAN/ble/core/auto/ble_hci_le.c:727:12:hci_le_connection_update	2
 ../Middlewares/ST/STM32_WPAN/ble/core/auto/ble_hci_le.c:767:12:hci_le_set_host_channel_classification	2
 ../Middlewares/ST/STM32_WPAN/ble/core/auto/ble_hci_le.c:788:12:hci_le_read_channel_map	3
-../Middlewares/ST/STM32_WPAN/ble/core/auto/ble_hci_le.c:814:12:hci_le_read_remote_features	2
+../Middlewares/ST/STM32_WPAN/ble/core/auto/ble_hci_le.c:814:12:hci_le_read_remote_features_page_0	2
 ../Middlewares/ST/STM32_WPAN/ble/core/auto/ble_hci_le.c:836:12:hci_le_encrypt	3
 ../Middlewares/ST/STM32_WPAN/ble/core/auto/ble_hci_le.c:865:12:hci_le_rand	3
 ../Middlewares/ST/STM32_WPAN/ble/core/auto/ble_hci_le.c:883:12:hci_le_enable_encryption	2
@@ -77,3 +77,4 @@
 ../Middlewares/ST/STM32_WPAN/ble/core/auto/ble_hci_le.c:1909:12:hci_le_write_rf_path_compensation	2
 ../Middlewares/ST/STM32_WPAN/ble/core/auto/ble_hci_le.c:1933:12:hci_le_set_privacy_mode	2
 ../Middlewares/ST/STM32_WPAN/ble/core/auto/ble_hci_le.c:1960:12:hci_le_generate_dhkey_v2	2
+../Middlewares/ST/STM32_WPAN/ble/core/auto/ble_hci_le.c:1985:12:hci_le_set_resolvable_private_address_timeout_v2	2

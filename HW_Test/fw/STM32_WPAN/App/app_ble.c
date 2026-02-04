@@ -38,7 +38,7 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "../../Drivers/Interface/interface.h"
-
+#include "custom_stm.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -299,7 +299,8 @@ void APP_BLE_Init(void)
      CFG_BLE_TX_PATH_COMPENS,
      CFG_BLE_RX_PATH_COMPENS,
      CFG_BLE_CORE_VERSION,
-     CFG_BLE_OPTIONS_EXT
+     CFG_BLE_OPTIONS_EXT,
+	 CFG_BLE_MAX_ADD_EATT_BEARERS
     }
   };
 
@@ -544,6 +545,12 @@ SVCCTL_UserEvtFlowStatus_t SVCCTL_App_Notification(void *p_Pckt)
           HandleNotification.ConnectionHandle = BleApplicationContext.BleApplicationContext_legacy.connectionHandle;
           Custom_APP_Notification(&HandleNotification);
           /* USER CODE BEGIN HCI_EVT_LE_CONN_COMPLETE */
+          uint8_t char_thing = 0x00;
+          Custom_STM_App_Update_Char(CUSTOM_STM_SWITCH_1, &char_thing);
+          Custom_STM_App_Update_Char(CUSTOM_STM_SWITCH_2, &char_thing);
+          Custom_STM_App_Update_Char(CUSTOM_STM_SWITCH_3, &char_thing);
+//          Custom_STM_App_Update_Char(CUSTOM_STM_SWITCH_2, &char_thing);
+//          Custom_STM_App_Update_Char(CUSTOM_STM_SWITCH_3, &char_thing);
           update_gpio_output(ORANGE_LED, 1);
           set_bluetooth_status(1);
           /* USER CODE END HCI_EVT_LE_CONN_COMPLETE */
