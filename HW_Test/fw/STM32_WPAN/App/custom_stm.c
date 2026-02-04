@@ -29,9 +29,11 @@
 
 /* Private typedef -----------------------------------------------------------*/
 typedef struct{
-  uint16_t  CustomBg_ServiceHdle;                    /**< BG_Service handle */
-  uint16_t  CustomCharwHdle;                  /**< charW handle */
   uint16_t  CustomBagel_2Hdle;                    /**< BAGEL_2 handle */
+  uint16_t  CustomSwitch_4Hdle;                  /**< SWITCH_4 handle */
+  uint16_t  CustomSwitch_5Hdle;                  /**< SWITCH_5 handle */
+  uint16_t  CustomSwitch_6Hdle;                  /**< SWITCH_6 handle */
+  uint16_t  CustomBagel_1Hdle;                    /**< BAGEL_1 handle */
   uint16_t  CustomSwitch_1Hdle;                  /**< Switch_1 handle */
   uint16_t  CustomSwitch_2Hdle;                  /**< Switch_2 handle */
   uint16_t  CustomSwitch_3Hdle;                  /**< Switch_3 handle */
@@ -69,7 +71,9 @@ extern uint16_t Connection_Handle;
 /* USER CODE END PM */
 
 /* Private variables ---------------------------------------------------------*/
-uint16_t SizeCharw = 1;
+uint16_t SizeSwitch_4 = 1;
+uint16_t SizeSwitch_5 = 1;
+uint16_t SizeSwitch_6 = 1;
 uint16_t SizeSwitch_1 = 1;
 uint16_t SizeSwitch_2 = 1;
 uint16_t SizeSwitch_3 = 1;
@@ -111,9 +115,11 @@ do {\
     uuid_struct[12] = uuid_12; uuid_struct[13] = uuid_13; uuid_struct[14] = uuid_14; uuid_struct[15] = uuid_15; \
 }while(0)
 
-#define COPY_BG_SERVICE_UUID(uuid_struct)          COPY_UUID_128(uuid_struct,0x73,0x73,0x73,0x73,0x73,0x71,0x91,0x92,0x10,0x95,0x09,0x12,0x89,0x27,0x26,0x6b)
-#define COPY_CHARW_UUID(uuid_struct)    COPY_UUID_128(uuid_struct,0x98,0x71,0x87,0xab,0xd9,0x37,0xfe,0x72,0x83,0x74,0x02,0x09,0x27,0x16,0x78,0x27)
-#define COPY_BAGEL_2_UUID(uuid_struct)          COPY_UUID_128(uuid_struct,0x72,0x73,0x78,0x10,0x82,0x72,0x98,0x12,0x98,0x98,0x98,0xbc,0xde,0xf9,0x81,0x98)
+#define COPY_BAGEL_2_UUID(uuid_struct)          COPY_UUID_128(uuid_struct,0x73,0x73,0x73,0x73,0x73,0x71,0x91,0x92,0x10,0x95,0x09,0x12,0x89,0x27,0x26,0x6b)
+#define COPY_SWITCH_4_UUID(uuid_struct)    COPY_UUID_128(uuid_struct,0x98,0x71,0x87,0xab,0xd9,0x37,0xfe,0x72,0x83,0x74,0x02,0x09,0x27,0x16,0x78,0x27)
+#define COPY_SWITCH_5_UUID(uuid_struct)    COPY_UUID_128(uuid_struct,0x67,0x37,0x44,0x98,0x92,0x48,0x92,0x49,0x82,0x49,0x83,0x48,0x93,0x48,0x3b,0xcd)
+#define COPY_SWITCH_6_UUID(uuid_struct)    COPY_UUID_128(uuid_struct,0x97,0x19,0x81,0x88,0x92,0x89,0x2b,0xcd,0x98,0xf9,0x8e,0x98,0x98,0xe7,0x12,0x31)
+#define COPY_BAGEL_1_UUID(uuid_struct)          COPY_UUID_128(uuid_struct,0x72,0x73,0x78,0x10,0x82,0x72,0x98,0x12,0x98,0x98,0x98,0xbc,0xde,0xf9,0x81,0x98)
 #define COPY_SWITCH_1_UUID(uuid_struct)    COPY_UUID_128(uuid_struct,0x1a,0xb8,0x34,0x56,0x76,0x53,0x73,0x84,0x27,0x37,0x48,0x48,0x38,0x48,0x38,0x48)
 #define COPY_SWITCH_2_UUID(uuid_struct)    COPY_UUID_128(uuid_struct,0x63,0x77,0x77,0xab,0xc7,0x38,0x7d,0xe7,0x28,0x98,0x27,0x37,0x38,0x83,0x88,0x38)
 #define COPY_SWITCH_3_UUID(uuid_struct)    COPY_UUID_128(uuid_struct,0x72,0x67,0x18,0x34,0x82,0x82,0x03,0x08,0x23,0x83,0x83,0x8b,0xcd,0xe2,0x90,0x92)
@@ -153,7 +159,139 @@ static SVCCTL_EvtAckStatus_t Custom_STM_Event_Handler(void *Event)
 
           /* USER CODE END EVT_BLUE_GATT_ATTRIBUTE_MODIFIED_BEGIN */
           attribute_modified = (aci_gatt_attribute_modified_event_rp0*)blecore_evt->data;
-          if (attribute_modified->Attr_Handle == (CustomContext.CustomSwitch_1Hdle + CHARACTERISTIC_DESCRIPTOR_ATTRIBUTE_OFFSET))
+          if (attribute_modified->Attr_Handle == (CustomContext.CustomSwitch_4Hdle + CHARACTERISTIC_DESCRIPTOR_ATTRIBUTE_OFFSET))
+          {
+            return_value = SVCCTL_EvtAckFlowEnable;
+            /* USER CODE BEGIN CUSTOM_STM_Service_1_Char_1 */
+
+            /* USER CODE END CUSTOM_STM_Service_1_Char_1 */
+            switch (attribute_modified->Attr_Data[0])
+            {
+              /* USER CODE BEGIN CUSTOM_STM_Service_1_Char_1_attribute_modified */
+
+              /* USER CODE END CUSTOM_STM_Service_1_Char_1_attribute_modified */
+
+              /* Disabled Notification management */
+              case (!(COMSVC_Notification)):
+                /* USER CODE BEGIN CUSTOM_STM_Service_1_Char_1_Disabled_BEGIN */
+
+                /* USER CODE END CUSTOM_STM_Service_1_Char_1_Disabled_BEGIN */
+                Notification.Custom_Evt_Opcode = CUSTOM_STM_SWITCH_4_NOTIFY_DISABLED_EVT;
+                Custom_STM_App_Notification(&Notification);
+                /* USER CODE BEGIN CUSTOM_STM_Service_1_Char_1_Disabled_END */
+
+                /* USER CODE END CUSTOM_STM_Service_1_Char_1_Disabled_END */
+                break;
+
+              /* Enabled Notification management */
+              case COMSVC_Notification:
+                /* USER CODE BEGIN CUSTOM_STM_Service_1_Char_1_COMSVC_Notification_BEGIN */
+
+                /* USER CODE END CUSTOM_STM_Service_1_Char_1_COMSVC_Notification_BEGIN */
+                Notification.Custom_Evt_Opcode = CUSTOM_STM_SWITCH_4_NOTIFY_ENABLED_EVT;
+                Custom_STM_App_Notification(&Notification);
+                /* USER CODE BEGIN CUSTOM_STM_Service_1_Char_1_COMSVC_Notification_END */
+
+                /* USER CODE END CUSTOM_STM_Service_1_Char_1_COMSVC_Notification_END */
+                break;
+
+              default:
+                /* USER CODE BEGIN CUSTOM_STM_Service_1_Char_1_default */
+
+                /* USER CODE END CUSTOM_STM_Service_1_Char_1_default */
+              break;
+            }
+          }  /* if (attribute_modified->Attr_Handle == (CustomContext.CustomSwitch_4Hdle + CHARACTERISTIC_DESCRIPTOR_ATTRIBUTE_OFFSET))*/
+
+          else if (attribute_modified->Attr_Handle == (CustomContext.CustomSwitch_5Hdle + CHARACTERISTIC_DESCRIPTOR_ATTRIBUTE_OFFSET))
+          {
+            return_value = SVCCTL_EvtAckFlowEnable;
+            /* USER CODE BEGIN CUSTOM_STM_Service_1_Char_2 */
+
+            /* USER CODE END CUSTOM_STM_Service_1_Char_2 */
+            switch (attribute_modified->Attr_Data[0])
+            {
+              /* USER CODE BEGIN CUSTOM_STM_Service_1_Char_2_attribute_modified */
+
+              /* USER CODE END CUSTOM_STM_Service_1_Char_2_attribute_modified */
+
+              /* Disabled Notification management */
+              case (!(COMSVC_Notification)):
+                /* USER CODE BEGIN CUSTOM_STM_Service_1_Char_2_Disabled_BEGIN */
+
+                /* USER CODE END CUSTOM_STM_Service_1_Char_2_Disabled_BEGIN */
+                Notification.Custom_Evt_Opcode = CUSTOM_STM_SWITCH_5_NOTIFY_DISABLED_EVT;
+                Custom_STM_App_Notification(&Notification);
+                /* USER CODE BEGIN CUSTOM_STM_Service_1_Char_2_Disabled_END */
+
+                /* USER CODE END CUSTOM_STM_Service_1_Char_2_Disabled_END */
+                break;
+
+              /* Enabled Notification management */
+              case COMSVC_Notification:
+                /* USER CODE BEGIN CUSTOM_STM_Service_1_Char_2_COMSVC_Notification_BEGIN */
+
+                /* USER CODE END CUSTOM_STM_Service_1_Char_2_COMSVC_Notification_BEGIN */
+                Notification.Custom_Evt_Opcode = CUSTOM_STM_SWITCH_5_NOTIFY_ENABLED_EVT;
+                Custom_STM_App_Notification(&Notification);
+                /* USER CODE BEGIN CUSTOM_STM_Service_1_Char_2_COMSVC_Notification_END */
+
+                /* USER CODE END CUSTOM_STM_Service_1_Char_2_COMSVC_Notification_END */
+                break;
+
+              default:
+                /* USER CODE BEGIN CUSTOM_STM_Service_1_Char_2_default */
+
+                /* USER CODE END CUSTOM_STM_Service_1_Char_2_default */
+              break;
+            }
+          }  /* if (attribute_modified->Attr_Handle == (CustomContext.CustomSwitch_5Hdle + CHARACTERISTIC_DESCRIPTOR_ATTRIBUTE_OFFSET))*/
+
+          else if (attribute_modified->Attr_Handle == (CustomContext.CustomSwitch_6Hdle + CHARACTERISTIC_DESCRIPTOR_ATTRIBUTE_OFFSET))
+          {
+            return_value = SVCCTL_EvtAckFlowEnable;
+            /* USER CODE BEGIN CUSTOM_STM_Service_1_Char_3 */
+
+            /* USER CODE END CUSTOM_STM_Service_1_Char_3 */
+            switch (attribute_modified->Attr_Data[0])
+            {
+              /* USER CODE BEGIN CUSTOM_STM_Service_1_Char_3_attribute_modified */
+
+              /* USER CODE END CUSTOM_STM_Service_1_Char_3_attribute_modified */
+
+              /* Disabled Notification management */
+              case (!(COMSVC_Notification)):
+                /* USER CODE BEGIN CUSTOM_STM_Service_1_Char_3_Disabled_BEGIN */
+
+                /* USER CODE END CUSTOM_STM_Service_1_Char_3_Disabled_BEGIN */
+                Notification.Custom_Evt_Opcode = CUSTOM_STM_SWITCH_6_NOTIFY_DISABLED_EVT;
+                Custom_STM_App_Notification(&Notification);
+                /* USER CODE BEGIN CUSTOM_STM_Service_1_Char_3_Disabled_END */
+
+                /* USER CODE END CUSTOM_STM_Service_1_Char_3_Disabled_END */
+                break;
+
+              /* Enabled Notification management */
+              case COMSVC_Notification:
+                /* USER CODE BEGIN CUSTOM_STM_Service_1_Char_3_COMSVC_Notification_BEGIN */
+
+                /* USER CODE END CUSTOM_STM_Service_1_Char_3_COMSVC_Notification_BEGIN */
+                Notification.Custom_Evt_Opcode = CUSTOM_STM_SWITCH_6_NOTIFY_ENABLED_EVT;
+                Custom_STM_App_Notification(&Notification);
+                /* USER CODE BEGIN CUSTOM_STM_Service_1_Char_3_COMSVC_Notification_END */
+
+                /* USER CODE END CUSTOM_STM_Service_1_Char_3_COMSVC_Notification_END */
+                break;
+
+              default:
+                /* USER CODE BEGIN CUSTOM_STM_Service_1_Char_3_default */
+
+                /* USER CODE END CUSTOM_STM_Service_1_Char_3_default */
+              break;
+            }
+          }  /* if (attribute_modified->Attr_Handle == (CustomContext.CustomSwitch_6Hdle + CHARACTERISTIC_DESCRIPTOR_ATTRIBUTE_OFFSET))*/
+
+          else if (attribute_modified->Attr_Handle == (CustomContext.CustomSwitch_1Hdle + CHARACTERISTIC_DESCRIPTOR_ATTRIBUTE_OFFSET))
           {
             return_value = SVCCTL_EvtAckFlowEnable;
             /* USER CODE BEGIN CUSTOM_STM_Service_2_Char_1 */
@@ -285,34 +423,52 @@ static SVCCTL_EvtAckStatus_t Custom_STM_Event_Handler(void *Event)
             }
           }  /* if (attribute_modified->Attr_Handle == (CustomContext.CustomSwitch_3Hdle + CHARACTERISTIC_DESCRIPTOR_ATTRIBUTE_OFFSET))*/
 
-          else if (attribute_modified->Attr_Handle == (CustomContext.CustomCharwHdle + CHARACTERISTIC_VALUE_ATTRIBUTE_OFFSET))
+          else if (attribute_modified->Attr_Handle == (CustomContext.CustomSwitch_4Hdle + CHARACTERISTIC_VALUE_ATTRIBUTE_OFFSET))
           {
             return_value = SVCCTL_EvtAckFlowEnable;
             /* USER CODE BEGIN CUSTOM_STM_Service_1_Char_1_ACI_GATT_ATTRIBUTE_MODIFIED_VSEVT_CODE */
-            interface_send(attribute_modified->Attr_Data, attribute_modified->Attr_Data_Length);
-            toggle_gpio_output(BLUE_LED);
-
+            uint8_t received_val = attribute_modified->Attr_Data[0];
+            update_gpio_output(SWITCH_4, (int)received_val);
             /* USER CODE END CUSTOM_STM_Service_1_Char_1_ACI_GATT_ATTRIBUTE_MODIFIED_VSEVT_CODE */
-          } /* if (attribute_modified->Attr_Handle == (CustomContext.CustomCharwHdle + CHARACTERISTIC_VALUE_ATTRIBUTE_OFFSET))*/
+          } /* if (attribute_modified->Attr_Handle == (CustomContext.CustomSwitch_4Hdle + CHARACTERISTIC_VALUE_ATTRIBUTE_OFFSET))*/
+          else if (attribute_modified->Attr_Handle == (CustomContext.CustomSwitch_5Hdle + CHARACTERISTIC_VALUE_ATTRIBUTE_OFFSET))
+          {
+            return_value = SVCCTL_EvtAckFlowEnable;
+            /* USER CODE BEGIN CUSTOM_STM_Service_1_Char_2_ACI_GATT_ATTRIBUTE_MODIFIED_VSEVT_CODE */
+            uint8_t received_val = attribute_modified->Attr_Data[0];
+            update_gpio_output(SWITCH_5, (int)received_val);
+            /* USER CODE END CUSTOM_STM_Service_1_Char_2_ACI_GATT_ATTRIBUTE_MODIFIED_VSEVT_CODE */
+          } /* if (attribute_modified->Attr_Handle == (CustomContext.CustomSwitch_5Hdle + CHARACTERISTIC_VALUE_ATTRIBUTE_OFFSET))*/
+          else if (attribute_modified->Attr_Handle == (CustomContext.CustomSwitch_6Hdle + CHARACTERISTIC_VALUE_ATTRIBUTE_OFFSET))
+          {
+            return_value = SVCCTL_EvtAckFlowEnable;
+            /* USER CODE BEGIN CUSTOM_STM_Service_1_Char_3_ACI_GATT_ATTRIBUTE_MODIFIED_VSEVT_CODE */
+            uint8_t received_val = attribute_modified->Attr_Data[0];
+            update_gpio_output(SWITCH_6, (int)received_val);
+            /* USER CODE END CUSTOM_STM_Service_1_Char_3_ACI_GATT_ATTRIBUTE_MODIFIED_VSEVT_CODE */
+          } /* if (attribute_modified->Attr_Handle == (CustomContext.CustomSwitch_6Hdle + CHARACTERISTIC_VALUE_ATTRIBUTE_OFFSET))*/
           else if (attribute_modified->Attr_Handle == (CustomContext.CustomSwitch_1Hdle + CHARACTERISTIC_VALUE_ATTRIBUTE_OFFSET))
           {
             return_value = SVCCTL_EvtAckFlowEnable;
             /* USER CODE BEGIN CUSTOM_STM_Service_2_Char_1_ACI_GATT_ATTRIBUTE_MODIFIED_VSEVT_CODE */
-
+            uint8_t received_val = attribute_modified->Attr_Data[0];
+            update_gpio_output(SWITCH_1, (int)received_val);
             /* USER CODE END CUSTOM_STM_Service_2_Char_1_ACI_GATT_ATTRIBUTE_MODIFIED_VSEVT_CODE */
           } /* if (attribute_modified->Attr_Handle == (CustomContext.CustomSwitch_1Hdle + CHARACTERISTIC_VALUE_ATTRIBUTE_OFFSET))*/
           else if (attribute_modified->Attr_Handle == (CustomContext.CustomSwitch_2Hdle + CHARACTERISTIC_VALUE_ATTRIBUTE_OFFSET))
           {
             return_value = SVCCTL_EvtAckFlowEnable;
             /* USER CODE BEGIN CUSTOM_STM_Service_2_Char_2_ACI_GATT_ATTRIBUTE_MODIFIED_VSEVT_CODE */
-
+            uint8_t received_val = attribute_modified->Attr_Data[0];
+            update_gpio_output(SWITCH_2, (int)received_val);
             /* USER CODE END CUSTOM_STM_Service_2_Char_2_ACI_GATT_ATTRIBUTE_MODIFIED_VSEVT_CODE */
           } /* if (attribute_modified->Attr_Handle == (CustomContext.CustomSwitch_2Hdle + CHARACTERISTIC_VALUE_ATTRIBUTE_OFFSET))*/
           else if (attribute_modified->Attr_Handle == (CustomContext.CustomSwitch_3Hdle + CHARACTERISTIC_VALUE_ATTRIBUTE_OFFSET))
           {
             return_value = SVCCTL_EvtAckFlowEnable;
             /* USER CODE BEGIN CUSTOM_STM_Service_2_Char_3_ACI_GATT_ATTRIBUTE_MODIFIED_VSEVT_CODE */
-
+            uint8_t received_val = attribute_modified->Attr_Data[0];
+            update_gpio_output(SWITCH_3, (int)received_val);
             /* USER CODE END CUSTOM_STM_Service_2_Char_3_ACI_GATT_ATTRIBUTE_MODIFIED_VSEVT_CODE */
           } /* if (attribute_modified->Attr_Handle == (CustomContext.CustomSwitch_3Hdle + CHARACTERISTIC_VALUE_ATTRIBUTE_OFFSET))*/
           /* USER CODE BEGIN EVT_BLUE_GATT_ATTRIBUTE_MODIFIED_END */
@@ -409,70 +565,127 @@ void SVCCTL_InitCustomSvc(void)
   SVCCTL_RegisterSvcHandler(Custom_STM_Event_Handler);
 
   /**
-   *          BG_Service
+   *          BAGEL_2
    *
-   * Max_Attribute_Records = 1 + 2*1 + 1*no_of_char_with_notify_or_indicate_property + 1*no_of_char_with_broadcast_property
-   * service_max_attribute_record = 1 for BG_Service +
-   *                                2 for charW +
-   *                              = 3
+   * Max_Attribute_Records = 1 + 2*3 + 1*no_of_char_with_notify_or_indicate_property + 1*no_of_char_with_broadcast_property
+   * service_max_attribute_record = 1 for BAGEL_2 +
+   *                                2 for SWITCH_4 +
+   *                                2 for SWITCH_5 +
+   *                                2 for SWITCH_6 +
+   *                                1 for SWITCH_4 configuration descriptor +
+   *                                1 for SWITCH_5 configuration descriptor +
+   *                                1 for SWITCH_6 configuration descriptor +
+   *                              = 10
    *
    * This value doesn't take into account number of descriptors manually added
    * In case of descriptors added, please update the max_attr_record value accordingly in the next SVCCTL_InitService User Section
    */
-  max_attr_record = 3;
+  max_attr_record = 10;
 
   /* USER CODE BEGIN SVCCTL_InitService1 */
   /* max_attr_record to be updated if descriptors have been added */
 
   /* USER CODE END SVCCTL_InitService1 */
 
-  COPY_BG_SERVICE_UUID(uuid.Char_UUID_128);
+  COPY_BAGEL_2_UUID(uuid.Char_UUID_128);
   ret = aci_gatt_add_service(UUID_TYPE_128,
                              (Service_UUID_t *) &uuid,
                              PRIMARY_SERVICE,
                              max_attr_record,
-                             &(CustomContext.CustomBg_ServiceHdle));
+                             &(CustomContext.CustomBagel_2Hdle));
   if (ret != BLE_STATUS_SUCCESS)
   {
-    APP_DBG_MSG("  Fail   : aci_gatt_add_service command: BG_Service, error code: 0x%x \n\r", ret);
+    APP_DBG_MSG("  Fail   : aci_gatt_add_service command: BAGEL_2, error code: 0x%x \n\r", ret);
   }
   else
   {
-    APP_DBG_MSG("  Success: aci_gatt_add_service command: BG_Service \n\r");
+    APP_DBG_MSG("  Success: aci_gatt_add_service command: BAGEL_2 \n\r");
   }
 
   /**
-   *  charW
+   *  SWITCH_4
    */
-  COPY_CHARW_UUID(uuid.Char_UUID_128);
-  ret = aci_gatt_add_char(CustomContext.CustomBg_ServiceHdle,
+  COPY_SWITCH_4_UUID(uuid.Char_UUID_128);
+  ret = aci_gatt_add_char(CustomContext.CustomBagel_2Hdle,
                           UUID_TYPE_128, &uuid,
-                          SizeCharw,
-                          CHAR_PROP_WRITE,
+                          SizeSwitch_4,
+                          CHAR_PROP_READ | CHAR_PROP_WRITE | CHAR_PROP_NOTIFY,
                           ATTR_PERMISSION_NONE,
                           GATT_NOTIFY_ATTRIBUTE_WRITE,
                           0x10,
                           CHAR_VALUE_LEN_CONSTANT,
-                          &(CustomContext.CustomCharwHdle));
+                          &(CustomContext.CustomSwitch_4Hdle));
   if (ret != BLE_STATUS_SUCCESS)
   {
-    APP_DBG_MSG("  Fail   : aci_gatt_add_char command   : CHARW, error code: 0x%x \n\r", ret);
+    APP_DBG_MSG("  Fail   : aci_gatt_add_char command   : SWITCH_4, error code: 0x%x \n\r", ret);
   }
   else
   {
-    APP_DBG_MSG("  Success: aci_gatt_add_char command   : CHARW \n\r");
+    APP_DBG_MSG("  Success: aci_gatt_add_char command   : SWITCH_4 \n\r");
   }
 
   /* USER CODE BEGIN SVCCTL_Init_Service1_Char1 */
   /* Place holder for Characteristic Descriptors */
 
   /* USER CODE END SVCCTL_Init_Service1_Char1 */
+  /**
+   *  SWITCH_5
+   */
+  COPY_SWITCH_5_UUID(uuid.Char_UUID_128);
+  ret = aci_gatt_add_char(CustomContext.CustomBagel_2Hdle,
+                          UUID_TYPE_128, &uuid,
+                          SizeSwitch_5,
+                          CHAR_PROP_READ | CHAR_PROP_WRITE | CHAR_PROP_NOTIFY,
+                          ATTR_PERMISSION_NONE,
+                          GATT_NOTIFY_ATTRIBUTE_WRITE,
+                          0x10,
+                          CHAR_VALUE_LEN_CONSTANT,
+                          &(CustomContext.CustomSwitch_5Hdle));
+  if (ret != BLE_STATUS_SUCCESS)
+  {
+    APP_DBG_MSG("  Fail   : aci_gatt_add_char command   : SWITCH_5, error code: 0x%x \n\r", ret);
+  }
+  else
+  {
+    APP_DBG_MSG("  Success: aci_gatt_add_char command   : SWITCH_5 \n\r");
+  }
+
+  /* USER CODE BEGIN SVCCTL_Init_Service1_Char2 */
+  /* Place holder for Characteristic Descriptors */
+
+  /* USER CODE END SVCCTL_Init_Service1_Char2 */
+  /**
+   *  SWITCH_6
+   */
+  COPY_SWITCH_6_UUID(uuid.Char_UUID_128);
+  ret = aci_gatt_add_char(CustomContext.CustomBagel_2Hdle,
+                          UUID_TYPE_128, &uuid,
+                          SizeSwitch_6,
+                          CHAR_PROP_READ | CHAR_PROP_WRITE | CHAR_PROP_NOTIFY,
+                          ATTR_PERMISSION_NONE,
+                          GATT_NOTIFY_ATTRIBUTE_WRITE,
+                          0x10,
+                          CHAR_VALUE_LEN_CONSTANT,
+                          &(CustomContext.CustomSwitch_6Hdle));
+  if (ret != BLE_STATUS_SUCCESS)
+  {
+    APP_DBG_MSG("  Fail   : aci_gatt_add_char command   : SWITCH_6, error code: 0x%x \n\r", ret);
+  }
+  else
+  {
+    APP_DBG_MSG("  Success: aci_gatt_add_char command   : SWITCH_6 \n\r");
+  }
+
+  /* USER CODE BEGIN SVCCTL_Init_Service1_Char3 */
+  /* Place holder for Characteristic Descriptors */
+
+  /* USER CODE END SVCCTL_Init_Service1_Char3 */
 
   /**
-   *          BAGEL_2
+   *          BAGEL_1
    *
    * Max_Attribute_Records = 1 + 2*3 + 1*no_of_char_with_notify_or_indicate_property + 1*no_of_char_with_broadcast_property
-   * service_max_attribute_record = 1 for BAGEL_2 +
+   * service_max_attribute_record = 1 for BAGEL_1 +
    *                                2 for Switch_1 +
    *                                2 for Switch_2 +
    *                                2 for Switch_3 +
@@ -491,26 +704,26 @@ void SVCCTL_InitCustomSvc(void)
 
   /* USER CODE END SVCCTL_InitService2 */
 
-  COPY_BAGEL_2_UUID(uuid.Char_UUID_128);
+  COPY_BAGEL_1_UUID(uuid.Char_UUID_128);
   ret = aci_gatt_add_service(UUID_TYPE_128,
                              (Service_UUID_t *) &uuid,
                              PRIMARY_SERVICE,
                              max_attr_record,
-                             &(CustomContext.CustomBagel_2Hdle));
+                             &(CustomContext.CustomBagel_1Hdle));
   if (ret != BLE_STATUS_SUCCESS)
   {
-    APP_DBG_MSG("  Fail   : aci_gatt_add_service command: BAGEL_2, error code: 0x%x \n\r", ret);
+    APP_DBG_MSG("  Fail   : aci_gatt_add_service command: BAGEL_1, error code: 0x%x \n\r", ret);
   }
   else
   {
-    APP_DBG_MSG("  Success: aci_gatt_add_service command: BAGEL_2 \n\r");
+    APP_DBG_MSG("  Success: aci_gatt_add_service command: BAGEL_1 \n\r");
   }
 
   /**
    *  Switch_1
    */
   COPY_SWITCH_1_UUID(uuid.Char_UUID_128);
-  ret = aci_gatt_add_char(CustomContext.CustomBagel_2Hdle,
+  ret = aci_gatt_add_char(CustomContext.CustomBagel_1Hdle,
                           UUID_TYPE_128, &uuid,
                           SizeSwitch_1,
                           CHAR_PROP_READ | CHAR_PROP_WRITE | CHAR_PROP_NOTIFY,
@@ -536,7 +749,7 @@ void SVCCTL_InitCustomSvc(void)
    *  Switch_2
    */
   COPY_SWITCH_2_UUID(uuid.Char_UUID_128);
-  ret = aci_gatt_add_char(CustomContext.CustomBagel_2Hdle,
+  ret = aci_gatt_add_char(CustomContext.CustomBagel_1Hdle,
                           UUID_TYPE_128, &uuid,
                           SizeSwitch_2,
                           CHAR_PROP_READ | CHAR_PROP_WRITE | CHAR_PROP_NOTIFY,
@@ -562,7 +775,7 @@ void SVCCTL_InitCustomSvc(void)
    *  Switch_3
    */
   COPY_SWITCH_3_UUID(uuid.Char_UUID_128);
-  ret = aci_gatt_add_char(CustomContext.CustomBagel_2Hdle,
+  ret = aci_gatt_add_char(CustomContext.CustomBagel_1Hdle,
                           UUID_TYPE_128, &uuid,
                           SizeSwitch_3,
                           CHAR_PROP_READ | CHAR_PROP_WRITE | CHAR_PROP_NOTIFY,
@@ -608,27 +821,65 @@ tBleStatus Custom_STM_App_Update_Char(Custom_STM_Char_Opcode_t CharOpcode, uint8
   switch (CharOpcode)
   {
 
-    case CUSTOM_STM_CHARW:
-      ret = aci_gatt_update_char_value(CustomContext.CustomBg_ServiceHdle,
-                                       CustomContext.CustomCharwHdle,
+    case CUSTOM_STM_SWITCH_4:
+      ret = aci_gatt_update_char_value(CustomContext.CustomBagel_2Hdle,
+                                       CustomContext.CustomSwitch_4Hdle,
                                        0, /* charValOffset */
-                                       SizeCharw, /* charValueLen */
+                                       SizeSwitch_4, /* charValueLen */
                                        (uint8_t *)  pPayload);
       if (ret != BLE_STATUS_SUCCESS)
       {
-        APP_DBG_MSG("  Fail   : aci_gatt_update_char_value CHARW command, result : 0x%x \n\r", ret);
+        APP_DBG_MSG("  Fail   : aci_gatt_update_char_value SWITCH_4 command, result : 0x%x \n\r", ret);
       }
       else
       {
-        APP_DBG_MSG("  Success: aci_gatt_update_char_value CHARW command\n\r");
+        APP_DBG_MSG("  Success: aci_gatt_update_char_value SWITCH_4 command\n\r");
       }
       /* USER CODE BEGIN CUSTOM_STM_App_Update_Service_1_Char_1*/
 
       /* USER CODE END CUSTOM_STM_App_Update_Service_1_Char_1*/
       break;
 
-    case CUSTOM_STM_SWITCH_1:
+    case CUSTOM_STM_SWITCH_5:
       ret = aci_gatt_update_char_value(CustomContext.CustomBagel_2Hdle,
+                                       CustomContext.CustomSwitch_5Hdle,
+                                       0, /* charValOffset */
+                                       SizeSwitch_5, /* charValueLen */
+                                       (uint8_t *)  pPayload);
+      if (ret != BLE_STATUS_SUCCESS)
+      {
+        APP_DBG_MSG("  Fail   : aci_gatt_update_char_value SWITCH_5 command, result : 0x%x \n\r", ret);
+      }
+      else
+      {
+        APP_DBG_MSG("  Success: aci_gatt_update_char_value SWITCH_5 command\n\r");
+      }
+      /* USER CODE BEGIN CUSTOM_STM_App_Update_Service_1_Char_2*/
+
+      /* USER CODE END CUSTOM_STM_App_Update_Service_1_Char_2*/
+      break;
+
+    case CUSTOM_STM_SWITCH_6:
+      ret = aci_gatt_update_char_value(CustomContext.CustomBagel_2Hdle,
+                                       CustomContext.CustomSwitch_6Hdle,
+                                       0, /* charValOffset */
+                                       SizeSwitch_6, /* charValueLen */
+                                       (uint8_t *)  pPayload);
+      if (ret != BLE_STATUS_SUCCESS)
+      {
+        APP_DBG_MSG("  Fail   : aci_gatt_update_char_value SWITCH_6 command, result : 0x%x \n\r", ret);
+      }
+      else
+      {
+        APP_DBG_MSG("  Success: aci_gatt_update_char_value SWITCH_6 command\n\r");
+      }
+      /* USER CODE BEGIN CUSTOM_STM_App_Update_Service_1_Char_3*/
+
+      /* USER CODE END CUSTOM_STM_App_Update_Service_1_Char_3*/
+      break;
+
+    case CUSTOM_STM_SWITCH_1:
+      ret = aci_gatt_update_char_value(CustomContext.CustomBagel_1Hdle,
                                        CustomContext.CustomSwitch_1Hdle,
                                        0, /* charValOffset */
                                        SizeSwitch_1, /* charValueLen */
@@ -647,7 +898,7 @@ tBleStatus Custom_STM_App_Update_Char(Custom_STM_Char_Opcode_t CharOpcode, uint8
       break;
 
     case CUSTOM_STM_SWITCH_2:
-      ret = aci_gatt_update_char_value(CustomContext.CustomBagel_2Hdle,
+      ret = aci_gatt_update_char_value(CustomContext.CustomBagel_1Hdle,
                                        CustomContext.CustomSwitch_2Hdle,
                                        0, /* charValOffset */
                                        SizeSwitch_2, /* charValueLen */
@@ -666,7 +917,7 @@ tBleStatus Custom_STM_App_Update_Char(Custom_STM_Char_Opcode_t CharOpcode, uint8
       break;
 
     case CUSTOM_STM_SWITCH_3:
-      ret = aci_gatt_update_char_value(CustomContext.CustomBagel_2Hdle,
+      ret = aci_gatt_update_char_value(CustomContext.CustomBagel_1Hdle,
                                        CustomContext.CustomSwitch_3Hdle,
                                        0, /* charValOffset */
                                        SizeSwitch_3, /* charValueLen */
@@ -712,27 +963,65 @@ tBleStatus Custom_STM_App_Update_Char_Variable_Length(Custom_STM_Char_Opcode_t C
   switch (CharOpcode)
   {
 
-    case CUSTOM_STM_CHARW:
-      ret = aci_gatt_update_char_value(CustomContext.CustomBg_ServiceHdle,
-                                       CustomContext.CustomCharwHdle,
+    case CUSTOM_STM_SWITCH_4:
+      ret = aci_gatt_update_char_value(CustomContext.CustomBagel_2Hdle,
+                                       CustomContext.CustomSwitch_4Hdle,
                                        0, /* charValOffset */
                                        size, /* charValueLen */
                                        (uint8_t *)  pPayload);
       if (ret != BLE_STATUS_SUCCESS)
       {
-        APP_DBG_MSG("  Fail   : aci_gatt_update_char_value CHARW command, result : 0x%x \n\r", ret);
+        APP_DBG_MSG("  Fail   : aci_gatt_update_char_value SWITCH_4 command, result : 0x%x \n\r", ret);
       }
       else
       {
-        APP_DBG_MSG("  Success: aci_gatt_update_char_value CHARW command\n\r");
+        APP_DBG_MSG("  Success: aci_gatt_update_char_value SWITCH_4 command\n\r");
       }
       /* USER CODE BEGIN Custom_STM_App_Update_Char_Variable_Length_Service_1_Char_1*/
 
       /* USER CODE END Custom_STM_App_Update_Char_Variable_Length_Service_1_Char_1*/
       break;
 
-    case CUSTOM_STM_SWITCH_1:
+    case CUSTOM_STM_SWITCH_5:
       ret = aci_gatt_update_char_value(CustomContext.CustomBagel_2Hdle,
+                                       CustomContext.CustomSwitch_5Hdle,
+                                       0, /* charValOffset */
+                                       size, /* charValueLen */
+                                       (uint8_t *)  pPayload);
+      if (ret != BLE_STATUS_SUCCESS)
+      {
+        APP_DBG_MSG("  Fail   : aci_gatt_update_char_value SWITCH_5 command, result : 0x%x \n\r", ret);
+      }
+      else
+      {
+        APP_DBG_MSG("  Success: aci_gatt_update_char_value SWITCH_5 command\n\r");
+      }
+      /* USER CODE BEGIN Custom_STM_App_Update_Char_Variable_Length_Service_1_Char_2*/
+
+      /* USER CODE END Custom_STM_App_Update_Char_Variable_Length_Service_1_Char_2*/
+      break;
+
+    case CUSTOM_STM_SWITCH_6:
+      ret = aci_gatt_update_char_value(CustomContext.CustomBagel_2Hdle,
+                                       CustomContext.CustomSwitch_6Hdle,
+                                       0, /* charValOffset */
+                                       size, /* charValueLen */
+                                       (uint8_t *)  pPayload);
+      if (ret != BLE_STATUS_SUCCESS)
+      {
+        APP_DBG_MSG("  Fail   : aci_gatt_update_char_value SWITCH_6 command, result : 0x%x \n\r", ret);
+      }
+      else
+      {
+        APP_DBG_MSG("  Success: aci_gatt_update_char_value SWITCH_6 command\n\r");
+      }
+      /* USER CODE BEGIN Custom_STM_App_Update_Char_Variable_Length_Service_1_Char_3*/
+
+      /* USER CODE END Custom_STM_App_Update_Char_Variable_Length_Service_1_Char_3*/
+      break;
+
+    case CUSTOM_STM_SWITCH_1:
+      ret = aci_gatt_update_char_value(CustomContext.CustomBagel_1Hdle,
                                        CustomContext.CustomSwitch_1Hdle,
                                        0, /* charValOffset */
                                        size, /* charValueLen */
@@ -751,7 +1040,7 @@ tBleStatus Custom_STM_App_Update_Char_Variable_Length(Custom_STM_Char_Opcode_t C
       break;
 
     case CUSTOM_STM_SWITCH_2:
-      ret = aci_gatt_update_char_value(CustomContext.CustomBagel_2Hdle,
+      ret = aci_gatt_update_char_value(CustomContext.CustomBagel_1Hdle,
                                        CustomContext.CustomSwitch_2Hdle,
                                        0, /* charValOffset */
                                        size, /* charValueLen */
@@ -770,7 +1059,7 @@ tBleStatus Custom_STM_App_Update_Char_Variable_Length(Custom_STM_Char_Opcode_t C
       break;
 
     case CUSTOM_STM_SWITCH_3:
-      ret = aci_gatt_update_char_value(CustomContext.CustomBagel_2Hdle,
+      ret = aci_gatt_update_char_value(CustomContext.CustomBagel_1Hdle,
                                        CustomContext.CustomSwitch_3Hdle,
                                        0, /* charValOffset */
                                        size, /* charValueLen */
@@ -816,11 +1105,43 @@ tBleStatus Custom_STM_App_Update_Char_Ext(uint16_t Connection_Handle, Custom_STM
   switch (CharOpcode)
   {
 
-    case CUSTOM_STM_CHARW:
+    case CUSTOM_STM_SWITCH_4:
       /* USER CODE BEGIN Updated_Length_Service_1_Char_1*/
 
       /* USER CODE END Updated_Length_Service_1_Char_1*/
-      ret = Generic_STM_App_Update_Char_Ext(Connection_Handle, CustomContext.CustomBg_ServiceHdle, CustomContext.CustomCharwHdle, SizeCharw, pPayload);
+      ret = Generic_STM_App_Update_Char_Ext(Connection_Handle, CustomContext.CustomBagel_2Hdle, CustomContext.CustomSwitch_4Hdle, SizeSwitch_4, pPayload);
+
+      if (ret != BLE_STATUS_SUCCESS)
+      {
+        APP_DBG_MSG("  Fail   : Generic_STM_App_Update_Char_Ext command, result : 0x%x \n\r", ret);
+      }
+      else
+      {
+        APP_DBG_MSG("  Success: Generic_STM_App_Update_Char_Ext command\n\r");
+      }
+      break;
+
+    case CUSTOM_STM_SWITCH_5:
+      /* USER CODE BEGIN Updated_Length_Service_1_Char_2*/
+
+      /* USER CODE END Updated_Length_Service_1_Char_2*/
+      ret = Generic_STM_App_Update_Char_Ext(Connection_Handle, CustomContext.CustomBagel_2Hdle, CustomContext.CustomSwitch_5Hdle, SizeSwitch_5, pPayload);
+
+      if (ret != BLE_STATUS_SUCCESS)
+      {
+        APP_DBG_MSG("  Fail   : Generic_STM_App_Update_Char_Ext command, result : 0x%x \n\r", ret);
+      }
+      else
+      {
+        APP_DBG_MSG("  Success: Generic_STM_App_Update_Char_Ext command\n\r");
+      }
+      break;
+
+    case CUSTOM_STM_SWITCH_6:
+      /* USER CODE BEGIN Updated_Length_Service_1_Char_3*/
+
+      /* USER CODE END Updated_Length_Service_1_Char_3*/
+      ret = Generic_STM_App_Update_Char_Ext(Connection_Handle, CustomContext.CustomBagel_2Hdle, CustomContext.CustomSwitch_6Hdle, SizeSwitch_6, pPayload);
 
       if (ret != BLE_STATUS_SUCCESS)
       {
@@ -836,7 +1157,7 @@ tBleStatus Custom_STM_App_Update_Char_Ext(uint16_t Connection_Handle, Custom_STM
       /* USER CODE BEGIN Updated_Length_Service_2_Char_1*/
 
       /* USER CODE END Updated_Length_Service_2_Char_1*/
-      ret = Generic_STM_App_Update_Char_Ext(Connection_Handle, CustomContext.CustomBagel_2Hdle, CustomContext.CustomSwitch_1Hdle, SizeSwitch_1, pPayload);
+      ret = Generic_STM_App_Update_Char_Ext(Connection_Handle, CustomContext.CustomBagel_1Hdle, CustomContext.CustomSwitch_1Hdle, SizeSwitch_1, pPayload);
 
       if (ret != BLE_STATUS_SUCCESS)
       {
@@ -852,7 +1173,7 @@ tBleStatus Custom_STM_App_Update_Char_Ext(uint16_t Connection_Handle, Custom_STM
       /* USER CODE BEGIN Updated_Length_Service_2_Char_2*/
 
       /* USER CODE END Updated_Length_Service_2_Char_2*/
-      ret = Generic_STM_App_Update_Char_Ext(Connection_Handle, CustomContext.CustomBagel_2Hdle, CustomContext.CustomSwitch_2Hdle, SizeSwitch_2, pPayload);
+      ret = Generic_STM_App_Update_Char_Ext(Connection_Handle, CustomContext.CustomBagel_1Hdle, CustomContext.CustomSwitch_2Hdle, SizeSwitch_2, pPayload);
 
       if (ret != BLE_STATUS_SUCCESS)
       {
@@ -868,7 +1189,7 @@ tBleStatus Custom_STM_App_Update_Char_Ext(uint16_t Connection_Handle, Custom_STM
       /* USER CODE BEGIN Updated_Length_Service_2_Char_3*/
 
       /* USER CODE END Updated_Length_Service_2_Char_3*/
-      ret = Generic_STM_App_Update_Char_Ext(Connection_Handle, CustomContext.CustomBagel_2Hdle, CustomContext.CustomSwitch_3Hdle, SizeSwitch_3, pPayload);
+      ret = Generic_STM_App_Update_Char_Ext(Connection_Handle, CustomContext.CustomBagel_1Hdle, CustomContext.CustomSwitch_3Hdle, SizeSwitch_3, pPayload);
 
       if (ret != BLE_STATUS_SUCCESS)
       {

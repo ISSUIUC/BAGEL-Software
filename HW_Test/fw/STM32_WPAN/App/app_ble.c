@@ -549,6 +549,10 @@ SVCCTL_UserEvtFlowStatus_t SVCCTL_App_Notification(void *p_Pckt)
           Custom_STM_App_Update_Char(CUSTOM_STM_SWITCH_1, &char_thing);
           Custom_STM_App_Update_Char(CUSTOM_STM_SWITCH_2, &char_thing);
           Custom_STM_App_Update_Char(CUSTOM_STM_SWITCH_3, &char_thing);
+          Custom_STM_App_Update_Char(CUSTOM_STM_SWITCH_4, &char_thing);
+          Custom_STM_App_Update_Char(CUSTOM_STM_SWITCH_5, &char_thing);
+          Custom_STM_App_Update_Char(CUSTOM_STM_SWITCH_6, &char_thing);
+
 //          Custom_STM_App_Update_Char(CUSTOM_STM_SWITCH_2, &char_thing);
 //          Custom_STM_App_Update_Char(CUSTOM_STM_SWITCH_3, &char_thing);
           update_gpio_output(ORANGE_LED, 1);

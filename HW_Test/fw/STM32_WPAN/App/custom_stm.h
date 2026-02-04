@@ -34,9 +34,11 @@ extern "C" {
 /* Exported types ------------------------------------------------------------*/
 typedef enum
 {
-  /* BG_Service */
-  CUSTOM_STM_CHARW,
   /* BAGEL_2 */
+  CUSTOM_STM_SWITCH_4,
+  CUSTOM_STM_SWITCH_5,
+  CUSTOM_STM_SWITCH_6,
+  /* BAGEL_1 */
   CUSTOM_STM_SWITCH_1,
   CUSTOM_STM_SWITCH_2,
   CUSTOM_STM_SWITCH_3,
@@ -44,8 +46,21 @@ typedef enum
 
 typedef enum
 {
-  /* charW */
-  CUSTOM_STM_CHARW_WRITE_EVT,
+  /* SWITCH_4 */
+  CUSTOM_STM_SWITCH_4_READ_EVT,
+  CUSTOM_STM_SWITCH_4_WRITE_EVT,
+  CUSTOM_STM_SWITCH_4_NOTIFY_ENABLED_EVT,
+  CUSTOM_STM_SWITCH_4_NOTIFY_DISABLED_EVT,
+  /* SWITCH_5 */
+  CUSTOM_STM_SWITCH_5_READ_EVT,
+  CUSTOM_STM_SWITCH_5_WRITE_EVT,
+  CUSTOM_STM_SWITCH_5_NOTIFY_ENABLED_EVT,
+  CUSTOM_STM_SWITCH_5_NOTIFY_DISABLED_EVT,
+  /* SWITCH_6 */
+  CUSTOM_STM_SWITCH_6_READ_EVT,
+  CUSTOM_STM_SWITCH_6_WRITE_EVT,
+  CUSTOM_STM_SWITCH_6_NOTIFY_ENABLED_EVT,
+  CUSTOM_STM_SWITCH_6_NOTIFY_DISABLED_EVT,
   /* Switch_1 */
   CUSTOM_STM_SWITCH_1_READ_EVT,
   CUSTOM_STM_SWITCH_1_WRITE_EVT,
@@ -86,7 +101,9 @@ typedef struct
 /* USER CODE END ET */
 
 /* Exported constants --------------------------------------------------------*/
-extern uint16_t SizeCharw;
+extern uint16_t SizeSwitch_4;
+extern uint16_t SizeSwitch_5;
+extern uint16_t SizeSwitch_6;
 extern uint16_t SizeSwitch_1;
 extern uint16_t SizeSwitch_2;
 extern uint16_t SizeSwitch_3;
