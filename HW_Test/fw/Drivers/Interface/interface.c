@@ -15,6 +15,22 @@ gpio_output_status[11] = {
 		0,
 };
 
+gpi_input_pins[12] = {
+		{0, GPIO_PIN_5},
+		{1, 3},
+		{1, 2},
+		{2, 3},
+		{2, 2},
+		{0, GPIO_PIN_8},
+		{0, GPIO_PIN_3},
+		{1, 4},
+		{1, 1},
+		{2, 4},
+		{2, 1},
+		{0, GPIO_PIN_4},
+
+};
+
 
 
 bluetooth_status = 0;
@@ -60,12 +76,13 @@ uint8_t init_gpio_inputs() {
 
 
 uint8_t read_gpio_input(int gpio_input) {
-	switch (gpio_input) {
-	case SWITCH_1_Q:
+	 struct gpio_pin pin = gpio_input_pins[gpio_input];
+	 if (!pin.expander) {
+		 HAL_GPIO_ReadPin(GPIOA, pin.pin);
+		 return 0;
+	 }
+	 	 gpioDigitalRead(GpioAddress(pin.expander - 1, pin.pin))
 
-		break;
-	}
-	return 0;
 }
 
 //command_queue = {
