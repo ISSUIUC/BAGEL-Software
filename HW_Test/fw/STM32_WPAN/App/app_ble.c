@@ -555,7 +555,7 @@ SVCCTL_UserEvtFlowStatus_t SVCCTL_App_Notification(void *p_Pckt)
 
 //          Custom_STM_App_Update_Char(CUSTOM_STM_SWITCH_2, &char_thing);
 //          Custom_STM_App_Update_Char(CUSTOM_STM_SWITCH_3, &char_thing);
-          update_gpio_output(ORANGE_LED, 1);
+          update_gpio_output(BLUE_LED, 1); // blue for bluetooth
           set_bluetooth_status(1);
           /* USER CODE END HCI_EVT_LE_CONN_COMPLETE */
           break; /* HCI_LE_CONNECTION_COMPLETE_SUBEVT_CODE */
