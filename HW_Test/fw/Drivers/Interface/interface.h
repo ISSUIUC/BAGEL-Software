@@ -38,7 +38,7 @@ enum GPIO_INPUT {
 	SWITCH_6_PG
 };
 
-struct gpio_input_pin {
+struct gpio_pin {
 	uint8_t expander; 	// 0 is no expander, 1 is expander 1, and 2 is expander 2
 	uint8_t pin;		// pin
 };
@@ -58,8 +58,8 @@ enum GPIO_OUTPUT {
 };
 
 
-extern struct gpio_input_pin gpio_input_pins[11];
-
+extern struct gpio_pin gpio_input_pins[12];
+extern struct gpio_pin gpio_output_pins[11];
 
 uint8_t interface_init(UART_HandleTypeDef * huart1);
 
@@ -72,7 +72,7 @@ uint8_t toggle_gpio_output(int gpio_output);
 
 uint8_t read_gpio_input(int gpio_input);
 
-uint8_t init_gpio_inputs();
+uint8_t write_gpio_output(int gpio_output, int value);
 
 
 
