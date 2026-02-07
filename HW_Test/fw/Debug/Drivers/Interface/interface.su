@@ -1,0 +1,5 @@
+../Drivers/Interface/interface.c:23:9:interface_init	16	static
+../Drivers/Interface/interface.c:28:9:interface_send	16	static
+../Drivers/Interface/interface.c:33:9:set_bluetooth_status	16	static
+../Drivers/Interface/interface.c:39:9:update_gpio_output	16	static
+../Drivers/Interface/interface.c:49:9:toggle_gpio_output	16	static
