@@ -243,6 +243,10 @@ Discarded input sections
                 0x00000000       0x1c ./Drivers/Interface/interface.o
  .text.toggle_gpio_output
                 0x00000000       0x20 ./Drivers/Interface/interface.o
+ .text.init_gpio_inputs
+                0x00000000        0x4 ./Drivers/Interface/interface.o
+ .text.read_gpio_input
+                0x00000000        0x4 ./Drivers/Interface/interface.o
  .text          0x00000000        0x0 ./Drivers/STM32WBxx_HAL_Driver/Src/stm32wbxx_hal.o
  .data          0x00000000        0x0 ./Drivers/STM32WBxx_HAL_Driver/Src/stm32wbxx_hal.o
  .bss           0x00000000        0x0 ./Drivers/STM32WBxx_HAL_Driver/Src/stm32wbxx_hal.o

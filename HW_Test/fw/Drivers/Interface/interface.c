@@ -37,7 +37,7 @@ uint8_t set_bluetooth_status(int newStatus) {
 
 
 uint8_t update_gpio_output(int gpio_output, int status) {
-	if (gpio_output < 0 || (gpio_output >= sizeof(gpio_output_status)/sizeof(gpio_output_status[0]))) {
+	if (gpio_output < 0 || ((size_t)gpio_output >= sizeof(gpio_output_status)/sizeof(gpio_output_status[0]))) {
 		return 1;
 	}
 	gpio_output_status[gpio_output] = status;
@@ -54,5 +54,22 @@ uint8_t toggle_gpio_output(int gpio_output) {
 	return 0;
 }
 
+uint8_t init_gpio_inputs() {
+	return 0;
+}
+
+
+uint8_t read_gpio_input(int gpio_input) {
+	switch (gpio_input) {
+	case SWITCH_1_Q:
+
+		break;
+	}
+	return 0;
+}
+
+//command_queue = {
+//
+//};
 
 
