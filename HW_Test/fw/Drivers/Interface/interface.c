@@ -95,7 +95,7 @@ uint8_t read_gpio_input(int gpio_input) {
 		 HAL_GPIO_ReadPin(GPIOA, pin.pin);
 		 return 0;
 	 }
-	 	 gpioDigitalRead(GpioAddress(pin.expander - 1, pin.pin))
+	 gpioDigitalRead(GpioAddress(pin.expander - 1, pin.pin))
 
 }
 
