@@ -77,6 +77,30 @@ static void MX_RTC_Init(void);
 static void MX_RF_Init(void);
 /* USER CODE BEGIN PFP */
 
+uint8_t init_gpio_inputs() {
+	for (int i=0; i<GPIO_INPUT_END; i++) {
+		struct gpio_pin pin = gpio_input_pins[i];
+		if (!pin.expander) {
+//			gpioPinMode()
+			continue;
+		}
+		gpioPinMode(GpioAddress(pin.expander - 1, pin.pin), INPUT);
+	}
+	return 0;
+}
+
+uint8_t init_gpio_outputs() {
+	for (int i=0; i<GPIO_OUTPUT_END; i++) {
+		struct gpio_pin pin = gpio_output_pins[i];
+		if (!pin.expander) {
+//			gpioPinMode()
+			continue;
+		}
+		gpioPinMode(GpioAddress(pin.expander - 1, pin.pin), OUTPUT);
+	}
+	return 0;
+}
+
 uint8_t read_gpio_input(int gpio_input) {
 	struct gpio_pin pin = gpio_input_pins[gpio_input];
 	uint8_t val;
@@ -103,24 +127,39 @@ uint8_t write_gpio_output(int gpio_output, int value) {
 }
 
 uint8_t init_gpio_output_from_flipflops() {
-	uint8_t switch_1_status_q = !read_gpio_input(SWITCH_1_Q); // reads Q_not & inverts it
-	uint8_t switch_2_status_q = !read_gpio_input(SWITCH_2_Q);
-	uint8_t switch_3_status_q = !read_gpio_input(SWITCH_3_Q);
-	uint8_t switch_4_status_q = !read_gpio_input(SWITCH_4_Q);
-	uint8_t switch_5_status_q = !read_gpio_input(SWITCH_5_Q);
-	uint8_t switch_6_status_q = !read_gpio_input(SWITCH_6_Q);
-	write_gpio_output(SWITCH_1, switch_1_status_q);
-	write_gpio_output(SWITCH_2, switch_2_status_q);
-	write_gpio_output(SWITCH_3, switch_3_status_q);
-	write_gpio_output(SWITCH_4, switch_4_status_q);
-	write_gpio_output(SWITCH_5, switch_5_status_q);
-	write_gpio_output(SWITCH_6, switch_6_status_q);
-	update_gpio_output(SWITCH_1, switch_1_status_q);
-	update_gpio_output(SWITCH_2, switch_2_status_q);
-	update_gpio_output(SWITCH_3, switch_3_status_q);
-	update_gpio_output(SWITCH_4, switch_4_status_q);
-	update_gpio_output(SWITCH_5, switch_5_status_q);
-	update_gpio_output(SWITCH_6, switch_6_status_q);
+	uint8_t switch_1_status_q = read_gpio_input(SWITCH_1_Q) << 1; // reads Q_not & inverts it
+	uint8_t switch_2_status_q = read_gpio_input(SWITCH_2_Q) << 1;
+	uint8_t switch_3_status_q = read_gpio_input(SWITCH_3_Q) << 1;
+	uint8_t switch_4_status_q = read_gpio_input(SWITCH_4_Q) << 1;
+	uint8_t switch_5_status_q = read_gpio_input(SWITCH_5_Q) << 1;
+	uint8_t switch_6_status_q = read_gpio_input(SWITCH_6_Q) << 1;
+
+	uint8_t switch_1_status_pg = read_gpio_input(SWITCH_1_PG); // reads Q_not & inverts it
+	uint8_t switch_2_status_pg = read_gpio_input(SWITCH_2_PG);
+	uint8_t switch_3_status_pg = read_gpio_input(SWITCH_3_PG);
+	uint8_t switch_4_status_pg = read_gpio_input(SWITCH_4_PG);
+	uint8_t switch_5_status_pg = read_gpio_input(SWITCH_5_PG);
+	uint8_t switch_6_status_pg = read_gpio_input(SWITCH_6_PG);
+
+	uint8_t switch_1_status = switch_1_status_q + switch_1_status_pg;
+	uint8_t switch_2_status = switch_2_status_q + switch_2_status_pg;
+	uint8_t switch_3_status = switch_3_status_q + switch_3_status_pg;
+	uint8_t switch_4_status = switch_4_status_q + switch_4_status_pg;
+	uint8_t switch_5_status = switch_5_status_q + switch_5_status_pg;
+	uint8_t switch_6_status = switch_6_status_q + switch_6_status_pg;
+
+	write_gpio_output(SWITCH_1, (switch_1_status == 1));
+	write_gpio_output(SWITCH_2, (switch_2_status == 1));
+	write_gpio_output(SWITCH_3, (switch_3_status == 1));
+	write_gpio_output(SWITCH_4, (switch_4_status == 1));
+	write_gpio_output(SWITCH_5, (switch_5_status == 1));
+	write_gpio_output(SWITCH_6, (switch_6_status == 1));
+	update_gpio_output(SWITCH_1, (switch_1_status == 1));
+	update_gpio_output(SWITCH_2, (switch_2_status == 1));
+	update_gpio_output(SWITCH_3, (switch_3_status == 1));
+	update_gpio_output(SWITCH_4, (switch_4_status == 1));
+	update_gpio_output(SWITCH_5, (switch_5_status == 1));
+	update_gpio_output(SWITCH_6, (switch_6_status == 1));
 	return 0;
 }
 
@@ -302,20 +341,21 @@ int main(void)
   HAL_GPIO_WritePin(GPIOA, GPIO_PIN_2, GPIO_PIN_SET);
 
   TCAL9538Init(&hi2c1, GPIOA, GPIO_PIN_2);
-//  init_gpio_output_from_flipflops();
+
 
   for (int i = 0; i <= 7; i++) {
-	  gpioPinMode(GpioAddress(0, i), OUTPUT);
-	  gpioDigitalWrite(GpioAddress(0, i), LOW);
+  	  gpioPinMode(GpioAddress(0, i), OUTPUT);
+  	  gpioDigitalWrite(GpioAddress(0, i), LOW);
 
-	  gpioPinMode(GpioAddress(1, i), OUTPUT);
-	  gpioDigitalWrite(GpioAddress(1, i), LOW);
-  }
+  	  gpioPinMode(GpioAddress(1, i), OUTPUT);
+  	  gpioDigitalWrite(GpioAddress(1, i), LOW);
+    }
+
+//  init_gpio_inputs();
+//  init_gpio_outputs();
 
 //  init_gpio_output_from_flipflops();
 
-  uint8_t high[] = "high\r\n";
-  uint8_t low[] = "low\r\n";
 
   /* USER CODE END 2 */
 
@@ -330,7 +370,7 @@ int main(void)
     MX_APPE_Process();
 
     /* USER CODE BEGIN 3 */
-    // loop through all GPIO_OUTPUTs and check their values
+    // loop through all GPIO_OUTPUTs and update their values
     for (int i=SWITCH_1; i<GPIO_OUTPUT_END; i++) {
     	uint8_t status = gpio_output_status[i];
     	write_gpio_output(i, status);
@@ -403,7 +443,7 @@ int main(void)
 	HAL_Delay(50);
 	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_0, GPIO_PIN_RESET);
 
-//	if (bluetooth_status == 1)
+//	if (bluetooth_status)
 //		update_ble_values();
 
 

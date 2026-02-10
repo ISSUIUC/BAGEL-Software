@@ -110,8 +110,7 @@ STM32_WPAN/App/custom_stm.o: ../STM32_WPAN/App/custom_stm.c \
  ../Middlewares/ST/STM32_WPAN/ble/svc/Inc/uuid.h \
  ../Middlewares/ST/STM32_WPAN/utilities/dbg_trace.h \
  ../STM32_WPAN/App/custom_stm.h \
- ../STM32_WPAN/App/../../Drivers/Interface/interface.h \
- ../STM32_WPAN/App/custom_app.h
+ ../STM32_WPAN/App/../../Drivers/Interface/interface.h
 ../Middlewares/ST/STM32_WPAN/ble/svc/Src/common_blesvc.h:
 ../Middlewares/ST/STM32_WPAN/ble/ble_common.h:
 ../STM32_WPAN/App/ble_conf.h:
@@ -226,4 +225,3 @@ STM32_WPAN/App/custom_stm.o: ../STM32_WPAN/App/custom_stm.c \
 ../Middlewares/ST/STM32_WPAN/utilities/dbg_trace.h:
 ../STM32_WPAN/App/custom_stm.h:
 ../STM32_WPAN/App/../../Drivers/Interface/interface.h:
-../STM32_WPAN/App/custom_app.h:

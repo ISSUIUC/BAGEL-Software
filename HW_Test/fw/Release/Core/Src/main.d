@@ -60,8 +60,16 @@ Core/Src/main.o: ../Core/Src/main.cpp ../Core/Inc/main.h \
  ../Drivers/STM32WBxx_HAL_Driver/Inc/stm32wbxx_ll_rtc.h \
  ../Middlewares/ST/STM32_WPAN/ble/core/ble_bufsize.h \
  ../Core/Inc/app_entry.h ../Core/Inc/app_common.h \
+ ../Core/Src/../../Middlewares/ST/STM32_WPAN/ble/core/auto/ble_types.h \
+ ../Middlewares/ST/STM32_WPAN/ble/core/template/ble_const.h \
+ ../Middlewares/ST/STM32_WPAN/ble/core/ble_std.h \
+ ../Middlewares/ST/STM32_WPAN/ble/core/ble_defs.h \
+ ../Middlewares/ST/STM32_WPAN/ble/core/template/osal.h \
+ ../Middlewares/ST/STM32_WPAN/ble/core/template/compiler.h \
  ../Core/Src/../../Drivers/TCAL9538/TCAL9538.hpp \
- ../Core/Src/../../Drivers/Interface/interface.h
+ ../Core/Src/../../Drivers/Interface/interface.h \
+ ../Core/Src/../../STM32_WPAN/App/custom_stm.h \
+ ../Core/Src/../../STM32_WPAN/App/custom_app.h
 ../Core/Inc/main.h:
 ../Drivers/STM32WBxx_HAL_Driver/Inc/stm32wbxx_hal.h:
 ../Core/Inc/stm32wbxx_hal_conf.h:
@@ -126,5 +134,13 @@ Core/Src/main.o: ../Core/Src/main.cpp ../Core/Inc/main.h \
 ../Middlewares/ST/STM32_WPAN/ble/core/ble_bufsize.h:
 ../Core/Inc/app_entry.h:
 ../Core/Inc/app_common.h:
+../Core/Src/../../Middlewares/ST/STM32_WPAN/ble/core/auto/ble_types.h:
+../Middlewares/ST/STM32_WPAN/ble/core/template/ble_const.h:
+../Middlewares/ST/STM32_WPAN/ble/core/ble_std.h:
+../Middlewares/ST/STM32_WPAN/ble/core/ble_defs.h:
+../Middlewares/ST/STM32_WPAN/ble/core/template/osal.h:
+../Middlewares/ST/STM32_WPAN/ble/core/template/compiler.h:
 ../Core/Src/../../Drivers/TCAL9538/TCAL9538.hpp:
 ../Core/Src/../../Drivers/Interface/interface.h:
+../Core/Src/../../STM32_WPAN/App/custom_stm.h:
+../Core/Src/../../STM32_WPAN/App/custom_app.h:

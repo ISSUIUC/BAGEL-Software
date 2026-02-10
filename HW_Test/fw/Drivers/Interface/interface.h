@@ -37,7 +37,8 @@ enum GPIO_INPUT {
 	SWITCH_3_PG,
 	SWITCH_4_PG,
 	SWITCH_5_PG,
-	SWITCH_6_PG
+	SWITCH_6_PG,
+	GPIO_INPUT_END
 };
 
 struct gpio_pin {
