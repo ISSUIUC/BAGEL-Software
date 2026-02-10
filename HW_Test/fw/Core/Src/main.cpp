@@ -177,9 +177,11 @@ uint8_t update_ble_values() {
 	uint8_t switch_5_status_pg = read_gpio_input(SWITCH_5_PG);
 	uint8_t switch_6_status_pg = read_gpio_input(SWITCH_6_PG);
 	char disconnected = 'D';
-	char nominal = 'N';
-	char off = 'O';
-	char impossible = 'I';
+	char impossible   = 'I';
+	char nominal      = 'N';
+	char off          = 'O';
+	// the DINO protocol
+
 	uint8_t switch_1_status = switch_1_status_q + switch_1_status_pg;
 	uint8_t switch_2_status = switch_2_status_q + switch_2_status_pg;
 	uint8_t switch_3_status = switch_3_status_q + switch_3_status_pg;
