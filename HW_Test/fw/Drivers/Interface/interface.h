@@ -23,6 +23,8 @@ extern int gpio_output_status[11];
 extern int bluetooth_status; // whether the board is connected to Bluetooth
 
 
+
+
 enum GPIO_INPUT {
 	SWITCH_1_Q,
 	SWITCH_2_Q,
@@ -54,7 +56,8 @@ enum GPIO_OUTPUT {
 	ORANGE_LED,
 	GREEN_LED,
 	BLUE_LED,
-	CLOCK
+	CLOCK,
+	GPIO_OUTPUT_END
 };
 
 
@@ -73,7 +76,6 @@ uint8_t toggle_gpio_output(int gpio_output);
 
 
 
-uint8_t init_ble_switch_values();
 
 
 #ifdef __cplusplus

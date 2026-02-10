@@ -18,18 +18,7 @@ gpio_output_status[11] = {
 		0,
 };
 
-//SWITCH_1_Q
-//SWITCH_2_Q
-//SWITCH_3_Q
-//SWITCH_4_Q
-//SWITCH_5_Q
-//SWITCH_6_Q
-//SWITCH_1_PG
-//SWITCH_2_PG
-//SWITCH_3_PG
-//SWITCH_4_PG
-//SWITCH_5_PG
-//SWITCH_6_PG
+
 struct gpio_pin gpio_input_pins[12] = {
 		[SWITCH_1_Q] = { .expander=0, .pin=GPIO_PIN_5},
 		[SWITCH_2_Q] = { .expander=1, .pin=3 },
@@ -45,19 +34,6 @@ struct gpio_pin gpio_input_pins[12] = {
 		[SWITCH_6_PG] = { .expander=0, .pin=GPIO_PIN_4 },
 };
 
-//enum GPIO_OUTPUT {
-//	SWITCH_1,
-//	SWITCH_2,
-//	SWITCH_3,
-//	SWITCH_4,
-//	SWITCH_5,
-//	SWITCH_6,
-//	RED_LED,
-//	ORANGE_LED,
-//	GREEN_LED,
-//	BLUE_LED,
-//	CLOCK
-//};
 
 
 struct gpio_pin gpio_output_pins[11] = {
@@ -76,6 +52,8 @@ struct gpio_pin gpio_output_pins[11] = {
 
 
 int bluetooth_status = 0;
+
+
 
 
 uint8_t interface_init(UART_HandleTypeDef * huart1){
