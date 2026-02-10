@@ -1,5 +1,8 @@
 #include "interface.h"
-
+//#include "../../Middlewares/ST/STM32_WPAN/ble/core/auto/ble_types.h"
+//#include "../../STM32_WPAN/app/custom_app.h"
+//#include "../../STM32_WPAN/app/custom_stm.h"
+//#include "../TCAL9538/TCAL9538.hpp"
 
 gpio_output_status[11] = {
 		0,
@@ -15,39 +18,64 @@ gpio_output_status[11] = {
 		0,
 };
 
-gpi_input_pins[12] = {
-		{0, GPIO_PIN_5},
-		{1, 3},
-		{1, 2},
-		{2, 3},
-		{2, 2},
-		{0, GPIO_PIN_8},
-		{0, GPIO_PIN_3},
-		{1, 4},
-		{1, 1},
-		{2, 4},
-		{2, 1},
-		{0, GPIO_PIN_4},
+//SWITCH_1_Q
+//SWITCH_2_Q
+//SWITCH_3_Q
+//SWITCH_4_Q
+//SWITCH_5_Q
+//SWITCH_6_Q
+//SWITCH_1_PG
+//SWITCH_2_PG
+//SWITCH_3_PG
+//SWITCH_4_PG
+//SWITCH_5_PG
+//SWITCH_6_PG
+struct gpio_pin gpio_input_pins[12] = {
+		[SWITCH_1_Q] = { .expander=0, .pin=GPIO_PIN_5},
+		[SWITCH_2_Q] = { .expander=1, .pin=3 },
+		[SWITCH_3_Q] = { .expander=1, .pin=2 },
+		[SWITCH_4_Q] = { .expander=2, .pin=3 },
+		[SWITCH_5_Q] = { .expander=2, .pin=2 },
+		[SWITCH_6_Q] = { .expander=0, .pin=GPIO_PIN_8 },
+		[SWITCH_1_PG] = { .expander=0, .pin=GPIO_PIN_3 },
+		[SWITCH_2_PG] = { .expander=1, .pin=4 },
+		[SWITCH_3_PG] = { .expander=1, .pin=1 },
+		[SWITCH_4_PG] = { .expander=2, .pin=4 },
+		[SWITCH_5_PG] = { .expander=2, .pin=1 },
+		[SWITCH_6_PG] = { .expander=0, .pin=GPIO_PIN_4 },
+};
 
+//enum GPIO_OUTPUT {
+//	SWITCH_1,
+//	SWITCH_2,
+//	SWITCH_3,
+//	SWITCH_4,
+//	SWITCH_5,
+//	SWITCH_6,
+//	RED_LED,
+//	ORANGE_LED,
+//	GREEN_LED,
+//	BLUE_LED,
+//	CLOCK
+//};
+
+
+struct gpio_pin gpio_output_pins[11] = {
+		[SWITCH_1] = { .expander=0, .pin=GPIO_PIN_12 },
+		[SWITCH_2] = { .expander=1, .pin=5 },
+		[SWITCH_3] = { .expander=1, .pin=0 },
+		[SWITCH_4] = { .expander=2, .pin=5 },
+		[SWITCH_5] = { .expander=2, .pin=0 },
+		[SWITCH_6] = { .expander=0, .pin=GPIO_PIN_11 },
+		[RED_LED] = { .expander=1, .pin=6 },
+		[ORANGE_LED] = { .expander=1, .pin=7 },
+		[GREEN_LED] = { .expander=2, .pin=6 },
+		[BLUE_LED] = { .expander=2, .pin=7},
+		[CLOCK] = { .expander=0, .pin=GPIO_PIN_0 },
 };
 
 
-gpio_output_pins[11] = {
-		{0, GPIO_PIN_12},
-		{1, 5},
-		{1, 0},
-		{2, 5},
-		{2, 0},
-		{0, GPIO_PIN_11},
-		{1, 6},
-		{1, 7},
-		{2, 6},
-		{2, 7},
-		{0, GPIO_PIN_0},
-};
-
-
-bluetooth_status = 0;
+int bluetooth_status = 0;
 
 
 uint8_t interface_init(UART_HandleTypeDef * huart1){
@@ -67,7 +95,7 @@ uint8_t set_bluetooth_status(int newStatus) {
 
 
 uint8_t update_gpio_output(int gpio_output, int status) {
-	if (gpio_output < 0 || ((size_t)gpio_output >= sizeof(gpio_output_status)/sizeof(gpio_output_status[0]))) {
+	if (gpio_output < 0 || (gpio_output >= sizeof(gpio_output_status)/sizeof(gpio_output_status[0]))) {
 		return 1;
 	}
 	gpio_output_status[gpio_output] = status;
@@ -84,31 +112,28 @@ uint8_t toggle_gpio_output(int gpio_output) {
 	return 0;
 }
 
-uint8_t init_gpio_inputs() {
-	return 0;
-}
+//uint8_t init_gpio_inputs() {
+//	return 0;
+//}
 
 
-uint8_t read_gpio_input(int gpio_input) {
-	 struct gpio_pin pin = gpio_input_pins[gpio_input];
-	 if (!pin.expander) {
-		 HAL_GPIO_ReadPin(GPIOA, pin.pin);
-		 return 0;
-	 }
-	 gpioDigitalRead(GpioAddress(pin.expander - 1, pin.pin))
+//<<<<<<< Updated upstream
+//uint8_t read_gpio_input(int gpio_input) {
+//	 struct gpio_pin pin = gpio_input_pins[gpio_input];
+//	 if (!pin.expander) {
+//		 HAL_GPIO_ReadPin(GPIOA, pin.pin);
+//		 return 0;
+//	 }
+//	 gpioDigitalRead(GpioAddress(pin.expander - 1, pin.pin))
+//
+//}
+//=======
+//>>>>>>> Stashed changes
 
-}
 
-
-uint8_t write_gpio_output(int gpio_output, int value) {
-	struct gpio_pin pin = gpio_output_pins[gpio_output];
-	if (!pin.expander) {
-		HAL_GPIO_WritePin(GPIOA, pin.pin, value);
-		return 0;
-	}
-	gpioDigitalWrite(GpioAddress(pin.expander - 1, pin.pin), value);
-	return 0;
-}
+//uint8_t init_ble_switch_values() {
+//
+//}
 
 //command_queue = {
 //

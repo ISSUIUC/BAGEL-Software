@@ -74,6 +74,50 @@ static void MX_RTC_Init(void);
 static void MX_RF_Init(void);
 /* USER CODE BEGIN PFP */
 
+uint8_t read_gpio_input(int gpio_input) {
+	 struct gpio_pin pin = gpio_input_pins[gpio_input];
+	 if (!pin.expander) {
+		 HAL_GPIO_ReadPin(GPIOA, pin.pin);
+		 return 0;
+	 }
+	 return (uint8_t)gpioDigitalRead(GpioAddress(pin.expander - 1, pin.pin)).value;
+
+}
+
+
+uint8_t write_gpio_output(int gpio_output, int value) {
+	GPIO_PinState real_val = (value == 1) ? GPIO_PIN_SET : GPIO_PIN_RESET;
+	struct gpio_pin pin = gpio_output_pins[gpio_output];
+	if (!pin.expander) {
+		HAL_GPIO_WritePin(GPIOA, pin.pin, real_val);
+		return 0;
+	}
+	gpioDigitalWrite(GpioAddress(pin.expander - 1, pin.pin), real_val);
+	return 0;
+}
+
+uint8_t init_gpio_output_from_flipflops() {
+	uint8_t switch_1_status_q = !read_gpio_input(SWITCH_1_Q); // reads Q_not & inverts it
+	uint8_t switch_2_status_q = !read_gpio_input(SWITCH_2_Q);
+	uint8_t switch_3_status_q = !read_gpio_input(SWITCH_3_Q);
+	uint8_t switch_4_status_q = !read_gpio_input(SWITCH_4_Q);
+	uint8_t switch_5_status_q = !read_gpio_input(SWITCH_5_Q);
+	uint8_t switch_6_status_q = !read_gpio_input(SWITCH_6_Q);
+	write_gpio_output(SWITCH_1, switch_1_status_q);
+	write_gpio_output(SWITCH_2, switch_2_status_q);
+	write_gpio_output(SWITCH_3, switch_3_status_q);
+	write_gpio_output(SWITCH_4, switch_4_status_q);
+	write_gpio_output(SWITCH_5, switch_5_status_q);
+	write_gpio_output(SWITCH_6, switch_6_status_q);
+	update_gpio_output(SWITCH_1, switch_1_status_q);
+	update_gpio_output(SWITCH_2, switch_2_status_q);
+	update_gpio_output(SWITCH_3, switch_3_status_q);
+	update_gpio_output(SWITCH_4, switch_4_status_q);
+	update_gpio_output(SWITCH_5, switch_5_status_q);
+	update_gpio_output(SWITCH_6, switch_6_status_q);
+	return 0;
+}
+
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -136,14 +180,17 @@ int main(void)
   HAL_GPIO_WritePin(GPIOA, GPIO_PIN_2, GPIO_PIN_SET);
 
   TCAL9538Init(&hi2c1, GPIOA, GPIO_PIN_2);
+//  init_gpio_output_from_flipflops();
 
   for (int i = 0; i <= 7; i++) {
 	  gpioPinMode(GpioAddress(0, i), OUTPUT);
-	  gpioDigitalWrite(GpioAddress(0, i), LOW);
+//	  gpioDigitalWrite(GpioAddress(0, i), LOW);
 
 	  gpioPinMode(GpioAddress(1, i), OUTPUT);
-	  gpioDigitalWrite(GpioAddress(1, i), LOW);
+//	  gpioDigitalWrite(GpioAddress(1, i), LOW);
   }
+
+  init_gpio_output_from_flipflops();
 
   uint8_t high[] = "high\r\n";
   uint8_t low[] = "low\r\n";
@@ -169,6 +216,9 @@ int main(void)
     }
 
     if (gpio_output_status[SWITCH_2] == 1) {
+    	uint8_t buffer[30];
+    	int len = sprintf((char*)buffer, "Hello World, 222\r\n");
+    	HAL_UART_Transmit(&huart1, buffer, len, 1000);
     	gpioDigitalWrite(GpioAddress(0, 5), HIGH);
     } else {
     	gpioDigitalWrite(GpioAddress(0, 5), LOW);
@@ -248,9 +298,9 @@ int main(void)
 //	gpioDigitalWrite(GpioAddress(1,0),LOW);
 //
 	//toggle clock
-	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_0, GPIO_PIN_SET);
-	HAL_Delay(50);
-	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_0, GPIO_PIN_RESET);
+//	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_0, GPIO_PIN_SET);
+//	HAL_Delay(50);
+//	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_0, GPIO_PIN_RESET);
 //
 //	HAL_Delay(750);
 //

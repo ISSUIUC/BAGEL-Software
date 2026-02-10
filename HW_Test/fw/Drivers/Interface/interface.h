@@ -40,7 +40,7 @@ enum GPIO_INPUT {
 
 struct gpio_pin {
 	uint8_t expander; 	// 0 is no expander, 1 is expander 1, and 2 is expander 2
-	uint8_t pin;		// pin
+	uint16_t pin;		// pin
 };
 
 enum GPIO_OUTPUT {
@@ -65,16 +65,15 @@ uint8_t interface_init(UART_HandleTypeDef * huart1);
 
 uint8_t interface_send(uint8_t * data, uint16_t len);
 
+uint8_t set_bluetooth_status(int newStatus);
 
 uint8_t update_gpio_output(int gpio_output, int status);
 
 uint8_t toggle_gpio_output(int gpio_output);
 
-uint8_t read_gpio_input(int gpio_input);
-
-uint8_t write_gpio_output(int gpio_output, int value);
 
 
+uint8_t init_ble_switch_values();
 
 
 #ifdef __cplusplus

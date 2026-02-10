@@ -1,4 +1,7 @@
-../Core/Src/main.cpp:289:6:void SystemClock_Config()	104	static,ignoring_inline_asm
-../Core/Src/main.cpp:345:6:void PeriphCommonClock_Config()	56	static,ignoring_inline_asm
-../Core/Src/main.cpp:88:5:int main()	80	static,ignoring_inline_asm
-../Core/Src/main.cpp:710:6:void Error_Handler()	0	static,ignoring_inline_asm
+../Core/Src/main.cpp:77:9:uint8_t read_gpio_input(int)	24	static
+../Core/Src/main.cpp:88:9:uint8_t write_gpio_output(int, int)	16	static
+../Core/Src/main.cpp:99:9:uint8_t init_gpio_output_from_flipflops()	32	static
+../Core/Src/main.cpp:328:6:void SystemClock_Config()	104	static,ignoring_inline_asm
+../Core/Src/main.cpp:384:6:void PeriphCommonClock_Config()	56	static,ignoring_inline_asm
+../Core/Src/main.cpp:126:5:int main()	64	static,ignoring_inline_asm
+../Core/Src/main.cpp:749:6:void Error_Handler()	0	static,ignoring_inline_asm

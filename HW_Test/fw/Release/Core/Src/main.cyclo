@@ -1,4 +1,7 @@
-../Core/Src/main.cpp:289:6:void SystemClock_Config()	3
-../Core/Src/main.cpp:345:6:void PeriphCommonClock_Config()	2
-../Core/Src/main.cpp:88:5:int main()	25
-../Core/Src/main.cpp:710:6:void Error_Handler()	1
+../Core/Src/main.cpp:77:9:uint8_t read_gpio_input(int)	5
+../Core/Src/main.cpp:88:9:uint8_t write_gpio_output(int, int)	5
+../Core/Src/main.cpp:99:9:uint8_t init_gpio_output_from_flipflops()	1
+../Core/Src/main.cpp:328:6:void SystemClock_Config()	3
+../Core/Src/main.cpp:384:6:void PeriphCommonClock_Config()	2
+../Core/Src/main.cpp:126:5:int main()	24
+../Core/Src/main.cpp:749:6:void Error_Handler()	1

@@ -25,6 +25,7 @@
 /* USER CODE BEGIN Includes */
 #include "stm32wbxx_hal.h"
 #include "../../Drivers/Interface/interface.h"
+//#include "custom_app.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -102,6 +103,7 @@ static tBleStatus Generic_STM_App_Update_Char_Ext(uint16_t ConnectionHandle, uin
 
 /* Functions Definition ------------------------------------------------------*/
 /* USER CODE BEGIN PFD */
+
 
 /* USER CODE END PFD */
 
@@ -443,6 +445,7 @@ static SVCCTL_EvtAckStatus_t Custom_STM_Event_Handler(void *Event)
             }
             if (switch_status == 0 || switch_status == 1)
             	update_gpio_output(SWITCH_4, (int)switch_status);
+            update_gpio_output(BLUE_LED, (int)switch_status);
             /* USER CODE END CUSTOM_STM_Service_1_Char_1_ACI_GATT_ATTRIBUTE_MODIFIED_VSEVT_CODE */
           } /* if (attribute_modified->Attr_Handle == (CustomContext.CustomSwitch_4Hdle + CHARACTERISTIC_VALUE_ATTRIBUTE_OFFSET))*/
           else if (attribute_modified->Attr_Handle == (CustomContext.CustomSwitch_5Hdle + CHARACTERISTIC_VALUE_ATTRIBUTE_OFFSET))
@@ -529,6 +532,9 @@ static SVCCTL_EvtAckStatus_t Custom_STM_Event_Handler(void *Event)
             default:
             	switch_status = 2; // mark it unused;
             }
+//            uint8_t buffer[30];
+//			  int len = sprintf((char*)buffer, "Things\r\n");
+//			  HAL_UART_Transmit(&huart1, buffer, len, 1000);
             if (switch_status == 0 || switch_status == 1)
             	update_gpio_output(SWITCH_2, (int)switch_status);
             /* USER CODE END CUSTOM_STM_Service_2_Char_2_ACI_GATT_ATTRIBUTE_MODIFIED_VSEVT_CODE */
