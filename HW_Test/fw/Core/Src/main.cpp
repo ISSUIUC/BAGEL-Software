@@ -351,10 +351,10 @@ int main(void)
   	  gpioDigitalWrite(GpioAddress(1, i), LOW);
     }
 
-//  init_gpio_inputs();
-//  init_gpio_outputs();
+  init_gpio_inputs();
+  init_gpio_outputs();
 
-//  init_gpio_output_from_flipflops();
+  init_gpio_output_from_flipflops();
 
 
   /* USER CODE END 2 */
@@ -375,76 +375,13 @@ int main(void)
     	uint8_t status = gpio_output_status[i];
     	write_gpio_output(i, status);
     }
-//    if (gpio_output_status[SWITCH_1] == 1) {
-//    	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_12, GPIO_PIN_SET);
-//    } else {
-//    	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_12, GPIO_PIN_RESET);
-//    }
-//
-//    if (gpio_output_status[SWITCH_2] == 1) {
-//    	uint8_t buffer[30];
-//    	int len = sprintf((char*)buffer, "Hello World, 222\r\n");
-//    	HAL_UART_Transmit(&huart1, buffer, len, 1000);
-//    	gpioDigitalWrite(GpioAddress(0, 5), HIGH);
-//    } else {
-//    	gpioDigitalWrite(GpioAddress(0, 5), LOW);
-//    }
-//
-//    if (gpio_output_status[SWITCH_3] == 1) {
-//        gpioDigitalWrite(GpioAddress(0, 0), HIGH);
-//	} else {
-//		gpioDigitalWrite(GpioAddress(0, 0), LOW);
-//	}
-//
-//    if (gpio_output_status[SWITCH_4] == 1) {
-//		gpioDigitalWrite(GpioAddress(1, 5), HIGH);
-//	} else {
-//		gpioDigitalWrite(GpioAddress(1, 5), LOW);
-//	}
-//
-//    if (gpio_output_status[SWITCH_5] == 1) {
-//		gpioDigitalWrite(GpioAddress(1, 0), HIGH);
-//	} else {
-//		gpioDigitalWrite(GpioAddress(1, 0), LOW);
-//	}
-//
-//    if (gpio_output_status[SWITCH_6] == 1) {
-//		HAL_GPIO_WritePin(GPIOA, GPIO_PIN_11, GPIO_PIN_SET);
-//	} else {
-//		HAL_GPIO_WritePin(GPIOA, GPIO_PIN_11, GPIO_PIN_RESET);
-//	}
-//
-//    if (gpio_output_status[RED_LED] == 1) {
-//    	gpioDigitalWrite(GpioAddress(0, 6), HIGH);
-//    } else {
-//        gpioDigitalWrite(GpioAddress(0, 6), LOW);
-//    }
-//
-//    if (gpio_output_status[ORANGE_LED] == 1) {
-//		gpioDigitalWrite(GpioAddress(0, 7), HIGH);
-//	} else {
-//		gpioDigitalWrite(GpioAddress(0, 7), LOW);
-//	}
-//
-//    if (gpio_output_status[GREEN_LED] == 1) {
-//		gpioDigitalWrite(GpioAddress(1, 6), HIGH);
-//	} else {
-//		gpioDigitalWrite(GpioAddress(1, 6), LOW);
-//	}
-//
-//	if (gpio_output_status[BLUE_LED] == 1) {
-//		gpioDigitalWrite(GpioAddress(1, 7), HIGH);
-//	} else {
-//		gpioDigitalWrite(GpioAddress(1, 7), LOW);
-//	}
-
 	//toggle clock
 	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_0, GPIO_PIN_SET);
 	HAL_Delay(50);
 	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_0, GPIO_PIN_RESET);
 
-//	if (bluetooth_status)
-//		update_ble_values();
+	if (bluetooth_status)
+		update_ble_values();
 
 
 
