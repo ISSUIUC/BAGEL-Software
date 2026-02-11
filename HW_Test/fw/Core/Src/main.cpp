@@ -164,13 +164,13 @@ uint8_t init_gpio_output_from_flipflops() {
 }
 
 uint8_t update_ble_values() {
-	uint8_t switch_1_status_q = read_gpio_input(SWITCH_1_Q) << 1; // reads Q_not & inverts it
+	uint8_t switch_1_status_q = read_gpio_input(SWITCH_1_Q) << 1; // reads Q_not
 	uint8_t switch_2_status_q = read_gpio_input(SWITCH_2_Q) << 1;
 	uint8_t switch_3_status_q = read_gpio_input(SWITCH_3_Q) << 1;
 	uint8_t switch_4_status_q = read_gpio_input(SWITCH_4_Q) << 1;
 	uint8_t switch_5_status_q = read_gpio_input(SWITCH_5_Q) << 1;
 	uint8_t switch_6_status_q = read_gpio_input(SWITCH_6_Q) << 1;
-	uint8_t switch_1_status_pg = read_gpio_input(SWITCH_1_PG); // reads Q_not & inverts it
+	uint8_t switch_1_status_pg = read_gpio_input(SWITCH_1_PG); // reads PG
 	uint8_t switch_2_status_pg = read_gpio_input(SWITCH_2_PG);
 	uint8_t switch_3_status_pg = read_gpio_input(SWITCH_3_PG);
 	uint8_t switch_4_status_pg = read_gpio_input(SWITCH_4_PG);
