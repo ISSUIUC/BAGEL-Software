@@ -42,8 +42,9 @@ enum GPIO_INPUT {
 };
 
 struct gpio_pin {
-	uint8_t expander; 	// 0 is no expander, 1 is expander 1, and 2 is expander 2
+	uint8_t expander; 	// 0 is GPIOA, 1 is expander 1, 2 is expander 2, and 3 is GPIOB
 	uint16_t pin;		// pin
+
 };
 
 enum GPIO_OUTPUT {

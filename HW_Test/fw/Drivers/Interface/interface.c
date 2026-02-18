@@ -20,12 +20,12 @@ gpio_output_status[11] = {
 
 
 struct gpio_pin gpio_input_pins[12] = {
-		[SWITCH_1_Q] = { .expander=0, .pin=GPIO_PIN_5},
+		[SWITCH_1_Q] = { .expander=0, .pin=GPIO_PIN_5 },
 		[SWITCH_2_Q] = { .expander=1, .pin=3 },
 		[SWITCH_3_Q] = { .expander=1, .pin=2 },
 		[SWITCH_4_Q] = { .expander=2, .pin=3 },
 		[SWITCH_5_Q] = { .expander=2, .pin=2 },
-		[SWITCH_6_Q] = { .expander=0, .pin=GPIO_PIN_8 },
+		[SWITCH_6_Q] = { .expander=3, .pin=GPIO_PIN_8 },
 		[SWITCH_1_PG] = { .expander=0, .pin=GPIO_PIN_3 },
 		[SWITCH_2_PG] = { .expander=1, .pin=4 },
 		[SWITCH_3_PG] = { .expander=1, .pin=1 },

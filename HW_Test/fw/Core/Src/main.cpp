@@ -61,7 +61,6 @@ UART_HandleTypeDef huart1;
 UART_HandleTypeDef * my_huart;
 
 //gpio_status status;
-
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -80,7 +79,7 @@ static void MX_RF_Init(void);
 uint8_t init_gpio_inputs() {
 	for (int i=0; i<GPIO_INPUT_END; i++) {
 		struct gpio_pin pin = gpio_input_pins[i];
-		if (!pin.expander) {
+		if (!pin.expander || pin.expander == 3) {
 //			gpioPinMode()
 			continue;
 		}
@@ -92,7 +91,7 @@ uint8_t init_gpio_inputs() {
 uint8_t init_gpio_outputs() {
 	for (int i=0; i<GPIO_OUTPUT_END; i++) {
 		struct gpio_pin pin = gpio_output_pins[i];
-		if (!pin.expander) {
+		if (!pin.expander || pin.expander == 3) {
 //			gpioPinMode()
 			continue;
 		}
@@ -103,15 +102,17 @@ uint8_t init_gpio_outputs() {
 
 uint8_t read_gpio_input(int gpio_input) {
 	struct gpio_pin pin = gpio_input_pins[gpio_input];
-	uint8_t val;
-	if (!pin.expander) {
-		val = (uint8_t)HAL_GPIO_ReadPin(GPIOA, pin.pin);
+	GPIO_PinState val;
+	if (!pin.expander || pin.expander == 3) {
+		val = HAL_GPIO_ReadPin((!pin.expander) ? GPIOA : GPIOB, pin.pin);
+		return (uint8_t)(val == GPIO_PIN_SET);
 	 }
-	 val = (uint8_t)gpioDigitalRead(GpioAddress(pin.expander - 1, pin.pin)).value;
-	uint8_t buffer[30];
-	int len = sprintf((char*)buffer, "%d.%d: %d\r\n", (int)pin.expander, (int)pin.pin, (int)val);
-	HAL_UART_Transmit(&huart1, buffer, len, 1000);
-	return val;
+	uint8_t otherVal;
+	otherVal = (uint8_t)gpioDigitalRead(GpioAddress(pin.expander - 1, pin.pin)).value;
+//	uint8_t buffer[30];
+//	int len = sprintf((char*)buffer, "%d.%d: %d\r\n", (int)pin.expander, (int)pin.pin, (int)otherVal);
+//	HAL_UART_Transmit(&huart1, buffer, len, 1000);
+	return otherVal;
 }
 
 
@@ -127,14 +128,14 @@ uint8_t write_gpio_output(int gpio_output, int value) {
 }
 
 uint8_t init_gpio_output_from_flipflops() {
-	uint8_t switch_1_status_q = read_gpio_input(SWITCH_1_Q) << 1; // reads Q_not & inverts it
+	uint8_t switch_1_status_q = read_gpio_input(SWITCH_1_Q) << 1; // reads Q_not
 	uint8_t switch_2_status_q = read_gpio_input(SWITCH_2_Q) << 1;
 	uint8_t switch_3_status_q = read_gpio_input(SWITCH_3_Q) << 1;
 	uint8_t switch_4_status_q = read_gpio_input(SWITCH_4_Q) << 1;
 	uint8_t switch_5_status_q = read_gpio_input(SWITCH_5_Q) << 1;
 	uint8_t switch_6_status_q = read_gpio_input(SWITCH_6_Q) << 1;
 
-	uint8_t switch_1_status_pg = read_gpio_input(SWITCH_1_PG); // reads Q_not & inverts it
+	uint8_t switch_1_status_pg = read_gpio_input(SWITCH_1_PG); // reads PG
 	uint8_t switch_2_status_pg = read_gpio_input(SWITCH_2_PG);
 	uint8_t switch_3_status_pg = read_gpio_input(SWITCH_3_PG);
 	uint8_t switch_4_status_pg = read_gpio_input(SWITCH_4_PG);
@@ -148,12 +149,15 @@ uint8_t init_gpio_output_from_flipflops() {
 	uint8_t switch_5_status = switch_5_status_q + switch_5_status_pg;
 	uint8_t switch_6_status = switch_6_status_q + switch_6_status_pg;
 
-	write_gpio_output(SWITCH_1, (switch_1_status == 1));
-	write_gpio_output(SWITCH_2, (switch_2_status == 1));
-	write_gpio_output(SWITCH_3, (switch_3_status == 1));
-	write_gpio_output(SWITCH_4, (switch_4_status == 1));
-	write_gpio_output(SWITCH_5, (switch_5_status == 1));
-	write_gpio_output(SWITCH_6, (switch_6_status == 1));
+	// actually write the status to the gpio pins
+	write_gpio_output(SWITCH_1,  (switch_1_status == 1));
+	write_gpio_output(SWITCH_2,  (switch_2_status == 1));
+	write_gpio_output(SWITCH_3,  (switch_3_status == 1));
+	write_gpio_output(SWITCH_4,  (switch_4_status == 1));
+	write_gpio_output(SWITCH_5,  (switch_5_status == 1));
+	write_gpio_output(SWITCH_6,  (switch_6_status == 1));
+
+	// update the status array
 	update_gpio_output(SWITCH_1, (switch_1_status == 1));
 	update_gpio_output(SWITCH_2, (switch_2_status == 1));
 	update_gpio_output(SWITCH_3, (switch_3_status == 1));
@@ -170,6 +174,7 @@ uint8_t update_ble_values() {
 	uint8_t switch_4_status_q = read_gpio_input(SWITCH_4_Q) << 1;
 	uint8_t switch_5_status_q = read_gpio_input(SWITCH_5_Q) << 1;
 	uint8_t switch_6_status_q = read_gpio_input(SWITCH_6_Q) << 1;
+
 	uint8_t switch_1_status_pg = read_gpio_input(SWITCH_1_PG); // reads PG
 	uint8_t switch_2_status_pg = read_gpio_input(SWITCH_2_PG);
 	uint8_t switch_3_status_pg = read_gpio_input(SWITCH_3_PG);
@@ -335,6 +340,19 @@ int main(void)
 
   interface_init(&huart1);
 
+  for (int i = 0; i <= 7; i++) {
+	  gpioPinMode(GpioAddress(0, i), OUTPUT);
+	  gpioDigitalWrite(GpioAddress(0, i), LOW);
+
+	  gpioPinMode(GpioAddress(1, i), OUTPUT);
+	  gpioDigitalWrite(GpioAddress(1, i), LOW);
+	}
+
+  init_gpio_inputs();
+  init_gpio_outputs();
+
+  init_gpio_output_from_flipflops();
+
 
   uint8_t buffer[30];
   int len = sprintf((char*)buffer, "Hello World, BAGEL here\r\n");
@@ -345,18 +363,7 @@ int main(void)
   TCAL9538Init(&hi2c1, GPIOA, GPIO_PIN_2);
 
 
-  for (int i = 0; i <= 7; i++) {
-  	  gpioPinMode(GpioAddress(0, i), OUTPUT);
-  	  gpioDigitalWrite(GpioAddress(0, i), LOW);
 
-  	  gpioPinMode(GpioAddress(1, i), OUTPUT);
-  	  gpioDigitalWrite(GpioAddress(1, i), LOW);
-    }
-
-  init_gpio_inputs();
-  init_gpio_outputs();
-
-  init_gpio_output_from_flipflops();
 
 
   /* USER CODE END 2 */
