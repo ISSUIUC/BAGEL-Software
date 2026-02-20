@@ -340,18 +340,6 @@ int main(void)
 
   interface_init(&huart1);
 
-  for (int i = 0; i <= 7; i++) {
-	  gpioPinMode(GpioAddress(0, i), OUTPUT);
-	  gpioDigitalWrite(GpioAddress(0, i), LOW);
-
-	  gpioPinMode(GpioAddress(1, i), OUTPUT);
-	  gpioDigitalWrite(GpioAddress(1, i), LOW);
-	}
-
-  init_gpio_inputs();
-  init_gpio_outputs();
-
-  init_gpio_output_from_flipflops();
 
 
   uint8_t buffer[30];
@@ -363,6 +351,18 @@ int main(void)
   TCAL9538Init(&hi2c1, GPIOA, GPIO_PIN_2);
 
 
+  for (int i = 0; i <= 7; i++) {
+  	  gpioPinMode(GpioAddress(0, i), OUTPUT);
+  	  gpioDigitalWrite(GpioAddress(0, i), LOW);
+
+  	  gpioPinMode(GpioAddress(1, i), OUTPUT);
+  	  gpioDigitalWrite(GpioAddress(1, i), LOW);
+    }
+
+    init_gpio_inputs();
+    init_gpio_outputs();
+
+    init_gpio_output_from_flipflops();
 
 
 
