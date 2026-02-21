@@ -43,15 +43,15 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, READONLY, DEBUGGING, OCTETS
  19 .debug_macro  0002c7da  00000000  00000000  0004d1dc  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 20 .debug_line   00034ead  00000000  00000000  000799b6  2**0
+ 20 .debug_line   00034eab  00000000  00000000  000799b6  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 21 .debug_str    000e61f0  00000000  00000000  000ae863  2**0
+ 21 .debug_str    000e61f0  00000000  00000000  000ae861  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 22 .comment      00000043  00000000  00000000  00194a53  2**0
+ 22 .comment      00000043  00000000  00000000  00194a51  2**0
                   CONTENTS, READONLY
- 23 .debug_frame  0000be10  00000000  00000000  00194a98  2**2
+ 23 .debug_frame  0000be10  00000000  00000000  00194a94  2**2
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 24 .debug_line_str 00000046  00000000  00000000  001a08a8  2**0
+ 24 .debug_line_str 00000046  00000000  00000000  001a08a4  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
 
 Disassembly of section .text:
@@ -4675,91 +4675,93 @@ int main(void)
  8001d7a:	4845      	ldr	r0, [pc, #276]	@ (8001e90 <main+0x14c>)
  8001d7c:	f000 fe1e 	bl	80029bc <interface_init>
 
-  for (int i = 0; i <= 7; i++) {
- 8001d80:	2300      	movs	r3, #0
- 8001d82:	63fb      	str	r3, [r7, #60]	@ 0x3c
- 8001d84:	e02e      	b.n	8001de4 <main+0xa0>
-	  gpioPinMode(GpioAddress(0, i), OUTPUT);
- 8001d86:	f107 0320 	add.w	r3, r7, #32
- 8001d8a:	6bfa      	ldr	r2, [r7, #60]	@ 0x3c
- 8001d8c:	2100      	movs	r1, #0
- 8001d8e:	4618      	mov	r0, r3
- 8001d90:	f7ff fca0 	bl	80016d4 <_ZN11GpioAddressC1Eii>
- 8001d94:	2101      	movs	r1, #1
- 8001d96:	6a38      	ldr	r0, [r7, #32]
- 8001d98:	f005 f99a 	bl	80070d0 <_Z11gpioPinMode11GpioAddressi>
-	  gpioDigitalWrite(GpioAddress(0, i), LOW);
- 8001d9c:	f107 0324 	add.w	r3, r7, #36	@ 0x24
- 8001da0:	6bfa      	ldr	r2, [r7, #60]	@ 0x3c
- 8001da2:	2100      	movs	r1, #0
- 8001da4:	4618      	mov	r0, r3
- 8001da6:	f7ff fc95 	bl	80016d4 <_ZN11GpioAddressC1Eii>
- 8001daa:	2100      	movs	r1, #0
- 8001dac:	6a78      	ldr	r0, [r7, #36]	@ 0x24
- 8001dae:	f005 f903 	bl	8006fb8 <_Z16gpioDigitalWrite11GpioAddressi>
-
-	  gpioPinMode(GpioAddress(1, i), OUTPUT);
- 8001db2:	f107 0328 	add.w	r3, r7, #40	@ 0x28
- 8001db6:	6bfa      	ldr	r2, [r7, #60]	@ 0x3c
- 8001db8:	2101      	movs	r1, #1
- 8001dba:	4618      	mov	r0, r3
- 8001dbc:	f7ff fc8a 	bl	80016d4 <_ZN11GpioAddressC1Eii>
- 8001dc0:	2101      	movs	r1, #1
- 8001dc2:	6ab8      	ldr	r0, [r7, #40]	@ 0x28
- 8001dc4:	f005 f984 	bl	80070d0 <_Z11gpioPinMode11GpioAddressi>
-	  gpioDigitalWrite(GpioAddress(1, i), LOW);
- 8001dc8:	f107 032c 	add.w	r3, r7, #44	@ 0x2c
- 8001dcc:	6bfa      	ldr	r2, [r7, #60]	@ 0x3c
- 8001dce:	2101      	movs	r1, #1
- 8001dd0:	4618      	mov	r0, r3
- 8001dd2:	f7ff fc7f 	bl	80016d4 <_ZN11GpioAddressC1Eii>
- 8001dd6:	2100      	movs	r1, #0
- 8001dd8:	6af8      	ldr	r0, [r7, #44]	@ 0x2c
- 8001dda:	f005 f8ed 	bl	8006fb8 <_Z16gpioDigitalWrite11GpioAddressi>
-  for (int i = 0; i <= 7; i++) {
- 8001dde:	6bfb      	ldr	r3, [r7, #60]	@ 0x3c
- 8001de0:	3301      	adds	r3, #1
- 8001de2:	63fb      	str	r3, [r7, #60]	@ 0x3c
- 8001de4:	6bfb      	ldr	r3, [r7, #60]	@ 0x3c
- 8001de6:	2b07      	cmp	r3, #7
- 8001de8:	ddcd      	ble.n	8001d86 <main+0x42>
-	}
-
-  init_gpio_inputs();
- 8001dea:	f7ff fca9 	bl	8001740 <_Z16init_gpio_inputsv>
-  init_gpio_outputs();
- 8001dee:	f7ff fcd7 	bl	80017a0 <_Z17init_gpio_outputsv>
-
-  init_gpio_output_from_flipflops();
- 8001df2:	f7ff fd7d 	bl	80018f0 <init_gpio_output_from_flipflops>
 
 
   uint8_t buffer[30];
   int len = sprintf((char*)buffer, "Hello World, BAGEL here\r\n");
- 8001df6:	463b      	mov	r3, r7
- 8001df8:	4926      	ldr	r1, [pc, #152]	@ (8001e94 <main+0x150>)
- 8001dfa:	4618      	mov	r0, r3
- 8001dfc:	f009 f9a0 	bl	800b140 <siprintf>
- 8001e00:	6378      	str	r0, [r7, #52]	@ 0x34
+ 8001d80:	463b      	mov	r3, r7
+ 8001d82:	4944      	ldr	r1, [pc, #272]	@ (8001e94 <main+0x150>)
+ 8001d84:	4618      	mov	r0, r3
+ 8001d86:	f009 f9db 	bl	800b140 <siprintf>
+ 8001d8a:	6378      	str	r0, [r7, #52]	@ 0x34
   HAL_UART_Transmit(&huart1, buffer, len, 1000);
- 8001e02:	6b7b      	ldr	r3, [r7, #52]	@ 0x34
- 8001e04:	b29a      	uxth	r2, r3
- 8001e06:	4639      	mov	r1, r7
- 8001e08:	f44f 737a 	mov.w	r3, #1000	@ 0x3e8
- 8001e0c:	4820      	ldr	r0, [pc, #128]	@ (8001e90 <main+0x14c>)
- 8001e0e:	f004 faaa 	bl	8006366 <HAL_UART_Transmit>
+ 8001d8c:	6b7b      	ldr	r3, [r7, #52]	@ 0x34
+ 8001d8e:	b29a      	uxth	r2, r3
+ 8001d90:	4639      	mov	r1, r7
+ 8001d92:	f44f 737a 	mov.w	r3, #1000	@ 0x3e8
+ 8001d96:	483e      	ldr	r0, [pc, #248]	@ (8001e90 <main+0x14c>)
+ 8001d98:	f004 fae5 	bl	8006366 <HAL_UART_Transmit>
 
   HAL_GPIO_WritePin(GPIOA, GPIO_PIN_2, GPIO_PIN_SET);
- 8001e12:	2201      	movs	r2, #1
- 8001e14:	2104      	movs	r1, #4
- 8001e16:	f04f 4090 	mov.w	r0, #1207959552	@ 0x48000000
- 8001e1a:	f001 fd6b 	bl	80038f4 <HAL_GPIO_WritePin>
+ 8001d9c:	2201      	movs	r2, #1
+ 8001d9e:	2104      	movs	r1, #4
+ 8001da0:	f04f 4090 	mov.w	r0, #1207959552	@ 0x48000000
+ 8001da4:	f001 fda6 	bl	80038f4 <HAL_GPIO_WritePin>
 
   TCAL9538Init(&hi2c1, GPIOA, GPIO_PIN_2);
- 8001e1e:	2204      	movs	r2, #4
- 8001e20:	f04f 4190 	mov.w	r1, #1207959552	@ 0x48000000
- 8001e24:	481c      	ldr	r0, [pc, #112]	@ (8001e98 <main+0x154>)
- 8001e26:	f005 f877 	bl	8006f18 <_Z12TCAL9538InitP19__I2C_HandleTypeDefP12GPIO_TypeDeft>
+ 8001da8:	2204      	movs	r2, #4
+ 8001daa:	f04f 4190 	mov.w	r1, #1207959552	@ 0x48000000
+ 8001dae:	483a      	ldr	r0, [pc, #232]	@ (8001e98 <main+0x154>)
+ 8001db0:	f005 f8b2 	bl	8006f18 <_Z12TCAL9538InitP19__I2C_HandleTypeDefP12GPIO_TypeDeft>
+
+
+  for (int i = 0; i <= 7; i++) {
+ 8001db4:	2300      	movs	r3, #0
+ 8001db6:	63fb      	str	r3, [r7, #60]	@ 0x3c
+ 8001db8:	e02e      	b.n	8001e18 <main+0xd4>
+  	  gpioPinMode(GpioAddress(0, i), OUTPUT);
+ 8001dba:	f107 0320 	add.w	r3, r7, #32
+ 8001dbe:	6bfa      	ldr	r2, [r7, #60]	@ 0x3c
+ 8001dc0:	2100      	movs	r1, #0
+ 8001dc2:	4618      	mov	r0, r3
+ 8001dc4:	f7ff fc86 	bl	80016d4 <_ZN11GpioAddressC1Eii>
+ 8001dc8:	2101      	movs	r1, #1
+ 8001dca:	6a38      	ldr	r0, [r7, #32]
+ 8001dcc:	f005 f980 	bl	80070d0 <_Z11gpioPinMode11GpioAddressi>
+  	  gpioDigitalWrite(GpioAddress(0, i), LOW);
+ 8001dd0:	f107 0324 	add.w	r3, r7, #36	@ 0x24
+ 8001dd4:	6bfa      	ldr	r2, [r7, #60]	@ 0x3c
+ 8001dd6:	2100      	movs	r1, #0
+ 8001dd8:	4618      	mov	r0, r3
+ 8001dda:	f7ff fc7b 	bl	80016d4 <_ZN11GpioAddressC1Eii>
+ 8001dde:	2100      	movs	r1, #0
+ 8001de0:	6a78      	ldr	r0, [r7, #36]	@ 0x24
+ 8001de2:	f005 f8e9 	bl	8006fb8 <_Z16gpioDigitalWrite11GpioAddressi>
+
+  	  gpioPinMode(GpioAddress(1, i), OUTPUT);
+ 8001de6:	f107 0328 	add.w	r3, r7, #40	@ 0x28
+ 8001dea:	6bfa      	ldr	r2, [r7, #60]	@ 0x3c
+ 8001dec:	2101      	movs	r1, #1
+ 8001dee:	4618      	mov	r0, r3
+ 8001df0:	f7ff fc70 	bl	80016d4 <_ZN11GpioAddressC1Eii>
+ 8001df4:	2101      	movs	r1, #1
+ 8001df6:	6ab8      	ldr	r0, [r7, #40]	@ 0x28
+ 8001df8:	f005 f96a 	bl	80070d0 <_Z11gpioPinMode11GpioAddressi>
+  	  gpioDigitalWrite(GpioAddress(1, i), LOW);
+ 8001dfc:	f107 032c 	add.w	r3, r7, #44	@ 0x2c
+ 8001e00:	6bfa      	ldr	r2, [r7, #60]	@ 0x3c
+ 8001e02:	2101      	movs	r1, #1
+ 8001e04:	4618      	mov	r0, r3
+ 8001e06:	f7ff fc65 	bl	80016d4 <_ZN11GpioAddressC1Eii>
+ 8001e0a:	2100      	movs	r1, #0
+ 8001e0c:	6af8      	ldr	r0, [r7, #44]	@ 0x2c
+ 8001e0e:	f005 f8d3 	bl	8006fb8 <_Z16gpioDigitalWrite11GpioAddressi>
+  for (int i = 0; i <= 7; i++) {
+ 8001e12:	6bfb      	ldr	r3, [r7, #60]	@ 0x3c
+ 8001e14:	3301      	adds	r3, #1
+ 8001e16:	63fb      	str	r3, [r7, #60]	@ 0x3c
+ 8001e18:	6bfb      	ldr	r3, [r7, #60]	@ 0x3c
+ 8001e1a:	2b07      	cmp	r3, #7
+ 8001e1c:	ddcd      	ble.n	8001dba <main+0x76>
+    }
+
+    init_gpio_inputs();
+ 8001e1e:	f7ff fc8f 	bl	8001740 <_Z16init_gpio_inputsv>
+    init_gpio_outputs();
+ 8001e22:	f7ff fcbd 	bl	80017a0 <_Z17init_gpio_outputsv>
+
+    init_gpio_output_from_flipflops();
+ 8001e26:	f7ff fd63 	bl	80018f0 <init_gpio_output_from_flipflops>
 
 
   /* USER CODE END 2 */
@@ -25392,9 +25394,9 @@ SVCCTL_UserEvtFlowStatus_t SVCCTL_App_Notification(void *p_Pckt)
  80095a8:	4b70      	ldr	r3, [pc, #448]	@ (800976c <SVCCTL_App_Notification+0x218>)
  80095aa:	2200      	movs	r2, #0
  80095ac:	f883 2080 	strb.w	r2, [r3, #128]	@ 0x80
-      update_gpio_output(ORANGE_LED, 0);
+      update_gpio_output(BLUE_LED, 0);
  80095b0:	2100      	movs	r1, #0
- 80095b2:	2007      	movs	r0, #7
+ 80095b2:	2009      	movs	r0, #9
  80095b4:	f7f9 fa22 	bl	80029fc <update_gpio_output>
       set_bluetooth_status(0);
  80095b8:	2000      	movs	r0, #0

@@ -450,7 +450,7 @@ SVCCTL_UserEvtFlowStatus_t SVCCTL_App_Notification(void *p_Pckt)
       }
 
       /* USER CODE BEGIN EVT_DISCONN_COMPLETE_1 */
-      update_gpio_output(ORANGE_LED, 0);
+      update_gpio_output(BLUE_LED, 0);
       set_bluetooth_status(0);
       /* USER CODE END EVT_DISCONN_COMPLETE_1 */
 
