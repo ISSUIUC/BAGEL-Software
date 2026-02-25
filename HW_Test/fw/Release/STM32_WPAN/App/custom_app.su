@@ -1,9 +1,0 @@
-../STM32_WPAN/App/custom_app.c:106:6:Custom_STM_App_Notification	0	static
-../STM32_WPAN/App/custom_app.c:281:6:Custom_APP_Notification	0	static
-../STM32_WPAN/App/custom_app.c:318:6:Custom_APP_Init	0	static
-../STM32_WPAN/App/custom_app.c:337:13:Custom_Switch_4_Update_Char	0	static
-../STM32_WPAN/App/custom_app.c:376:13:Custom_Switch_5_Update_Char	0	static
-../STM32_WPAN/App/custom_app.c:415:13:Custom_Switch_6_Update_Char	0	static
-../STM32_WPAN/App/custom_app.c:455:13:Custom_Switch_1_Update_Char	0	static
-../STM32_WPAN/App/custom_app.c:494:13:Custom_Switch_2_Update_Char	0	static
-../STM32_WPAN/App/custom_app.c:533:13:Custom_Switch_3_Update_Char	0	static

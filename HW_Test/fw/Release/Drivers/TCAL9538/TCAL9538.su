@@ -1,4 +1,0 @@
-../Drivers/TCAL9538/TCAL9538.cpp:17:6:bool TCAL9538Init(I2C_HandleTypeDef*, GPIO_TypeDef*, uint16_t)	48	static
-../Drivers/TCAL9538/TCAL9538.cpp:47:11:GpioError gpioDigitalWrite(GpioAddress, int)	48	static
-../Drivers/TCAL9538/TCAL9538.cpp:72:16:GpioReadResult gpioDigitalRead(GpioAddress)	40	static
-../Drivers/TCAL9538/TCAL9538.cpp:84:11:GpioError gpioPinMode(GpioAddress, int)	48	static
