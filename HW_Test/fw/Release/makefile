@@ -22,6 +22,7 @@ RM := rm -rf
 -include Drivers/TCAL9538/subdir.mk
 -include Drivers/STM32WBxx_HAL_Driver/Src/subdir.mk
 -include Drivers/Interface/subdir.mk
+-include Drivers/BLE_Interface/subdir.mk
 -include Core/Startup/subdir.mk
 -include Core/Src/subdir.mk
 -include objects.mk

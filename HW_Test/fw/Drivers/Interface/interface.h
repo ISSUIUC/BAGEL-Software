@@ -23,6 +23,8 @@ extern int gpio_output_status[11];
 extern int bluetooth_status; // whether the board is connected to Bluetooth
 
 
+
+
 enum GPIO_INPUT {
 	SWITCH_1_Q,
 	SWITCH_2_Q,
@@ -35,12 +37,14 @@ enum GPIO_INPUT {
 	SWITCH_3_PG,
 	SWITCH_4_PG,
 	SWITCH_5_PG,
-	SWITCH_6_PG
+	SWITCH_6_PG,
+	GPIO_INPUT_END
 };
 
 struct gpio_pin {
-	uint8_t expander; 	// 0 is no expander, 1 is expander 1, and 2 is expander 2
-	uint8_t pin;		// pin
+	uint8_t expander; 	// 0 is GPIOA, 1 is expander 1, 2 is expander 2, and 3 is GPIOB
+	uint16_t pin;		// pin
+
 };
 
 enum GPIO_OUTPUT {
@@ -54,7 +58,8 @@ enum GPIO_OUTPUT {
 	ORANGE_LED,
 	GREEN_LED,
 	BLUE_LED,
-	CLOCK
+	CLOCK,
+	GPIO_OUTPUT_END
 };
 
 
@@ -65,14 +70,12 @@ uint8_t interface_init(UART_HandleTypeDef * huart1);
 
 uint8_t interface_send(uint8_t * data, uint16_t len);
 
+uint8_t set_bluetooth_status(int newStatus);
 
 uint8_t update_gpio_output(int gpio_output, int status);
 
 uint8_t toggle_gpio_output(int gpio_output);
 
-uint8_t read_gpio_input(int gpio_input);
-
-uint8_t write_gpio_output(int gpio_output, int value);
 
 
 

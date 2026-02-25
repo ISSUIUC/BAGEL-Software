@@ -10,6 +10,7 @@
 "./Core/Src/sysmem.o"
 "./Core/Src/system_stm32wbxx.o"
 "./Core/Startup/startup_stm32wb1mmchx.o"
+"./Drivers/BLE_Interface/BLE_interface.o"
 "./Drivers/Interface/interface.o"
 "./Drivers/STM32WBxx_HAL_Driver/Src/stm32wbxx_hal.o"
 "./Drivers/STM32WBxx_HAL_Driver/Src/stm32wbxx_hal_adc.o"

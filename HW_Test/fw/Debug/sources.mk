@@ -40,6 +40,7 @@ CPP_DEPS :=
 SUBDIRS := \
 Core/Src \
 Core/Startup \
+Drivers/BLE_Interface \
 Drivers/Interface \
 Drivers/STM32WBxx_HAL_Driver/Src \
 Drivers/TCAL9538 \

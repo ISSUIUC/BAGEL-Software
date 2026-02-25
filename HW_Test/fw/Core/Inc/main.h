@@ -56,7 +56,11 @@ extern "C" {
 void Error_Handler(void);
 
 /* USER CODE BEGIN EFP */
+uint8_t read_gpio_input(int gpio_input);
 
+uint8_t write_gpio_output(int gpio_output, int value);
+
+uint8_t init_gpio_output_from_flipflops();
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
