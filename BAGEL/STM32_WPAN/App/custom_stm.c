@@ -468,7 +468,7 @@ static SVCCTL_EvtAckStatus_t Custom_STM_Event_Handler(void *Event)
             }
             if (switch_status == 0 || switch_status == 1)
             	update_gpio_output(SWITCH_5, (int)switch_status);
-			/* USER CODE END CUSTOM_STM_Service_1_Char_2_ACI_GATT_ATTRIBUTE_MODIFIED_VSEVT_CODE */
+            /* USER CODE END CUSTOM_STM_Service_1_Char_2_ACI_GATT_ATTRIBUTE_MODIFIED_VSEVT_CODE */
           } /* if (attribute_modified->Attr_Handle == (CustomContext.CustomSwitch_5Hdle + CHARACTERISTIC_VALUE_ATTRIBUTE_OFFSET))*/
           else if (attribute_modified->Attr_Handle == (CustomContext.CustomSwitch_6Hdle + CHARACTERISTIC_VALUE_ATTRIBUTE_OFFSET))
           {
