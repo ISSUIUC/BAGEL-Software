@@ -38,6 +38,7 @@ typedef struct{
   uint16_t  CustomSwitch_1Hdle;                  /**< Switch_1 handle */
   uint16_t  CustomSwitch_2Hdle;                  /**< Switch_2 handle */
   uint16_t  CustomSwitch_3Hdle;                  /**< Switch_3 handle */
+  uint16_t  CustomBattery_VoltageHdle;                  /**< BATTERY_VOLTAGE handle */
 /* USER CODE BEGIN Context */
   /* Place holder for Characteristic Descriptors Handle*/
 
@@ -78,6 +79,7 @@ uint16_t SizeSwitch_6 = 1;
 uint16_t SizeSwitch_1 = 1;
 uint16_t SizeSwitch_2 = 1;
 uint16_t SizeSwitch_3 = 1;
+uint16_t SizeBattery_Voltage = 1;
 
 /**
  * START of Section BLE_DRIVER_CONTEXT
@@ -125,6 +127,7 @@ do {\
 #define COPY_SWITCH_1_UUID(uuid_struct)    COPY_UUID_128(uuid_struct,0x1a,0xb8,0x34,0x56,0x76,0x53,0x73,0x84,0x27,0x37,0x48,0x48,0x38,0x48,0x38,0x48)
 #define COPY_SWITCH_2_UUID(uuid_struct)    COPY_UUID_128(uuid_struct,0x63,0x77,0x77,0xab,0xc7,0x38,0x7d,0xe7,0x28,0x98,0x27,0x37,0x38,0x83,0x88,0x38)
 #define COPY_SWITCH_3_UUID(uuid_struct)    COPY_UUID_128(uuid_struct,0x72,0x67,0x18,0x34,0x82,0x82,0x03,0x08,0x23,0x83,0x83,0x8b,0xcd,0xe2,0x90,0x92)
+#define COPY_BATTERY_VOLTAGE_UUID(uuid_struct)    COPY_UUID_128(uuid_struct,0x10,0x20,0x92,0x09,0x12,0x49,0x81,0x24,0x71,0x27,0x91,0x29,0x81,0x29,0x81,0x29)
 
 /* USER CODE BEGIN PF */
 
@@ -424,6 +427,50 @@ static SVCCTL_EvtAckStatus_t Custom_STM_Event_Handler(void *Event)
               break;
             }
           }  /* if (attribute_modified->Attr_Handle == (CustomContext.CustomSwitch_3Hdle + CHARACTERISTIC_DESCRIPTOR_ATTRIBUTE_OFFSET))*/
+
+          else if (attribute_modified->Attr_Handle == (CustomContext.CustomBattery_VoltageHdle + CHARACTERISTIC_DESCRIPTOR_ATTRIBUTE_OFFSET))
+          {
+            return_value = SVCCTL_EvtAckFlowEnable;
+            /* USER CODE BEGIN CUSTOM_STM_Service_2_Char_4 */
+
+            /* USER CODE END CUSTOM_STM_Service_2_Char_4 */
+            switch (attribute_modified->Attr_Data[0])
+            {
+              /* USER CODE BEGIN CUSTOM_STM_Service_2_Char_4_attribute_modified */
+
+              /* USER CODE END CUSTOM_STM_Service_2_Char_4_attribute_modified */
+
+              /* Disabled Notification management */
+              case (!(COMSVC_Notification)):
+                /* USER CODE BEGIN CUSTOM_STM_Service_2_Char_4_Disabled_BEGIN */
+
+                /* USER CODE END CUSTOM_STM_Service_2_Char_4_Disabled_BEGIN */
+                Notification.Custom_Evt_Opcode = CUSTOM_STM_BATTERY_VOLTAGE_NOTIFY_DISABLED_EVT;
+                Custom_STM_App_Notification(&Notification);
+                /* USER CODE BEGIN CUSTOM_STM_Service_2_Char_4_Disabled_END */
+
+                /* USER CODE END CUSTOM_STM_Service_2_Char_4_Disabled_END */
+                break;
+
+              /* Enabled Notification management */
+              case COMSVC_Notification:
+                /* USER CODE BEGIN CUSTOM_STM_Service_2_Char_4_COMSVC_Notification_BEGIN */
+
+                /* USER CODE END CUSTOM_STM_Service_2_Char_4_COMSVC_Notification_BEGIN */
+                Notification.Custom_Evt_Opcode = CUSTOM_STM_BATTERY_VOLTAGE_NOTIFY_ENABLED_EVT;
+                Custom_STM_App_Notification(&Notification);
+                /* USER CODE BEGIN CUSTOM_STM_Service_2_Char_4_COMSVC_Notification_END */
+
+                /* USER CODE END CUSTOM_STM_Service_2_Char_4_COMSVC_Notification_END */
+                break;
+
+              default:
+                /* USER CODE BEGIN CUSTOM_STM_Service_2_Char_4_default */
+
+                /* USER CODE END CUSTOM_STM_Service_2_Char_4_default */
+              break;
+            }
+          }  /* if (attribute_modified->Attr_Handle == (CustomContext.CustomBattery_VoltageHdle + CHARACTERISTIC_DESCRIPTOR_ATTRIBUTE_OFFSET))*/
 
           else if (attribute_modified->Attr_Handle == (CustomContext.CustomSwitch_4Hdle + CHARACTERISTIC_VALUE_ATTRIBUTE_OFFSET))
           {
@@ -774,20 +821,22 @@ void SVCCTL_InitCustomSvc(void)
   /**
    *          BAGEL_1
    *
-   * Max_Attribute_Records = 1 + 2*3 + 1*no_of_char_with_notify_or_indicate_property + 1*no_of_char_with_broadcast_property
+   * Max_Attribute_Records = 1 + 2*4 + 1*no_of_char_with_notify_or_indicate_property + 1*no_of_char_with_broadcast_property
    * service_max_attribute_record = 1 for BAGEL_1 +
    *                                2 for Switch_1 +
    *                                2 for Switch_2 +
    *                                2 for Switch_3 +
+   *                                2 for BATTERY_VOLTAGE +
    *                                1 for Switch_1 configuration descriptor +
    *                                1 for Switch_2 configuration descriptor +
    *                                1 for Switch_3 configuration descriptor +
-   *                              = 10
+   *                                1 for BATTERY_VOLTAGE configuration descriptor +
+   *                              = 13
    *
    * This value doesn't take into account number of descriptors manually added
    * In case of descriptors added, please update the max_attr_record value accordingly in the next SVCCTL_InitService User Section
    */
-  max_attr_record = 10;
+  max_attr_record = 13;
 
   /* USER CODE BEGIN SVCCTL_InitService2 */
   /* max_attr_record to be updated if descriptors have been added */
@@ -887,6 +936,32 @@ void SVCCTL_InitCustomSvc(void)
   /* Place holder for Characteristic Descriptors */
 
   /* USER CODE END SVCCTL_Init_Service2_Char3 */
+  /**
+   *  BATTERY_VOLTAGE
+   */
+  COPY_BATTERY_VOLTAGE_UUID(uuid.Char_UUID_128);
+  ret = aci_gatt_add_char(CustomContext.CustomBagel_1Hdle,
+                          UUID_TYPE_128, &uuid,
+                          SizeBattery_Voltage,
+                          CHAR_PROP_READ | CHAR_PROP_NOTIFY,
+                          ATTR_PERMISSION_NONE,
+                          GATT_NOTIFY_ATTRIBUTE_WRITE,
+                          0x10,
+                          CHAR_VALUE_LEN_CONSTANT,
+                          &(CustomContext.CustomBattery_VoltageHdle));
+  if (ret != BLE_STATUS_SUCCESS)
+  {
+    APP_DBG_MSG("  Fail   : aci_gatt_add_char command   : BATTERY_VOLTAGE, error code: 0x%x \n\r", ret);
+  }
+  else
+  {
+    APP_DBG_MSG("  Success: aci_gatt_add_char command   : BATTERY_VOLTAGE \n\r");
+  }
+
+  /* USER CODE BEGIN SVCCTL_Init_Service2_Char4 */
+  /* Place holder for Characteristic Descriptors */
+
+  /* USER CODE END SVCCTL_Init_Service2_Char4 */
 
   /* USER CODE BEGIN SVCCTL_InitCustomSvc_2 */
 
@@ -1023,6 +1098,25 @@ tBleStatus Custom_STM_App_Update_Char(Custom_STM_Char_Opcode_t CharOpcode, uint8
       /* USER CODE BEGIN CUSTOM_STM_App_Update_Service_2_Char_3*/
 
       /* USER CODE END CUSTOM_STM_App_Update_Service_2_Char_3*/
+      break;
+
+    case CUSTOM_STM_BATTERY_VOLTAGE:
+      ret = aci_gatt_update_char_value(CustomContext.CustomBagel_1Hdle,
+                                       CustomContext.CustomBattery_VoltageHdle,
+                                       0, /* charValOffset */
+                                       SizeBattery_Voltage, /* charValueLen */
+                                       (uint8_t *)  pPayload);
+      if (ret != BLE_STATUS_SUCCESS)
+      {
+        APP_DBG_MSG("  Fail   : aci_gatt_update_char_value BATTERY_VOLTAGE command, result : 0x%x \n\r", ret);
+      }
+      else
+      {
+        APP_DBG_MSG("  Success: aci_gatt_update_char_value BATTERY_VOLTAGE command\n\r");
+      }
+      /* USER CODE BEGIN CUSTOM_STM_App_Update_Service_2_Char_4*/
+
+      /* USER CODE END CUSTOM_STM_App_Update_Service_2_Char_4*/
       break;
 
     default:
@@ -1167,6 +1261,25 @@ tBleStatus Custom_STM_App_Update_Char_Variable_Length(Custom_STM_Char_Opcode_t C
       /* USER CODE END Custom_STM_App_Update_Char_Variable_Length_Service_2_Char_3*/
       break;
 
+    case CUSTOM_STM_BATTERY_VOLTAGE:
+      ret = aci_gatt_update_char_value(CustomContext.CustomBagel_1Hdle,
+                                       CustomContext.CustomBattery_VoltageHdle,
+                                       0, /* charValOffset */
+                                       size, /* charValueLen */
+                                       (uint8_t *)  pPayload);
+      if (ret != BLE_STATUS_SUCCESS)
+      {
+        APP_DBG_MSG("  Fail   : aci_gatt_update_char_value BATTERY_VOLTAGE command, result : 0x%x \n\r", ret);
+      }
+      else
+      {
+        APP_DBG_MSG("  Success: aci_gatt_update_char_value BATTERY_VOLTAGE command\n\r");
+      }
+      /* USER CODE BEGIN Custom_STM_App_Update_Char_Variable_Length_Service_2_Char_4*/
+
+      /* USER CODE END Custom_STM_App_Update_Char_Variable_Length_Service_2_Char_4*/
+      break;
+
     default:
       break;
   }
@@ -1280,6 +1393,22 @@ tBleStatus Custom_STM_App_Update_Char_Ext(uint16_t Connection_Handle, Custom_STM
 
       /* USER CODE END Updated_Length_Service_2_Char_3*/
       ret = Generic_STM_App_Update_Char_Ext(Connection_Handle, CustomContext.CustomBagel_1Hdle, CustomContext.CustomSwitch_3Hdle, SizeSwitch_3, pPayload);
+
+      if (ret != BLE_STATUS_SUCCESS)
+      {
+        APP_DBG_MSG("  Fail   : Generic_STM_App_Update_Char_Ext command, result : 0x%x \n\r", ret);
+      }
+      else
+      {
+        APP_DBG_MSG("  Success: Generic_STM_App_Update_Char_Ext command\n\r");
+      }
+      break;
+
+    case CUSTOM_STM_BATTERY_VOLTAGE:
+      /* USER CODE BEGIN Updated_Length_Service_2_Char_4*/
+
+      /* USER CODE END Updated_Length_Service_2_Char_4*/
+      ret = Generic_STM_App_Update_Char_Ext(Connection_Handle, CustomContext.CustomBagel_1Hdle, CustomContext.CustomBattery_VoltageHdle, SizeBattery_Voltage, pPayload);
 
       if (ret != BLE_STATUS_SUCCESS)
       {

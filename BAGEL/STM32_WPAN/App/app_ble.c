@@ -267,6 +267,12 @@ void APP_BLE_Init(void)
   tBleStatus ret = BLE_STATUS_INVALID_PARAMS;
 #endif /* RADIO_ACTIVITY_EVENT != 0 */
   /* USER CODE BEGIN APP_BLE_Init_1 */
+//  uint8_t my_new_addr[6] = {0x01, 0x02, 0x03, 0x04, 0x05, 0x06}; // 06:05:04:03:02:01
+//
+//  /* Write to the BlueNRG stack configuration */
+//  aci_hal_write_config_data(CONFIG_DATA_PUBADDR_OFFSET,
+//                            CONFIG_DATA_PUBADDR_LEN,
+//                            my_new_addr);
 
   /* USER CODE END APP_BLE_Init_1 */
   SHCI_C2_Ble_Init_Cmd_Packet_t ble_init_cmd_packet =

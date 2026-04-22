@@ -283,6 +283,8 @@ uint8_t update_ble_values() {
 			break;
 	}
 
+	Custom_STM_App_Update_Char(CUSTOM_STM_BATTERY_VOLTAGE, (uint8_t*)&battery_voltage);
+
 	return 0;
 }
 
@@ -404,7 +406,6 @@ int main(void)
 		Error_Handler();
 	}
 	int rawValue;
-	float voltage;
 	// 2. Wait for the conversion to finish (Timeout = 10ms)
 	if (HAL_ADC_PollForConversion(&hadc1, 10) == HAL_OK) {
 		// 3. Read the value
@@ -415,13 +416,11 @@ int main(void)
 		char buffer2[30];
 //		snprintf(buffer2, sizeof(buffer2), "Value: %d\n", rawValue);
 		int valToTransmit = (rawValue >> 4);
+		battery_voltage = (char)valToTransmit;
 
 		int len = sprintf(buffer2, "Value: %d\n", valToTransmit);
 
 		HAL_UART_Transmit(&huart1, (uint8_t*)buffer2, len, 1000);
-
-
-
 	}
 
 	// 5. Stop the ADC to save power

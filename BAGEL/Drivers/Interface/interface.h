@@ -22,7 +22,7 @@ extern int gpio_output_status[11];
 
 extern int bluetooth_status; // whether the board is connected to Bluetooth
 
-
+extern char battery_voltage;
 
 
 enum GPIO_INPUT {
