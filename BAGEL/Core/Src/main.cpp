@@ -67,12 +67,12 @@ UART_HandleTypeDef * my_huart;
 void SystemClock_Config(void);
 void PeriphCommonClock_Config(void);
 static void MX_GPIO_Init(void);
-static void MX_ADC1_Init(void);
 static void MX_I2C1_Init(void);
 static void MX_SPI1_Init(void);
 static void MX_USART1_UART_Init(void);
 static void MX_IPCC_Init(void);
 static void MX_RTC_Init(void);
+static void MX_ADC1_Init(void);
 static void MX_RF_Init(void);
 /* USER CODE BEGIN PFP */
 
@@ -283,6 +283,8 @@ uint8_t update_ble_values() {
 			break;
 	}
 
+	Custom_STM_App_Update_Char(CUSTOM_STM_BATTERY_VOLTAGE, (uint8_t*)&battery_voltage);
+
 	return 0;
 }
 
@@ -330,11 +332,11 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
-  MX_ADC1_Init();
   MX_I2C1_Init();
   MX_SPI1_Init();
   MX_USART1_UART_Init();
   MX_RTC_Init();
+  MX_ADC1_Init();
   MX_RF_Init();
   /* USER CODE BEGIN 2 */
 
@@ -392,6 +394,40 @@ int main(void)
 	if (bluetooth_status)
 		update_ble_values();
 
+//    uint8_t buffer2[30];
+
+//    snprintf(buffer2, sizeof(buffer2), "Value: %d", name, value);
+
+
+//	HAL_UART_Transmit(&huart1, buffer2, sizeof(buffer2), 1000);
+	if (HAL_ADC_Start(&hadc1) != HAL_OK) {
+		/* Start Error */
+		Error_Handler();
+	}
+	int rawValue;
+	// 2. Wait for the conversion to finish (Timeout = 10ms)
+	if (HAL_ADC_PollForConversion(&hadc1, 10) == HAL_OK) {
+		// 3. Read the value
+		rawValue = HAL_ADC_GetValue(&hadc1);
+
+		// 4. Convert to voltage (assuming 3.3V VCC and 12-bit ADC)
+//		voltage = ((float)rawValue * 3.3f * 2) / 4095.0f;
+		char buffer2[30];
+//		snprintf(buffer2, sizeof(buffer2), "Value: %d\n", rawValue);
+		int valToTransmit = (rawValue >> 4);
+		battery_voltage = (char)valToTransmit;
+
+		int len = sprintf(buffer2, "Value: %d\n", valToTransmit);
+
+		HAL_UART_Transmit(&huart1, (uint8_t*)buffer2, len, 1000);
+	}
+
+	// 5. Stop the ADC to save power
+	HAL_ADC_Stop(&hadc1);
+
+
+
+
 
 
 
@@ -419,7 +455,6 @@ int main(void)
 //
 //	HAL_Delay(750);
 //
-////	HAL_UART_Transmit(&huart1, low, sizeof(low), 1000);
 //	gpioDigitalWrite(GpioAddress(1, 7), LOW);
 //	HAL_Delay(50);
 //	gpioDigitalWrite(GpioAddress(1, 6), LOW);
@@ -553,8 +588,8 @@ static void MX_ADC1_Init(void)
   hadc1.Init.DataAlign = ADC_DATAALIGN_RIGHT;
   hadc1.Init.ScanConvMode = ADC_SCAN_DISABLE;
   hadc1.Init.EOCSelection = ADC_EOC_SINGLE_CONV;
-  hadc1.Init.SamplingTimeCommon1 = ADC_SAMPLETIME_1CYCLE_5;
-  hadc1.Init.SamplingTimeCommon2 = ADC_SAMPLETIME_1CYCLE_5;
+  hadc1.Init.SamplingTimeCommon1 = ADC_SAMPLETIME_12CYCLES_5;
+  hadc1.Init.SamplingTimeCommon2 = ADC_SAMPLETIME_12CYCLES_5;
   hadc1.Init.LowPowerAutoWait = DISABLE;
   hadc1.Init.ContinuousConvMode = DISABLE;
   hadc1.Init.NbrOfConversion = 1;

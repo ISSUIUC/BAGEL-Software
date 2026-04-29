@@ -43,6 +43,7 @@ typedef struct
   uint8_t               Switch_1_Notification_Status;
   uint8_t               Switch_2_Notification_Status;
   uint8_t               Switch_3_Notification_Status;
+  uint8_t               Battery_voltage_Notification_Status;
   /* USER CODE BEGIN CUSTOM_APP_Context_t */
 
   /* USER CODE END CUSTOM_APP_Context_t */
@@ -97,6 +98,8 @@ static void Custom_Switch_2_Update_Char(void);
 static void Custom_Switch_2_Send_Notification(void);
 static void Custom_Switch_3_Update_Char(void);
 static void Custom_Switch_3_Send_Notification(void);
+static void Custom_Battery_voltage_Update_Char(void);
+static void Custom_Battery_voltage_Send_Notification(void);
 
 /* USER CODE BEGIN PFP */
 
@@ -258,6 +261,24 @@ void Custom_STM_App_Notification(Custom_STM_App_Notification_evt_t *pNotificatio
       /* USER CODE BEGIN CUSTOM_STM_SWITCH_3_NOTIFY_DISABLED_EVT */
 
       /* USER CODE END CUSTOM_STM_SWITCH_3_NOTIFY_DISABLED_EVT */
+      break;
+
+    case CUSTOM_STM_BATTERY_VOLTAGE_READ_EVT:
+      /* USER CODE BEGIN CUSTOM_STM_BATTERY_VOLTAGE_READ_EVT */
+
+      /* USER CODE END CUSTOM_STM_BATTERY_VOLTAGE_READ_EVT */
+      break;
+
+    case CUSTOM_STM_BATTERY_VOLTAGE_NOTIFY_ENABLED_EVT:
+      /* USER CODE BEGIN CUSTOM_STM_BATTERY_VOLTAGE_NOTIFY_ENABLED_EVT */
+
+      /* USER CODE END CUSTOM_STM_BATTERY_VOLTAGE_NOTIFY_ENABLED_EVT */
+      break;
+
+    case CUSTOM_STM_BATTERY_VOLTAGE_NOTIFY_DISABLED_EVT:
+      /* USER CODE BEGIN CUSTOM_STM_BATTERY_VOLTAGE_NOTIFY_DISABLED_EVT */
+
+      /* USER CODE END CUSTOM_STM_BATTERY_VOLTAGE_NOTIFY_DISABLED_EVT */
       break;
 
     case CUSTOM_STM_NOTIFICATION_COMPLETE_EVT:
@@ -565,6 +586,45 @@ void Custom_Switch_3_Send_Notification(void) /* Property Notification */
   /* USER CODE BEGIN Switch_3_NS_Last*/
 
   /* USER CODE END Switch_3_NS_Last*/
+
+  return;
+}
+
+__USED void Custom_Battery_voltage_Update_Char(void) /* Property Read */
+{
+  uint8_t updateflag = 0;
+
+  /* USER CODE BEGIN Battery_voltage_UC_1*/
+
+  /* USER CODE END Battery_voltage_UC_1*/
+
+  if (updateflag != 0)
+  {
+    Custom_STM_App_Update_Char(CUSTOM_STM_BATTERY_VOLTAGE, (uint8_t *)UpdateCharData);
+  }
+
+  /* USER CODE BEGIN Battery_voltage_UC_Last*/
+
+  /* USER CODE END Battery_voltage_UC_Last*/
+  return;
+}
+
+void Custom_Battery_voltage_Send_Notification(void) /* Property Notification */
+{
+  uint8_t updateflag = 0;
+
+  /* USER CODE BEGIN Battery_voltage_NS_1*/
+
+  /* USER CODE END Battery_voltage_NS_1*/
+
+  if (updateflag != 0)
+  {
+    Custom_STM_App_Update_Char(CUSTOM_STM_BATTERY_VOLTAGE, (uint8_t *)NotifyCharData);
+  }
+
+  /* USER CODE BEGIN Battery_voltage_NS_Last*/
+
+  /* USER CODE END Battery_voltage_NS_Last*/
 
   return;
 }

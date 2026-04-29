@@ -53,7 +53,7 @@ struct gpio_pin gpio_output_pins[11] = {
 
 int bluetooth_status = 0;
 
-
+char battery_voltage = 0;
 
 
 uint8_t interface_init(UART_HandleTypeDef * huart1){
