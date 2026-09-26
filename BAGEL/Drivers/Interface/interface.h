@@ -13,6 +13,7 @@ extern "C" {
 #endif
 
 #include "stm32wbxx_hal.h"
+#include "inttypes.h"
 
 extern UART_HandleTypeDef * my_huart;
 

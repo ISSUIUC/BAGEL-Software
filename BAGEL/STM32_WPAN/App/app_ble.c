@@ -397,7 +397,7 @@ void APP_BLE_Init(void)
   /**
    * Make device discoverable
    */
-  BleApplicationContext.BleApplicationContext_legacy.advtServUUID[0] = NULL;
+  BleApplicationContext.BleApplicationContext_legacy.advtServUUID[0] = 0;
   BleApplicationContext.BleApplicationContext_legacy.advtServUUIDlen = 0;
 
   /**
