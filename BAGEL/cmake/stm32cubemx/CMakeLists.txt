@@ -14,6 +14,7 @@ set(MX_Include_Dirs
     ${CMAKE_CURRENT_SOURCE_DIR}/../../STM32_WPAN/App
     ${CMAKE_CURRENT_SOURCE_DIR}/../../Drivers/STM32WBxx_HAL_Driver/Inc
     ${CMAKE_CURRENT_SOURCE_DIR}/../../Drivers/STM32WBxx_HAL_Driver/Inc/Legacy
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../Drivers/TCAL9538
     ${CMAKE_CURRENT_SOURCE_DIR}/../../Utilities/lpm/tiny_lpm
     ${CMAKE_CURRENT_SOURCE_DIR}/../../Middlewares/ST/STM32_WPAN
     ${CMAKE_CURRENT_SOURCE_DIR}/../../Middlewares/ST/STM32_WPAN/interface/patterns/ble_thread
@@ -34,11 +35,13 @@ set(MX_Include_Dirs
 # STM32CubeMX generated application sources
 set(MX_Application_Src
     ${CMAKE_CURRENT_SOURCE_DIR}/../../STM32_WPAN/App/custom_stm.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../STM32_WPAN/App/app_ble.c
     ${CMAKE_CURRENT_SOURCE_DIR}/../../STM32_WPAN/Target/hw_ipcc.c
     ${CMAKE_CURRENT_SOURCE_DIR}/../../Drivers/Interface/interface.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../Drivers/TCAL9538/TCAL9538.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/../../STM32_WPAN/App/custom_stm.c
     ${CMAKE_CURRENT_SOURCE_DIR}/../../STM32_WPAN/App/custom_app.c
-    ${CMAKE_CURRENT_SOURCE_DIR}/../../Core/Src/main.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../Core/Src/main.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/../../Core/Src/app_entry.c
     ${CMAKE_CURRENT_SOURCE_DIR}/../../Core/Src/app_debug.c
     ${CMAKE_CURRENT_SOURCE_DIR}/../../Core/Src/hw_timerserver.c

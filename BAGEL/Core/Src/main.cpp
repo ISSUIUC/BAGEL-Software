@@ -1,5 +1,4 @@
-/* File main.cpp no longer builds/functions after cmake build. 
- * edit/use Core\Src\main.c 
+/* File main.cpp actually does now function after cmake, it's just easier to include this in the linker instead of refactoring for .c alternative...
  */
 
 /* USER CODE BEGIN Header */
@@ -87,7 +86,7 @@ uint8_t init_gpio_inputs() {
 //			gpioPinMode()
 			continue;
 		}
-		gpioPinMode(GpioAddress(pin.expander - 1, pin.pin), INPUT);
+		gpioPinMode(GpioAddress(pin.expander - 1, pin.pin), INPUT); 
 	}
 	return 0;
 }

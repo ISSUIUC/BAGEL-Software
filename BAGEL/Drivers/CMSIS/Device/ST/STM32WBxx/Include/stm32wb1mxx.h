@@ -32,6 +32,8 @@
   * @{
   */
 
+#include "inttypes.h"
+
 #ifndef __STM32WB1Mxx_H
 #define __STM32WB1Mxx_H
 

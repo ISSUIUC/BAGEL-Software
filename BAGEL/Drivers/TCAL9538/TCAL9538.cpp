@@ -6,6 +6,7 @@
  */
 
 #include"TCAL9538.hpp"
+#include "inttypes.h"
 
 static constexpr uint8_t REG_INPUT = 0x0;
 static constexpr uint8_t REG_OUTPUT = 0x1;
@@ -71,14 +72,14 @@ GpioError gpioDigitalWrite(GpioAddress addr, int mode){
 
 GpioReadResult gpioDigitalRead(GpioAddress addr){
     if(!addr.is_valid) {
-        return GpioReadResult{.value=LOW,.error=GpioError::InvalidPinError};
+        return GpioReadResult{LOW,GpioError::InvalidPinError};
     }
 
 
     uint8_t val;
     HAL_I2C_Mem_Read(gpio_i2c, addr.gpio_address, REG_INPUT, 1, &val, 1, HAL_MAX_DELAY);
 
-    return GpioReadResult{.value=(val & (1 << addr.pin_id)) != 0,.error=GpioError::NoError};
+    return GpioReadResult{(val & (1 << addr.pin_id)) != 0,GpioError::NoError};
 }
 
 GpioError gpioPinMode(GpioAddress addr, int mode){
