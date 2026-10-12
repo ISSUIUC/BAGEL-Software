@@ -13,6 +13,7 @@ extern "C" {
 #endif
 
 #include "stm32wbxx_hal.h"
+#include <stdbool.h>
 
 extern UART_HandleTypeDef * my_huart;
 
@@ -41,12 +42,6 @@ enum GPIO_INPUT {
 	GPIO_INPUT_END
 };
 
-struct gpio_pin {
-	uint8_t expander; 	// 0 is GPIOA, 1 is expander 1, 2 is expander 2, and 3 is GPIOB
-	uint16_t pin;		// pin
-
-};
-
 enum GPIO_OUTPUT {
 	SWITCH_1,
 	SWITCH_2,
@@ -62,6 +57,42 @@ enum GPIO_OUTPUT {
 	GPIO_OUTPUT_END
 };
 
+enum ports {
+	PORT_A = 0,
+	EXPANDER1 = 1,
+	EXPANDER2 = 2,
+	PORT_B = 3
+};
+
+struct gpio_pin {
+	enum ports expander; 	// 0 is GPIOA, 1 is expander 1, 2 is expander 2, and 3 is GPIOB
+	uint16_t pin;		// GPIO_PIN_x on PORT_A/B, 0-7 on EXPANDER1/2
+	bool active_low;    // true if a low level on the pin means "on"
+};
+
+
+
+struct switch_t {
+    struct gpio_pin qnot_pin;
+    struct gpio_pin pg_pin;
+    struct gpio_pin output;
+
+
+
+    bool state;  //what we want.current status: on or off
+
+    bool qnot; // what it actually is. value of opposite of switch (true = off, false = on)
+
+
+	bool pg; //power good. | true = has power
+	//connected to power and whether flip flop has power
+
+	//also need something for bluetooth
+};
+
+
+
+extern struct switch_t switches[6];
 
 extern struct gpio_pin gpio_input_pins[12];
 extern struct gpio_pin gpio_output_pins[11];
@@ -75,9 +106,11 @@ uint8_t set_bluetooth_status(int newStatus);
 uint8_t update_gpio_output(int gpio_output, int status);
 
 uint8_t toggle_gpio_output(int gpio_output);
+// new functions
 
-
-
+//sw = switch
+uint8_t set_switch_status(int sw, bool newStatus);
+uint8_t get_switch_status(int sw);
 
 
 #ifdef __cplusplus
