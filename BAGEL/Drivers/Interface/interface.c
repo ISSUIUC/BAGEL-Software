@@ -50,6 +50,14 @@ struct gpio_pin gpio_output_pins[11] = {
 		[CLOCK] = { .expander=0, .pin=GPIO_PIN_0 },
 };
 
+struct switch_t switches[6] = {
+	[SWITCH_1] = { .qnot_pin={ .expander=PORT_A,    .pin=GPIO_PIN_5 }, .pg_pin={ .expander=PORT_A,    .pin=GPIO_PIN_3 }, .output={ .expander=PORT_A,    .pin=GPIO_PIN_12 } },
+	[SWITCH_2] = { .qnot_pin={ .expander=EXPANDER1, .pin=3 },          .pg_pin={ .expander=EXPANDER1, .pin=4 },          .output={ .expander=EXPANDER1, .pin=5 } },
+	[SWITCH_3] = { .qnot_pin={ .expander=EXPANDER1, .pin=2 },          .pg_pin={ .expander=EXPANDER1, .pin=1 },          .output={ .expander=EXPANDER1, .pin=0 } },
+	[SWITCH_4] = { .qnot_pin={ .expander=EXPANDER2, .pin=3 },          .pg_pin={ .expander=EXPANDER2, .pin=4 },          .output={ .expander=EXPANDER2, .pin=5 } },
+	[SWITCH_5] = { .qnot_pin={ .expander=EXPANDER2, .pin=2 },          .pg_pin={ .expander=EXPANDER2, .pin=1 },          .output={ .expander=EXPANDER2, .pin=0 } },
+	[SWITCH_6] = { .qnot_pin={ .expander=PORT_B,    .pin=GPIO_PIN_8 }, .pg_pin={ .expander=PORT_A,    .pin=GPIO_PIN_4 }, .output={ .expander=PORT_A,    .pin=GPIO_PIN_11 } },
+};
 
 int bluetooth_status = 0;
 
@@ -88,6 +96,22 @@ uint8_t toggle_gpio_output(int gpio_output) {
 	}
 	gpio_output_status[gpio_output] = !gpio_output_status[gpio_output];
 	return 0;
+}
+
+// new functions
+uint8_t set_switch_status(int sw, bool newStatus) {
+	if (sw < 0 || sw >= 6) {
+		return 1;
+	}
+	switches[sw].state = newStatus;
+	return 0;
+}
+
+uint8_t get_switch_status(int sw) {
+	if (sw < 0 || sw >= 6) {
+		return 0;
+	}
+	return switches[sw].pg && !switches[sw].qnot;
 }
 
 //uint8_t init_gpio_inputs() {
