@@ -1,3 +1,5 @@
+//No longer functional Main, go to Main.ccp for the functional main code.
+
 /* USER CODE BEGIN Header */
 /**
   ******************************************************************************

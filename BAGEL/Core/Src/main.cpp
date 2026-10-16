@@ -25,6 +25,7 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include <stdio.h>
+#include <stdexcept>
 #include "../../Middlewares/ST/STM32_WPAN/ble/core/auto/ble_types.h"
 #include "../../Drivers/TCAL9538/TCAL9538.hpp"
 #include "../../Drivers/Interface/interface.h"
@@ -170,11 +171,15 @@ uint8_t init_gpio_output_from_flipflops() {
 	return 0;
 }
 
+/*
+ * Updates the Software Ble values with respect to the status of the Hardware Switch statuses. Ensuring that the BLE values are always up to date with the hardware statuses.
+ * Performs a 'Dino' test to check individual switch statuses, given their Q_not and the PG value, then the test iterates through all of the switches and updates 
+*/
 uint8_t update_ble_values() {
 	uint8_t switch_1_status_q = read_gpio_input(SWITCH_1_Q) << 1; // reads Q_not
-	uint8_t switch_2_status_q = read_gpio_input(SWITCH_2_Q) << 1;
-	uint8_t switch_3_status_q = read_gpio_input(SWITCH_3_Q) << 1;
-	uint8_t switch_4_status_q = read_gpio_input(SWITCH_4_Q) << 1;
+	uint8_t switch_2_status_q = read_gpio_input(SWITCH_2_Q) << 1; // Reading Q_not as a single bit and then shifts it left
+	uint8_t switch_3_status_q = read_gpio_input(SWITCH_3_Q) << 1; // 00 -> 00
+	uint8_t switch_4_status_q = read_gpio_input(SWITCH_4_Q) << 1; // 01 -> 10
 	uint8_t switch_5_status_q = read_gpio_input(SWITCH_5_Q) << 1;
 	uint8_t switch_6_status_q = read_gpio_input(SWITCH_6_Q) << 1;
 
@@ -190,101 +195,42 @@ uint8_t update_ble_values() {
 	char off          = 'O';
 	// the DINO protocol
 
-	uint8_t switch_1_status = switch_1_status_q + switch_1_status_pg;
-	uint8_t switch_2_status = switch_2_status_q + switch_2_status_pg;
-	uint8_t switch_3_status = switch_3_status_q + switch_3_status_pg;
-	uint8_t switch_4_status = switch_4_status_q + switch_4_status_pg;
-	uint8_t switch_5_status = switch_5_status_q + switch_5_status_pg;
-	uint8_t switch_6_status = switch_6_status_q + switch_6_status_pg;
-	switch (switch_1_status) {
-	case 0:
-		Custom_STM_App_Update_Char(CUSTOM_STM_SWITCH_1, (uint8_t *)&disconnected);
-		break;
-	case 1:
-		Custom_STM_App_Update_Char(CUSTOM_STM_SWITCH_1, (uint8_t *)&nominal);
-		break;
-	case 2:
-		Custom_STM_App_Update_Char(CUSTOM_STM_SWITCH_1, (uint8_t *)&off);
-		break;
-	case 3:
-		Custom_STM_App_Update_Char(CUSTOM_STM_SWITCH_1, (uint8_t *)&impossible);
-		break;
-	}
+  struct switch_status { //Temp structure to hold the status and the corresponding opcode for each switch, makes iteration easier
+    uint8_t status;
+    Custom_STM_Char_Opcode_t OpCode;
+  };
+  switch_status switch_i_status[6] = {  //List is used for fast iteration of multiple inputs of same type, and to avoid repeating code for each switch
+    {static_cast<uint8_t>(switch_1_status_q + switch_1_status_pg), CUSTOM_STM_SWITCH_1},
+    {static_cast<uint8_t>(switch_2_status_q + switch_2_status_pg), CUSTOM_STM_SWITCH_2},
+    {static_cast<uint8_t>(switch_3_status_q + switch_3_status_pg), CUSTOM_STM_SWITCH_3},
+    {static_cast<uint8_t>(switch_4_status_q + switch_4_status_pg), CUSTOM_STM_SWITCH_4},
+    {static_cast<uint8_t>(switch_5_status_q + switch_5_status_pg), CUSTOM_STM_SWITCH_5},
+    {static_cast<uint8_t>(switch_6_status_q + switch_6_status_pg), CUSTOM_STM_SWITCH_6}
+  };
 
-	switch (switch_2_status) {
-		case 0:
-			Custom_STM_App_Update_Char(CUSTOM_STM_SWITCH_2, (uint8_t *)&disconnected);
-			break;
-		case 1:
-			Custom_STM_App_Update_Char(CUSTOM_STM_SWITCH_2, (uint8_t *)&nominal);
-			break;
-		case 2:
-			Custom_STM_App_Update_Char(CUSTOM_STM_SWITCH_2, (uint8_t *)&off);
-			break;
-		case 3:
-			Custom_STM_App_Update_Char(CUSTOM_STM_SWITCH_2, (uint8_t *)&impossible);
-			break;
-	}
+  for (switch_status switch_status_i : switch_i_status) { // Use for loop to iterate efficiently
+    uint8_t switch_status = switch_status_i.status;
+    Custom_STM_Char_Opcode_t CharOpcode = switch_status_i.OpCode;
 
-	switch (switch_3_status) {
-		case 0:
-			Custom_STM_App_Update_Char(CUSTOM_STM_SWITCH_3, (uint8_t *)&disconnected);
-			break;
-		case 1:
-			Custom_STM_App_Update_Char(CUSTOM_STM_SWITCH_3, (uint8_t *)&nominal);
-			break;
-		case 2:
-			Custom_STM_App_Update_Char(CUSTOM_STM_SWITCH_3, (uint8_t *)&off);
-			break;
-		case 3:
-			Custom_STM_App_Update_Char(CUSTOM_STM_SWITCH_3, (uint8_t *)&impossible);
-			break;
-	}
-
-	switch (switch_4_status) {
-		case 0:
-			Custom_STM_App_Update_Char(CUSTOM_STM_SWITCH_4, (uint8_t *)&disconnected);
-			break;
-		case 1:
-			Custom_STM_App_Update_Char(CUSTOM_STM_SWITCH_4, (uint8_t *)&nominal);
-			break;
-		case 2:
-			Custom_STM_App_Update_Char(CUSTOM_STM_SWITCH_4, (uint8_t *)&off);
-			break;
-		case 3:
-			Custom_STM_App_Update_Char(CUSTOM_STM_SWITCH_4, (uint8_t *)&impossible);
-			break;
-	}
-
-	switch (switch_5_status) {
-		case 0:
-			Custom_STM_App_Update_Char(CUSTOM_STM_SWITCH_5, (uint8_t *)&disconnected);
-			break;
-		case 1:
-			Custom_STM_App_Update_Char(CUSTOM_STM_SWITCH_5, (uint8_t *)&nominal);
-			break;
-		case 2:
-			Custom_STM_App_Update_Char(CUSTOM_STM_SWITCH_5, (uint8_t *)&off);
-			break;
-		case 3:
-			Custom_STM_App_Update_Char(CUSTOM_STM_SWITCH_5, (uint8_t *)&impossible);
-			break;
-	}
-
-	switch (switch_6_status) {
-		case 0:
-			Custom_STM_App_Update_Char(CUSTOM_STM_SWITCH_6, (uint8_t *)&disconnected);
-			break;
-		case 1:
-			Custom_STM_App_Update_Char(CUSTOM_STM_SWITCH_6, (uint8_t *)&nominal);
-			break;
-		case 2:
-			Custom_STM_App_Update_Char(CUSTOM_STM_SWITCH_6, (uint8_t *)&off);
-			break;
-		case 3:
-			Custom_STM_App_Update_Char(CUSTOM_STM_SWITCH_6, (uint8_t *)&impossible);
-			break;
-	}
+    switch (switch_status) {
+      case 0:
+        Custom_STM_App_Update_Char(CharOpcode, (uint8_t *)&disconnected);
+        break;
+      case 1:
+        Custom_STM_App_Update_Char(CharOpcode, (uint8_t *)&nominal);
+        break;
+      case 2:
+        Custom_STM_App_Update_Char(CharOpcode, (uint8_t *)&off);
+        break;
+      case 3:
+        Custom_STM_App_Update_Char(CharOpcode, (uint8_t *)&impossible);
+        break;
+      
+      default:
+        // Handle unexpected status here
+        break;
+    }
+  }
 
 	Custom_STM_App_Update_Char(CUSTOM_STM_BATTERY_VOLTAGE, (uint8_t*)&battery_voltage);
 
