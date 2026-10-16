@@ -76,18 +76,44 @@ static void MX_ADC1_Init(void);
 static void MX_RF_Init(void);
 /* USER CODE BEGIN PFP */
 
+/*
 uint8_t init_gpio_inputs() {
 	for (int i=0; i<GPIO_INPUT_END; i++) {
 		struct gpio_pin pin = gpio_input_pins[i];
 		if (!pin.expander || pin.expander == 3) {
-//			gpioPinMode()
+			gpioPinMode()
 			continue;
 		}
 		gpioPinMode(GpioAddress(pin.expander - 1, pin.pin), INPUT);
 	}
 	return 0;
 }
+*/
 
+//adjusted function.
+uint8_t init_gpio_inputs() {
+	//runs for qnot input for each switch. total of 6 switches.
+	for(int i = 0; i <= 6; i++) {
+
+		struct switch_t daSwitch = switches[i];
+		if (daSwitch.qnot_pin.expander == PORT_A || daSwitch.qnot_pin.expander == PORT_B) {
+			continue;
+		}
+		gpioPinMode(GpioAddress(daSwitch.qnot_pin.expander, daSwitch.qnot_pin.pin), INPUT);
+	}
+
+	//runs for pg input for each switch.
+	for (int i = 0; i <= 6; i++) {
+		struct switch_t daSwitch = switches[i];
+		if (daSwitch.pg_pin.expander == PORT_A || daSwitch.pg_pin.expander == PORT_B) {
+			continue;
+		}
+		gpioPinMode(GpioAddress(daSwitch.pg_pin.expander, daSwitch.pg_pin.pin), INPUT);
+	}
+	return 0;
+}
+
+/*
 uint8_t init_gpio_outputs() {
 	for (int i=0; i<GPIO_OUTPUT_END; i++) {
 		struct gpio_pin pin = gpio_output_pins[i];
@@ -99,7 +125,21 @@ uint8_t init_gpio_outputs() {
 	}
 	return 0;
 }
+*/
 
+//adjusted function
+uint8_t init_gpio_outputs() {
+	for (int i = 0; i <= 6; i++) {
+		struct switch_t daSwitch = switches[i];
+		if (daSwitch.output.expander == PORT_A || daSwitch.output.expander == PORT_B) {
+			continue;
+		}
+		gpioPinMode(GpioAddress(daSwitch.output.expander, daSwitch.output.pin), OUTPUT);
+	}
+	return 0;
+
+}
+/*
 uint8_t read_gpio_input(int gpio_input) {
 	struct gpio_pin pin = gpio_input_pins[gpio_input];
 	GPIO_PinState val;
@@ -114,8 +154,37 @@ uint8_t read_gpio_input(int gpio_input) {
 //	HAL_UART_Transmit(&huart1, buffer, len, 1000);
 	return otherVal;
 }
+*/
 
+//adjusted functions
+//read input for qnot
+uint8_t read_gpio_input_qnot(int gpio_input) {
+	struct switch_t daSwitch = switches[gpio_input];
+	GPIO_PinState val;
+	if (daSwitch.qnot_pin.expander == PORT_A || daSwitch.qnot_pin.expander == PORT_B) {
+		val = HAL_GPIO_ReadPin((daSwitch.qnot_pin.expander == PORT_A) ? GPIOA : GPIOB, daSwitch.qnot_pin.pin);
+		return (uint8_t)(val == GPIO_PIN_SET);
+	}
+	//inputs for any expanders
+	uint8_t otherVal;
+	otherVal = (uint8_t)gpioDigitalRead(GpioAddress(daSwitch.qnot_pin.expander - 1, daSwitch.qnot_pin.pin)).value;
+	return otherVal;
+}
+//read input for pg
+uint8_t read_gpio_input_pg(int gpio_input) {
+	struct switch_t daSwitch = switches[gpio_input];
+	GPIO_PinState val;
+	if (daSwitch.pg_pin.expander == PORT_A || daSwitch.pg_pin.expander == PORT_B) {
+		val = HAL_GPIO_ReadPin((daSwitch.pg_pin.expander == PORT_A) ? GPIOA : GPIOB, daSwitch.pg_pin.pin);
+		return (uint8_t)(val == GPIO_PIN_SET);
+	}
+	//inputs for any expanders
+	uint8_t otherVal;
+	otherVal = (uint8_t)gpioDigitalRead(GpioAddress(daSwitch.pg_pin.expander - 1, daSwitch.pg_pin.pin)).value;
+	return otherVal;
+}
 
+/*
 uint8_t write_gpio_output(int gpio_output, int value) {
 	GPIO_PinState real_val = (value == 1) ? GPIO_PIN_SET : GPIO_PIN_RESET;
 	struct gpio_pin pin = gpio_output_pins[gpio_output];
@@ -126,44 +195,28 @@ uint8_t write_gpio_output(int gpio_output, int value) {
 	gpioDigitalWrite(GpioAddress(pin.expander - 1, pin.pin), real_val);
 	return 0;
 }
+*/
+//adjusted function
+uint8_t write_gpio_output(int gpio_output, int value) {
+	GPIO_PinState real_val = (value == 1) ? GPIO_PIN_SET : GPIO_PIN_RESET;
+	struct switch_t daSwitch = switches[gpio_output];
+	if(daSwitch.output.expander == PORT_A) {
+		HAL_GPIO_WritePin(GPIOA, daSwitch.output.pin, real_val);
+		return 0;
+	}
+	gpioDigitalWrite(GpioAddress(daSwitch.output.expander, daSwitch.output.pin), real_val);
+	return 0;
+}
 
 uint8_t init_gpio_output_from_flipflops() {
-	uint8_t switch_1_status_q = read_gpio_input(SWITCH_1_Q) << 1; // reads Q_not
-	uint8_t switch_2_status_q = read_gpio_input(SWITCH_2_Q) << 1;
-	uint8_t switch_3_status_q = read_gpio_input(SWITCH_3_Q) << 1;
-	uint8_t switch_4_status_q = read_gpio_input(SWITCH_4_Q) << 1;
-	uint8_t switch_5_status_q = read_gpio_input(SWITCH_5_Q) << 1;
-	uint8_t switch_6_status_q = read_gpio_input(SWITCH_6_Q) << 1;
+	for (int i = 0; i <= 6; i ++) {
+		uint8_t switch_q = read_gpio_input_qnot(i) << 1;
+		uint8_t switch_pg = read_gpio_input_pg(i);
 
-	uint8_t switch_1_status_pg = read_gpio_input(SWITCH_1_PG); // reads PG
-	uint8_t switch_2_status_pg = read_gpio_input(SWITCH_2_PG);
-	uint8_t switch_3_status_pg = read_gpio_input(SWITCH_3_PG);
-	uint8_t switch_4_status_pg = read_gpio_input(SWITCH_4_PG);
-	uint8_t switch_5_status_pg = read_gpio_input(SWITCH_5_PG);
-	uint8_t switch_6_status_pg = read_gpio_input(SWITCH_6_PG);
-
-	uint8_t switch_1_status = switch_1_status_q + switch_1_status_pg;
-	uint8_t switch_2_status = switch_2_status_q + switch_2_status_pg;
-	uint8_t switch_3_status = switch_3_status_q + switch_3_status_pg;
-	uint8_t switch_4_status = switch_4_status_q + switch_4_status_pg;
-	uint8_t switch_5_status = switch_5_status_q + switch_5_status_pg;
-	uint8_t switch_6_status = switch_6_status_q + switch_6_status_pg;
-
-	// actually write the status to the gpio pins
-	write_gpio_output(SWITCH_1,  (switch_1_status == 1));
-	write_gpio_output(SWITCH_2,  (switch_2_status == 1));
-	write_gpio_output(SWITCH_3,  (switch_3_status == 1));
-	write_gpio_output(SWITCH_4,  (switch_4_status == 1));
-	write_gpio_output(SWITCH_5,  (switch_5_status == 1));
-	write_gpio_output(SWITCH_6,  (switch_6_status == 1));
-
-	// update the status array
-	update_gpio_output(SWITCH_1, (switch_1_status == 1));
-	update_gpio_output(SWITCH_2, (switch_2_status == 1));
-	update_gpio_output(SWITCH_3, (switch_3_status == 1));
-	update_gpio_output(SWITCH_4, (switch_4_status == 1));
-	update_gpio_output(SWITCH_5, (switch_5_status == 1));
-	update_gpio_output(SWITCH_6, (switch_6_status == 1));
+		uint8_t switch_status = switch_q + switch_pg;
+		write_gpio_output(i, (switch_status == 1));
+		update_gpio_output(i, (switch_status == 1));
+	}
 	return 0;
 }
 

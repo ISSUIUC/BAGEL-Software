@@ -77,13 +77,8 @@ struct switch_t {
     struct gpio_pin pg_pin;
     struct gpio_pin output;
 
-
-
     bool state;  //what we want.current status: on or off
-
     bool qnot; // what it actually is. value of opposite of switch (true = off, false = on)
-
-
 	bool pg; //power good. | true = has power
 	//connected to power and whether flip flop has power
 
