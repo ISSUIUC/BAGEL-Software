@@ -70,7 +70,7 @@ typedef struct
  * START of Section BLE_APP_CONTEXT
  */
 
-static Custom_App_Context_t Custom_App_Context;
+static Custom_App_Context_t Custom_App_Context __attribute__((unused));
 
 /**
  * END of Section BLE_APP_CONTEXT
@@ -86,20 +86,20 @@ uint16_t Connection_Handle;
 /* Private function prototypes -----------------------------------------------*/
 /* BAGEL_2 */
 static void Custom_Switch_4_Update_Char(void);
-static void Custom_Switch_4_Send_Notification(void);
+static void Custom_Switch_4_Send_Notification(void) __attribute__((unused));
 static void Custom_Switch_5_Update_Char(void);
-static void Custom_Switch_5_Send_Notification(void);
+static void Custom_Switch_5_Send_Notification(void) __attribute__((unused));
 static void Custom_Switch_6_Update_Char(void);
-static void Custom_Switch_6_Send_Notification(void);
+static void Custom_Switch_6_Send_Notification(void) __attribute__((unused));
 /* BAGEL_1 */
 static void Custom_Switch_1_Update_Char(void);
-static void Custom_Switch_1_Send_Notification(void);
+static void Custom_Switch_1_Send_Notification(void) __attribute__((unused));
 static void Custom_Switch_2_Update_Char(void);
-static void Custom_Switch_2_Send_Notification(void);
+static void Custom_Switch_2_Send_Notification(void) __attribute__((unused));
 static void Custom_Switch_3_Update_Char(void);
-static void Custom_Switch_3_Send_Notification(void);
+static void Custom_Switch_3_Send_Notification(void) __attribute__((unused));
 static void Custom_Battery_voltage_Update_Char(void);
-static void Custom_Battery_voltage_Send_Notification(void);
+static void Custom_Battery_voltage_Send_Notification(void) __attribute__((unused));
 
 /* USER CODE BEGIN PFP */
 

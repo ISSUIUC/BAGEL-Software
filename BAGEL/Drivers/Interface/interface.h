@@ -14,6 +14,7 @@ extern "C" {
 
 #include "stm32wbxx_hal.h"
 #include <stdbool.h>
+#include "inttypes.h"
 
 extern UART_HandleTypeDef * my_huart;
 
