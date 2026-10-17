@@ -99,7 +99,7 @@ uint8_t toggle_gpio_output(int gpio_output) {
 }
 
 // new functions
-uint8_t set_switch_status(int sw, int newStatus) {
+uint8_t set_switch_status(int sw, bool newStatus) {
 	if (sw < 0 || sw >= 6) {
 		return 1;
 	}

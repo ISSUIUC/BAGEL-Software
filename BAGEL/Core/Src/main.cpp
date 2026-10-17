@@ -25,6 +25,7 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include <stdio.h>
+#include <stdexcept>
 #include "../../Middlewares/ST/STM32_WPAN/ble/core/auto/ble_types.h"
 #include "../../Drivers/TCAL9538/TCAL9538.hpp"
 #include "../../Drivers/Interface/interface.h"
@@ -79,85 +80,48 @@ static void MX_ADC1_Init(void);
 static void MX_RF_Init(void);
 /* USER CODE BEGIN PFP */
 
-/*
-uint8_t init_gpio_inputs() {
-	for (int i=0; i<GPIO_INPUT_END; i++) {
-		struct gpio_pin pin = gpio_input_pins[i];
-		if (!pin.expander || pin.expander == 3) {
-			gpioPinMode()
-			continue;
-		}
-		gpioPinMode(GpioAddress(pin.expander - 1, pin.pin), INPUT); 
-	}
-	return 0;
-}
-*/
+
 
 //adjusted function.
 uint8_t init_gpio_inputs() {
 	//runs for qnot input for each switch. total of 6 switches.
-	for(int i = 0; i <= 6; i++) {
+	for(int i = 0; i < 6; i++) {
 
 		struct switch_t daSwitch = switches[i];
 		if (daSwitch.qnot_pin.expander == PORT_A || daSwitch.qnot_pin.expander == PORT_B) {
 			continue;
 		}
-		gpioPinMode(GpioAddress(daSwitch.qnot_pin.expander, daSwitch.qnot_pin.pin), INPUT);
+		gpioPinMode(GpioAddress(daSwitch.qnot_pin.expander - 1, daSwitch.qnot_pin.pin), INPUT);
+		// do expander - 1 because GPIOAddress wants values 0 or 1 and expanders are 1 or 2.
+
 	}
 
 	//runs for pg input for each switch.
-	for (int i = 0; i <= 6; i++) {
+	for (int i = 0; i < 6; i++) {
 		struct switch_t daSwitch = switches[i];
 		if (daSwitch.pg_pin.expander == PORT_A || daSwitch.pg_pin.expander == PORT_B) {
 			continue;
 		}
-		gpioPinMode(GpioAddress(daSwitch.pg_pin.expander, daSwitch.pg_pin.pin), INPUT);
-	}
-	return 0;
-}
+		gpioPinMode(GpioAddress(daSwitch.pg_pin.expander - 1, daSwitch.pg_pin.pin), INPUT);
 
-/*
-uint8_t init_gpio_outputs() {
-	for (int i=0; i<GPIO_OUTPUT_END; i++) {
-		struct gpio_pin pin = gpio_output_pins[i];
-		if (!pin.expander || pin.expander == 3) {
-//			gpioPinMode()
-			continue;
-		}
-		gpioPinMode(GpioAddress(pin.expander - 1, pin.pin), OUTPUT);
 	}
 	return 0;
 }
-*/
 
 //adjusted function
 uint8_t init_gpio_outputs() {
-	for (int i = 0; i <= 6; i++) {
+	for (int i = 0; i < 6; i++) {
 		struct switch_t daSwitch = switches[i];
 		if (daSwitch.output.expander == PORT_A || daSwitch.output.expander == PORT_B) {
 			continue;
 		}
-		gpioPinMode(GpioAddress(daSwitch.output.expander, daSwitch.output.pin), OUTPUT);
+		gpioPinMode(GpioAddress(daSwitch.output.expander - 1, daSwitch.output.pin), OUTPUT);
+
 	}
 	return 0;
 
 }
-/*
-uint8_t read_gpio_input(int gpio_input) {
-	struct gpio_pin pin = gpio_input_pins[gpio_input];
-	GPIO_PinState val;
-	if (!pin.expander || pin.expander == 3) {
-		val = HAL_GPIO_ReadPin((!pin.expander) ? GPIOA : GPIOB, pin.pin);
-		return (uint8_t)(val == GPIO_PIN_SET);
-	 }
-	uint8_t otherVal;
-	otherVal = (uint8_t)gpioDigitalRead(GpioAddress(pin.expander - 1, pin.pin)).value;
-//	uint8_t buffer[30];
-//	int len = sprintf((char*)buffer, "%d.%d: %d\r\n", (int)pin.expander, (int)pin.pin, (int)otherVal);
-//	HAL_UART_Transmit(&huart1, buffer, len, 1000);
-	return otherVal;
-}
-*/
+
 
 //adjusted functions
 //read input for qnot
@@ -187,32 +151,22 @@ uint8_t read_gpio_input_pg(int gpio_input) {
 	return otherVal;
 }
 
-/*
-uint8_t write_gpio_output(int gpio_output, int value) {
-	GPIO_PinState real_val = (value == 1) ? GPIO_PIN_SET : GPIO_PIN_RESET;
-	struct gpio_pin pin = gpio_output_pins[gpio_output];
-	if (!pin.expander) {
-		HAL_GPIO_WritePin(GPIOA, pin.pin, real_val);
-		return 0;
-	}
-	gpioDigitalWrite(GpioAddress(pin.expander - 1, pin.pin), real_val);
-	return 0;
-}
-*/
+
 //adjusted function
 uint8_t write_gpio_output(int gpio_output, int value) {
 	GPIO_PinState real_val = (value == 1) ? GPIO_PIN_SET : GPIO_PIN_RESET;
 	struct switch_t daSwitch = switches[gpio_output];
+
 	if(daSwitch.output.expander == PORT_A) {
 		HAL_GPIO_WritePin(GPIOA, daSwitch.output.pin, real_val);
 		return 0;
 	}
-	gpioDigitalWrite(GpioAddress(daSwitch.output.expander, daSwitch.output.pin), real_val);
+	gpioDigitalWrite(GpioAddress(daSwitch.output.expander - 1, daSwitch.output.pin), real_val);
 	return 0;
 }
 
 uint8_t init_gpio_output_from_flipflops() {
-	for (int i = 0; i <= 6; i ++) {
+	for (int i = 0; i < 6; i ++) {
 		uint8_t switch_q = read_gpio_input_qnot(i) << 1;
 		uint8_t switch_pg = read_gpio_input_pg(i);
 
@@ -223,121 +177,66 @@ uint8_t init_gpio_output_from_flipflops() {
 	return 0;
 }
 
+/*
+ * Updates the Software Ble values with respect to the status of the Hardware Switch statuses. Ensuring that the BLE values are always up to date with the hardware statuses.
+ * Performs a 'Dino' test to check individual switch statuses, given their Q_not and the PG value, then the test iterates through all of the switches and updates 
+*/
 uint8_t update_ble_values() {
-	uint8_t switch_1_status_q = read_gpio_input(SWITCH_1_Q) << 1; // reads Q_not
-	uint8_t switch_2_status_q = read_gpio_input(SWITCH_2_Q) << 1;
-	uint8_t switch_3_status_q = read_gpio_input(SWITCH_3_Q) << 1;
-	uint8_t switch_4_status_q = read_gpio_input(SWITCH_4_Q) << 1;
-	uint8_t switch_5_status_q = read_gpio_input(SWITCH_5_Q) << 1;
-	uint8_t switch_6_status_q = read_gpio_input(SWITCH_6_Q) << 1;
+	uint8_t switch_1_status_q = read_gpio_input_qnot(SWITCH_1_Q) << 1; // reads Q_not
+	uint8_t switch_2_status_q = read_gpio_input_qnot(SWITCH_2_Q) << 1; // Reading Q_not as a single bit and then shifts it left
+	uint8_t switch_3_status_q = read_gpio_input_qnot(SWITCH_3_Q) << 1; // 00 -> 00
+	uint8_t switch_4_status_q = read_gpio_input_qnot(SWITCH_4_Q) << 1; // 01 -> 10
+	uint8_t switch_5_status_q = read_gpio_input_qnot(SWITCH_5_Q) << 1;
+	uint8_t switch_6_status_q = read_gpio_input_qnot(SWITCH_6_Q) << 1;
 
-	uint8_t switch_1_status_pg = read_gpio_input(SWITCH_1_PG); // reads PG
-	uint8_t switch_2_status_pg = read_gpio_input(SWITCH_2_PG);
-	uint8_t switch_3_status_pg = read_gpio_input(SWITCH_3_PG);
-	uint8_t switch_4_status_pg = read_gpio_input(SWITCH_4_PG);
-	uint8_t switch_5_status_pg = read_gpio_input(SWITCH_5_PG);
-	uint8_t switch_6_status_pg = read_gpio_input(SWITCH_6_PG);
+	uint8_t switch_1_status_pg = read_gpio_input_pg(SWITCH_1_PG); // reads PG
+	uint8_t switch_2_status_pg = read_gpio_input_pg(SWITCH_2_PG);
+	uint8_t switch_3_status_pg = read_gpio_input_pg(SWITCH_3_PG);
+	uint8_t switch_4_status_pg = read_gpio_input_pg(SWITCH_4_PG);
+	uint8_t switch_5_status_pg = read_gpio_input_pg(SWITCH_5_PG);
+	uint8_t switch_6_status_pg = read_gpio_input_pg(SWITCH_6_PG);
 	char disconnected = 'D';
 	char impossible   = 'I';
 	char nominal      = 'N';
 	char off          = 'O';
 	// the DINO protocol
 
-	uint8_t switch_1_status = switch_1_status_q + switch_1_status_pg;
-	uint8_t switch_2_status = switch_2_status_q + switch_2_status_pg;
-	uint8_t switch_3_status = switch_3_status_q + switch_3_status_pg;
-	uint8_t switch_4_status = switch_4_status_q + switch_4_status_pg;
-	uint8_t switch_5_status = switch_5_status_q + switch_5_status_pg;
-	uint8_t switch_6_status = switch_6_status_q + switch_6_status_pg;
-	switch (switch_1_status) {
-	case 0:
-		Custom_STM_App_Update_Char(CUSTOM_STM_SWITCH_1, (uint8_t *)&disconnected);
-		break;
-	case 1:
-		Custom_STM_App_Update_Char(CUSTOM_STM_SWITCH_1, (uint8_t *)&nominal);
-		break;
-	case 2:
-		Custom_STM_App_Update_Char(CUSTOM_STM_SWITCH_1, (uint8_t *)&off);
-		break;
-	case 3:
-		Custom_STM_App_Update_Char(CUSTOM_STM_SWITCH_1, (uint8_t *)&impossible);
-		break;
-	}
+  struct switch_status { //Temp structure to hold the status and the corresponding opcode for each switch, makes iteration easier
+    uint8_t status;
+    Custom_STM_Char_Opcode_t OpCode;
+  };
+  switch_status switch_i_status[6] = {  //List is used for fast iteration of multiple inputs of same type, and to avoid repeating code for each switch
+    {static_cast<uint8_t>(switch_1_status_q + switch_1_status_pg), CUSTOM_STM_SWITCH_1},
+    {static_cast<uint8_t>(switch_2_status_q + switch_2_status_pg), CUSTOM_STM_SWITCH_2},
+    {static_cast<uint8_t>(switch_3_status_q + switch_3_status_pg), CUSTOM_STM_SWITCH_3},
+    {static_cast<uint8_t>(switch_4_status_q + switch_4_status_pg), CUSTOM_STM_SWITCH_4},
+    {static_cast<uint8_t>(switch_5_status_q + switch_5_status_pg), CUSTOM_STM_SWITCH_5},
+    {static_cast<uint8_t>(switch_6_status_q + switch_6_status_pg), CUSTOM_STM_SWITCH_6}
+  };
 
-	switch (switch_2_status) {
-		case 0:
-			Custom_STM_App_Update_Char(CUSTOM_STM_SWITCH_2, (uint8_t *)&disconnected);
-			break;
-		case 1:
-			Custom_STM_App_Update_Char(CUSTOM_STM_SWITCH_2, (uint8_t *)&nominal);
-			break;
-		case 2:
-			Custom_STM_App_Update_Char(CUSTOM_STM_SWITCH_2, (uint8_t *)&off);
-			break;
-		case 3:
-			Custom_STM_App_Update_Char(CUSTOM_STM_SWITCH_2, (uint8_t *)&impossible);
-			break;
-	}
+  for (switch_status switch_status_i : switch_i_status) { // Use for loop to iterate efficiently
+    uint8_t switch_status = switch_status_i.status;
+    Custom_STM_Char_Opcode_t CharOpcode = switch_status_i.OpCode;
 
-	switch (switch_3_status) {
-		case 0:
-			Custom_STM_App_Update_Char(CUSTOM_STM_SWITCH_3, (uint8_t *)&disconnected);
-			break;
-		case 1:
-			Custom_STM_App_Update_Char(CUSTOM_STM_SWITCH_3, (uint8_t *)&nominal);
-			break;
-		case 2:
-			Custom_STM_App_Update_Char(CUSTOM_STM_SWITCH_3, (uint8_t *)&off);
-			break;
-		case 3:
-			Custom_STM_App_Update_Char(CUSTOM_STM_SWITCH_3, (uint8_t *)&impossible);
-			break;
-	}
-
-	switch (switch_4_status) {
-		case 0:
-			Custom_STM_App_Update_Char(CUSTOM_STM_SWITCH_4, (uint8_t *)&disconnected);
-			break;
-		case 1:
-			Custom_STM_App_Update_Char(CUSTOM_STM_SWITCH_4, (uint8_t *)&nominal);
-			break;
-		case 2:
-			Custom_STM_App_Update_Char(CUSTOM_STM_SWITCH_4, (uint8_t *)&off);
-			break;
-		case 3:
-			Custom_STM_App_Update_Char(CUSTOM_STM_SWITCH_4, (uint8_t *)&impossible);
-			break;
-	}
-
-	switch (switch_5_status) {
-		case 0:
-			Custom_STM_App_Update_Char(CUSTOM_STM_SWITCH_5, (uint8_t *)&disconnected);
-			break;
-		case 1:
-			Custom_STM_App_Update_Char(CUSTOM_STM_SWITCH_5, (uint8_t *)&nominal);
-			break;
-		case 2:
-			Custom_STM_App_Update_Char(CUSTOM_STM_SWITCH_5, (uint8_t *)&off);
-			break;
-		case 3:
-			Custom_STM_App_Update_Char(CUSTOM_STM_SWITCH_5, (uint8_t *)&impossible);
-			break;
-	}
-
-	switch (switch_6_status) {
-		case 0:
-			Custom_STM_App_Update_Char(CUSTOM_STM_SWITCH_6, (uint8_t *)&disconnected);
-			break;
-		case 1:
-			Custom_STM_App_Update_Char(CUSTOM_STM_SWITCH_6, (uint8_t *)&nominal);
-			break;
-		case 2:
-			Custom_STM_App_Update_Char(CUSTOM_STM_SWITCH_6, (uint8_t *)&off);
-			break;
-		case 3:
-			Custom_STM_App_Update_Char(CUSTOM_STM_SWITCH_6, (uint8_t *)&impossible);
-			break;
-	}
+    switch (switch_status) {
+      case 0:
+        Custom_STM_App_Update_Char(CharOpcode, (uint8_t *)&disconnected);
+        break;
+      case 1:
+        Custom_STM_App_Update_Char(CharOpcode, (uint8_t *)&nominal);
+        break;
+      case 2:
+        Custom_STM_App_Update_Char(CharOpcode, (uint8_t *)&off);
+        break;
+      case 3:
+        Custom_STM_App_Update_Char(CharOpcode, (uint8_t *)&impossible);
+        break;
+      
+      default:
+        // Handle unexpected status here
+        break;
+    }
+  }
 
 	Custom_STM_App_Update_Char(CUSTOM_STM_BATTERY_VOLTAGE, (uint8_t*)&battery_voltage);
 
@@ -438,8 +337,18 @@ int main(void)
 
     /* USER CODE BEGIN 3 */
     // loop through all GPIO_OUTPUTs and update their values
+    // now loops through the switches 0-5 and then for the rest it does the LEDS and clock.
     for (int i=SWITCH_1; i<GPIO_OUTPUT_END; i++) {
     	uint8_t status = gpio_output_status[i];
+    	write_gpio_output(i, status);
+    	/*
+    	uint8_t status;
+    	if (i < 6) {
+    		status = switches[i];
+    	} else {
+    		status = gpio_output_pins[i];
+    	}
+    	*/
     	write_gpio_output(i, status);
     }
 	//toggle clock
