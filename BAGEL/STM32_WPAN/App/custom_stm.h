@@ -131,6 +131,7 @@ extern uint16_t SizeBattery_Voltage;
 /* Exported functions ------------------------------------------------------- */
 void SVCCTL_InitCustomSvc(void);
 void Custom_STM_App_Notification(Custom_STM_App_Notification_evt_t *pNotification);
+tBleStatus Custom_STM_App_Update_Char_Recursive(Custom_STM_Char_Opcode_t CharOpcode, uint8_t *pPayload);
 tBleStatus Custom_STM_App_Update_Char(Custom_STM_Char_Opcode_t CharOpcode,  uint8_t *pPayload);
 tBleStatus Custom_STM_App_Update_Char_Variable_Length(Custom_STM_Char_Opcode_t CharOpcode, uint8_t *pPayload, uint8_t size);
 tBleStatus Custom_STM_App_Update_Char_Ext(uint16_t Connection_Handle, Custom_STM_Char_Opcode_t CharOpcode, uint8_t *pPayload);
