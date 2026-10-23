@@ -59,6 +59,9 @@ enum GPIO_OUTPUT {
 	GPIO_OUTPUT_END
 };
 
+
+
+
 enum ports {
 	PORT_A = 0,
 	EXPANDER1 = 1,
@@ -71,7 +74,6 @@ struct gpio_pin {
 	uint16_t pin;		// GPIO_PIN_x on PORT_A/B, 0-7 on EXPANDER1/2
 	bool active_low;    // true if a low level on the pin means "on"
 };
-
 
 
 struct switch_t {
@@ -90,6 +92,7 @@ struct switch_t {
 
 
 extern struct switch_t switches[6];
+extern struct gpio_pin extra_pins[5];
 
 extern struct gpio_pin gpio_input_pins[12];
 extern struct gpio_pin gpio_output_pins[11];

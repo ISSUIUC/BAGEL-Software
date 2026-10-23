@@ -155,13 +155,26 @@ uint8_t read_gpio_input_pg(int gpio_input) {
 //adjusted function
 uint8_t write_gpio_output(int gpio_output, int value) {
 	GPIO_PinState real_val = (value == 1) ? GPIO_PIN_SET : GPIO_PIN_RESET;
-	struct switch_t daSwitch = switches[gpio_output];
 
-	if(daSwitch.output.expander == PORT_A) {
-		HAL_GPIO_WritePin(GPIOA, daSwitch.output.pin, real_val);
+	//struct switch_t daSwitch = switches[gpio_output];
+
+	struct gpio_pin pin;
+	if (gpio_output < 6) {
+    	pin = switches[gpio_output].output;
+	} else {
+    	pin = gpio_output_pins[gpio_output];
+	}
+	//We need the pin expander and port for this function. When the function is called,
+	//it's called 11 times. the first 6 set the pin to switches and the last 5 set to the
+	//LEDs and clock.
+
+	if (pin.expander == PORT_A || pin.expander == PORT_B) {
+		HAL_GPIO_WritePin((pin.expander == PORT_A) ? GPIOA : GPIOB , pin.pin, real_val);
+		//checks if pin is PORT_A and uses GPIOA if not PORT_A uses GPIOB
 		return 0;
 	}
-	gpioDigitalWrite(GpioAddress(daSwitch.output.expander - 1, daSwitch.output.pin), real_val);
+	gpioDigitalWrite(GpioAddress(pin.expander - 1, pin.pin), real_val);
+	//The writing is different for PORT_A/B and the expanders
 	return 0;
 }
 
@@ -341,16 +354,7 @@ int main(void)
     for (int i=SWITCH_1; i<GPIO_OUTPUT_END; i++) {
     	uint8_t status = gpio_output_status[i];
     	write_gpio_output(i, status);
-    	/*
-    	uint8_t status;
-    	if (i < 6) {
-    		status = switches[i];
-    	} else {
-    		status = gpio_output_pins[i];
-    	}
-    	*/
-    	write_gpio_output(i, status);
-    }
+      }
 	//toggle clock
 	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_0, GPIO_PIN_SET);
 	HAL_Delay(50);

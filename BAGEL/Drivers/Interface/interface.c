@@ -18,7 +18,7 @@ int gpio_output_status[11] = {
 		0,
 };
 
-
+/*
 struct gpio_pin gpio_input_pins[12] = {
 		[SWITCH_1_Q] = { .expander=0, .pin=GPIO_PIN_5 },
 		[SWITCH_2_Q] = { .expander=1, .pin=3 },
@@ -33,6 +33,7 @@ struct gpio_pin gpio_input_pins[12] = {
 		[SWITCH_5_PG] = { .expander=2, .pin=1 },
 		[SWITCH_6_PG] = { .expander=0, .pin=GPIO_PIN_4 },
 };
+*/
 
 
 
@@ -50,14 +51,32 @@ struct gpio_pin gpio_output_pins[11] = {
 		[CLOCK] = { .expander=0, .pin=GPIO_PIN_0 },
 };
 
+struct gpio_pin extra_pins[5] = {
+	[RED_LED - 6] =    { .expander=1, .pin=6 },
+	[ORANGE_LED - 6] = { .expander=1, .pin=7 },
+	[GREEN_LED - 6] =  { .expander=2, .pin=6 },
+	[BLUE_LED - 6] =   { .expander=2, .pin=7},
+	[CLOCK - 6] =      { .expander=0, .pin=GPIO_PIN_0 },
+};
+
 struct switch_t switches[6] = {
+	//switches
 	[SWITCH_1] = { .qnot_pin={ .expander=PORT_A,    .pin=GPIO_PIN_5 }, .pg_pin={ .expander=PORT_A,    .pin=GPIO_PIN_3 }, .output={ .expander=PORT_A,    .pin=GPIO_PIN_12 } },
 	[SWITCH_2] = { .qnot_pin={ .expander=EXPANDER1, .pin=3 },          .pg_pin={ .expander=EXPANDER1, .pin=4 },          .output={ .expander=EXPANDER1, .pin=5 } },
 	[SWITCH_3] = { .qnot_pin={ .expander=EXPANDER1, .pin=2 },          .pg_pin={ .expander=EXPANDER1, .pin=1 },          .output={ .expander=EXPANDER1, .pin=0 } },
 	[SWITCH_4] = { .qnot_pin={ .expander=EXPANDER2, .pin=3 },          .pg_pin={ .expander=EXPANDER2, .pin=4 },          .output={ .expander=EXPANDER2, .pin=5 } },
 	[SWITCH_5] = { .qnot_pin={ .expander=EXPANDER2, .pin=2 },          .pg_pin={ .expander=EXPANDER2, .pin=1 },          .output={ .expander=EXPANDER2, .pin=0 } },
 	[SWITCH_6] = { .qnot_pin={ .expander=PORT_B,    .pin=GPIO_PIN_8 }, .pg_pin={ .expander=PORT_A,    .pin=GPIO_PIN_4 }, .output={ .expander=PORT_A,    .pin=GPIO_PIN_11 } },
+
+	/*LEDs
+	[RED_LED]    = { .output={.expander=EXPANDER1, .pin=6 } },
+	[ORANGE_LED] = { .output={.expander=EXPANDER1, .pin=7 } },
+	[GREEN_LED]  = { .output={.expander=EXPANDER2, .pin=6 } },
+	[BLUE_LED]   = { .output={.expander=EXPANDER2, .pin=7} },
+	[CLOCK]      = { .output={.expander=PORT_A,    .pin=GPIO_PIN_0 } },
+	*/
 };
+
 
 int bluetooth_status = 0;
 
