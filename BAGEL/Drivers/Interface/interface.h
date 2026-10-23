@@ -8,6 +8,7 @@
 #ifndef INTERFACE_INTERFACE_H_
 #define INTERFACE_INTERFACE_H_
 
+#include <stdint.h>
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -16,16 +17,19 @@ extern "C" {
 #include <stdbool.h>
 #include "inttypes.h"
 
+#define GPIO_OUTPUT_PIN_CNT 16
+#define GPIO_OUTPUT_CNT 11
+#define GPIO_INPUT_CNT 12
+#define SWITCH_CNT 6
+
 
 extern UART_HandleTypeDef * my_huart;
 
-
-
-extern int gpio_output_status[11];
+extern int gpio_output_status[GPIO_OUTPUT_CNT];
 
 extern int bluetooth_status; // whether the board is connected to Bluetooth
 
-extern char battery_voltage;
+extern uint8_t battery_voltage;
 
 
 enum GPIO_INPUT {
@@ -40,8 +44,7 @@ enum GPIO_INPUT {
 	SWITCH_3_PG,
 	SWITCH_4_PG,
 	SWITCH_5_PG,
-	SWITCH_6_PG,
-	GPIO_INPUT_END
+	SWITCH_6_PG
 };
 
 enum GPIO_OUTPUT {
@@ -56,11 +59,12 @@ enum GPIO_OUTPUT {
 	GREEN_LED,
 	BLUE_LED,
 	CLOCK,
-	GPIO_OUTPUT_END
+	OUTPUT_11,
+	OUTPUT_12,
+	OUTPUT_13,
+	OUTPUT_14,
+	OUTPUT_15
 };
-
-
-
 
 enum ports {
 	PORT_A = 0,
@@ -70,9 +74,9 @@ enum ports {
 };
 
 struct gpio_pin {
-	enum ports expander; 	// 0 is GPIOA, 1 is expander 1, 2 is expander 2, and 3 is GPIOB
-	uint16_t pin;		// GPIO_PIN_x on PORT_A/B, 0-7 on EXPANDER1/2
-	bool active_low;    // true if a low level on the pin means "on"
+	enum ports expander;	// 0 is GPIOA, 1 is expander 1, 2 is expander 2, and 3 is GPIOB
+	uint16_t pin;			// GPIO_PIN_x on PORT_A/B, 0-7 on EXPANDER1/2
+	bool active_low;    	// true if a low level on the pin means "on"
 };
 
 
@@ -91,11 +95,9 @@ struct switch_t {
 
 
 
-extern struct switch_t switches[6];
-extern struct gpio_pin extra_pins[5];
-
-extern struct gpio_pin gpio_input_pins[12];
-extern struct gpio_pin gpio_output_pins[11];
+extern struct switch_t switches[SWITCH_CNT];
+extern const struct gpio_pin gpio_input_pins[GPIO_INPUT_CNT];
+extern const struct gpio_pin gpio_output_pins[GPIO_OUTPUT_PIN_CNT];
 
 uint8_t interface_init(UART_HandleTypeDef * huart1);
 

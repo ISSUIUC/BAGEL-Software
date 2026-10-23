@@ -1,10 +1,11 @@
 #include "interface.h"
+#include "stm32wbxx_hal_gpio.h"
 //#include "../../Middlewares/ST/STM32_WPAN/ble/core/auto/ble_types.h"
 //#include "../../STM32_WPAN/app/custom_app.h"
 //#include "../../STM32_WPAN/app/custom_stm.h"
 //#include "../TCAL9538/TCAL9538.hpp"
 
-int gpio_output_status[11] = {
+int gpio_output_status[GPIO_OUTPUT_CNT] = {
 		0,
 		0,
 		0,
@@ -15,72 +16,56 @@ int gpio_output_status[11] = {
 		0,
 		0,
 		0,
-		0,
+		0
 };
 
-/*
-struct gpio_pin gpio_input_pins[12] = {
-		[SWITCH_1_Q] = { .expander=0, .pin=GPIO_PIN_5 },
-		[SWITCH_2_Q] = { .expander=1, .pin=3 },
-		[SWITCH_3_Q] = { .expander=1, .pin=2 },
-		[SWITCH_4_Q] = { .expander=2, .pin=3 },
-		[SWITCH_5_Q] = { .expander=2, .pin=2 },
-		[SWITCH_6_Q] = { .expander=3, .pin=GPIO_PIN_8 },
-		[SWITCH_1_PG] = { .expander=0, .pin=GPIO_PIN_3 },
-		[SWITCH_2_PG] = { .expander=1, .pin=4 },
-		[SWITCH_3_PG] = { .expander=1, .pin=1 },
-		[SWITCH_4_PG] = { .expander=2, .pin=4 },
-		[SWITCH_5_PG] = { .expander=2, .pin=1 },
-		[SWITCH_6_PG] = { .expander=0, .pin=GPIO_PIN_4 },
-};
-*/
-
-
-
-struct gpio_pin gpio_output_pins[11] = {
-		[SWITCH_1] = { .expander=0, .pin=GPIO_PIN_12 },
-		[SWITCH_2] = { .expander=1, .pin=5 },
-		[SWITCH_3] = { .expander=1, .pin=0 },
-		[SWITCH_4] = { .expander=2, .pin=5 },
-		[SWITCH_5] = { .expander=2, .pin=0 },
-		[SWITCH_6] = { .expander=0, .pin=GPIO_PIN_11 },
-		[RED_LED] = { .expander=1, .pin=6 },
-		[ORANGE_LED] = { .expander=1, .pin=7 },
-		[GREEN_LED] = { .expander=2, .pin=6 },
-		[BLUE_LED] = { .expander=2, .pin=7},
-		[CLOCK] = { .expander=0, .pin=GPIO_PIN_0 },
+const struct gpio_pin gpio_output_pins[GPIO_OUTPUT_PIN_CNT] = {
+	[SWITCH_1] 		= { .expander=PORT_A, .pin=GPIO_PIN_12 },
+	[SWITCH_2] 		= { .expander=EXPANDER1, .pin=5 },
+	[SWITCH_3] 		= { .expander=EXPANDER1, .pin=0 },
+	[SWITCH_4] 		= { .expander=EXPANDER2, .pin=5 },
+	[SWITCH_5] 		= { .expander=EXPANDER2, .pin=0 },
+	[SWITCH_6] 		= { .expander=PORT_A, .pin=GPIO_PIN_11 },
+	[RED_LED]		= { .expander=EXPANDER1, .pin=6 },
+	[ORANGE_LED] 	= { .expander=EXPANDER1, .pin=7 },
+	[GREEN_LED] 	= { .expander=EXPANDER2, .pin=6 },
+	[BLUE_LED] 		= { .expander=EXPANDER2, .pin=7 },
+	[CLOCK] 		= { .expander=PORT_A, .pin=GPIO_PIN_0 },
+	[OUTPUT_11] 	= { .expander=EXPANDER1, .pin=6 },
+	[OUTPUT_12] 	= { .expander=EXPANDER1, .pin=7 },
+	[OUTPUT_13] 	= { .expander=EXPANDER2, .pin=6 },
+	[OUTPUT_14] 	= { .expander=EXPANDER2, .pin=7 },
+	[OUTPUT_15] 	= { .expander=PORT_A, .pin=GPIO_PIN_0 }
 };
 
-struct gpio_pin extra_pins[5] = {
-	[RED_LED - 6] =    { .expander=1, .pin=6 },
-	[ORANGE_LED - 6] = { .expander=1, .pin=7 },
-	[GREEN_LED - 6] =  { .expander=2, .pin=6 },
-	[BLUE_LED - 6] =   { .expander=2, .pin=7},
-	[CLOCK - 6] =      { .expander=0, .pin=GPIO_PIN_0 },
+const struct gpio_pin gpio_input_pins[GPIO_INPUT_CNT] = {
+	[SWITCH_1_Q]	= { .expander=PORT_A, .pin=GPIO_PIN_5 },
+	[SWITCH_2_Q]	= { .expander=EXPANDER1, .pin=3 },
+	[SWITCH_3_Q]	= { .expander=EXPANDER1, .pin=2 },
+	[SWITCH_4_Q]	= { .expander=EXPANDER2, .pin=3 },
+	[SWITCH_5_Q]	= { .expander=EXPANDER2, .pin=2 },
+	[SWITCH_6_Q]	= { .expander=PORT_B, .pin=GPIO_PIN_8 },
+	[SWITCH_1_PG]	= { .expander=PORT_A, .pin=GPIO_PIN_3 },
+	[SWITCH_2_PG]	= { .expander=EXPANDER1, .pin=4 },
+	[SWITCH_3_PG]	= { .expander=EXPANDER1, .pin=1 },
+	[SWITCH_4_PG]	= { .expander=EXPANDER2, .pin=4 },
+	[SWITCH_5_PG]	= { .expander=EXPANDER2, .pin=1 },
+	[SWITCH_6_PG]	= { .expander=PORT_A, .pin=GPIO_PIN_4 }
 };
 
-struct switch_t switches[6] = {
+struct switch_t switches[SWITCH_CNT] = {
 	//switches
-	[SWITCH_1] = { .qnot_pin={ .expander=PORT_A,    .pin=GPIO_PIN_5 }, .pg_pin={ .expander=PORT_A,    .pin=GPIO_PIN_3 }, .output={ .expander=PORT_A,    .pin=GPIO_PIN_12 } },
-	[SWITCH_2] = { .qnot_pin={ .expander=EXPANDER1, .pin=3 },          .pg_pin={ .expander=EXPANDER1, .pin=4 },          .output={ .expander=EXPANDER1, .pin=5 } },
-	[SWITCH_3] = { .qnot_pin={ .expander=EXPANDER1, .pin=2 },          .pg_pin={ .expander=EXPANDER1, .pin=1 },          .output={ .expander=EXPANDER1, .pin=0 } },
-	[SWITCH_4] = { .qnot_pin={ .expander=EXPANDER2, .pin=3 },          .pg_pin={ .expander=EXPANDER2, .pin=4 },          .output={ .expander=EXPANDER2, .pin=5 } },
-	[SWITCH_5] = { .qnot_pin={ .expander=EXPANDER2, .pin=2 },          .pg_pin={ .expander=EXPANDER2, .pin=1 },          .output={ .expander=EXPANDER2, .pin=0 } },
-	[SWITCH_6] = { .qnot_pin={ .expander=PORT_B,    .pin=GPIO_PIN_8 }, .pg_pin={ .expander=PORT_A,    .pin=GPIO_PIN_4 }, .output={ .expander=PORT_A,    .pin=GPIO_PIN_11 } },
-
-	/*LEDs
-	[RED_LED]    = { .output={.expander=EXPANDER1, .pin=6 } },
-	[ORANGE_LED] = { .output={.expander=EXPANDER1, .pin=7 } },
-	[GREEN_LED]  = { .output={.expander=EXPANDER2, .pin=6 } },
-	[BLUE_LED]   = { .output={.expander=EXPANDER2, .pin=7} },
-	[CLOCK]      = { .output={.expander=PORT_A,    .pin=GPIO_PIN_0 } },
-	*/
+	[SWITCH_1] = { .qnot_pin=gpio_input_pins[SWITCH_1_Q], .pg_pin=gpio_input_pins[SWITCH_1_PG], .output=gpio_output_pins[SWITCH_1] },
+	[SWITCH_2] = { .qnot_pin=gpio_input_pins[SWITCH_2_Q], .pg_pin=gpio_input_pins[SWITCH_2_PG], .output=gpio_output_pins[SWITCH_2] },
+	[SWITCH_3] = { .qnot_pin=gpio_input_pins[SWITCH_3_Q], .pg_pin=gpio_input_pins[SWITCH_3_PG], .output=gpio_output_pins[SWITCH_3] },
+	[SWITCH_4] = { .qnot_pin=gpio_input_pins[SWITCH_4_Q], .pg_pin=gpio_input_pins[SWITCH_4_PG], .output=gpio_output_pins[SWITCH_4] },
+	[SWITCH_5] = { .qnot_pin=gpio_input_pins[SWITCH_5_Q], .pg_pin=gpio_input_pins[SWITCH_5_PG], .output=gpio_output_pins[SWITCH_5] },
+	[SWITCH_6] = { .qnot_pin=gpio_input_pins[SWITCH_6_Q], .pg_pin=gpio_input_pins[SWITCH_6_PG], .output=gpio_output_pins[SWITCH_6] },
 };
 
 
 int bluetooth_status = 0;
-
-char battery_voltage = 0;
+uint8_t battery_voltage = 0;
 
 
 uint8_t interface_init(UART_HandleTypeDef * huart1){

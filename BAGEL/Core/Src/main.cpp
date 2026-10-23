@@ -351,10 +351,11 @@ int main(void)
     /* USER CODE BEGIN 3 */
     // loop through all GPIO_OUTPUTs and update their values
     // now loops through the switches 0-5 and then for the rest it does the LEDS and clock.
-    for (int i=SWITCH_1; i<GPIO_OUTPUT_END; i++) {
+    for (int i = SWITCH_1; i < GPIO_OUTPUT_CNT; i++) {
     	uint8_t status = gpio_output_status[i];
     	write_gpio_output(i, status);
-      }
+    }
+
 	//toggle clock
 	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_0, GPIO_PIN_SET);
 	HAL_Delay(50);
@@ -378,7 +379,6 @@ int main(void)
 	if (HAL_ADC_PollForConversion(&hadc1, 10) == HAL_OK) {
 		// 3. Read the value
 		rawValue = HAL_ADC_GetValue(&hadc1);
-
 		// 4. Convert to voltage (assuming 3.3V VCC and 12-bit ADC)
 //		voltage = ((float)rawValue * 3.3f * 2) / 4095.0f;
 		char buffer2[30];
@@ -393,14 +393,6 @@ int main(void)
 
 	// 5. Stop the ADC to save power
 	HAL_ADC_Stop(&hadc1);
-
-
-
-
-
-
-
-
 
 //	HAL_UART_Transmit(&huart1, high, sizeof(high), 1000);
 //	gpioDigitalWrite(GpioAddress(0, 6), HIGH);
@@ -445,7 +437,6 @@ int main(void)
 ////	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_0, GPIO_PIN_RESET);
 
 	HAL_Delay(750);
-
 
   }
   /* USER CODE END 3 */
