@@ -146,3 +146,70 @@ uint8_t get_switch_status(int sw) {
 //};
 
 
+struct SingleSwitchStatusMonitor {
+  Custom_STM_Char_Opcode_t char_opcode;
+  uint8_t switch_state;
+  uint8_t power_state;
+  uint8_t exp_state;
+
+  SingleSwitchStatusMonitor(Custom_STM_Char_Opcode_t opcode) {
+	char_opcode = opcode;
+	switch_state = 0;
+	power_state = 0;
+	exp_state = 0;
+  }
+};
+
+static SingleSwitchStatusMonitor switch_status_monitor[7];
+
+static SingleSwitchStatusMonitor *find_switch_status_monitor(Custom_STM_Char_Opcode_t CharOpCode){
+	for(int i = 0; i < 7; i++){
+		if(switch_status_monitor[i].char_opcode == CharOpCode){
+			return &switch_status_monitor[i];
+		}
+	}
+	return nullptr;
+}
+
+void init_switch_monitors(){
+		Custom_STM_Char_Opcode_t char_opcode[7] = {CUSTOM_STM_SWITCH_1, CUSTOM_STM_SWITCH_2, CUSTOM_STM_SWITCH_3, CUSTOM_STM_SWITCH_4, CUSTOM_STM_SWITCH_5, CUSTOM_STM_SWITCH_6, CUSTOM_STM_BATTERY_VOLTAGE};
+		for(int i = 0; i < 7; i++) {
+			switch_status_monitor[i] = SingleSwitchStatusMonitor(char_opcode[i]);
+		}
+}
+
+int store_states_monitor(Custom_STM_Char_Opcode_t CharOpCode, uint8_t *pPayload, enum SWITCH_STATUS_MONITER storeType){
+
+	if(storeType != SWITCH_STATE && storeType != POWER_STATE && storeType != EXP_STATE){
+		return 0;
+	}
+
+	SingleSwitchStatusMonitor *target_monitor = find_switch_status_monitor(CharOpCode);
+	if(target_monitor == nullptr){
+		return 1;
+	}
+	bool overwrite = false;
+	switch(storeType){
+	case SWITCH_STATE:
+		overwrite = target_monitor->switch_state != *pPayload;
+		target_monitor->switch_state = *pPayload;
+		break;
+	case POWER_STATE:
+		overwrite = target_monitor->power_state != *pPayload;
+		target_monitor->power_state = *pPayload;
+		break;
+	case EXP_STATE:
+		overwrite = target_monitor->exp_state != *pPayload;
+		target_monitor->exp_state = *pPayload;
+		break;
+
+	}
+	return overwrite ? 2 : 3;
+}
+
+int push_configured_packet(CharOpCode){
+	SingleSwitchStatusMonitor monitor = find_switch_status_monitor(CharOpCode);
+	
+	int encoding = 
+	monitor
+}

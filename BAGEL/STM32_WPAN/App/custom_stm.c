@@ -106,6 +106,52 @@ static tBleStatus Generic_STM_App_Update_Char_Ext(uint16_t ConnectionHandle, uin
 /* Functions Definition ------------------------------------------------------*/
 /* USER CODE BEGIN PFD */
 
+tBleStatus Custom_STM_App_Update_Char_Recursive(Custom_STM_Char_Opcode_t CharOpcode, uint8_t *pPayload)
+{
+  tBleStatus ret = BLE_STATUS_INVALID_PARAMS;
+
+  typedef struct {
+    Custom_STM_Char_Opcode_t CharOpcode;
+    uint16_t *ServiceHandle;
+    uint16_t *CharHandle;
+    uint16_t *CharSize;
+    const char ConsoleLogName[20];
+  } CharContext;
+
+  static const CharContext char_contexts[] = {
+    {CUSTOM_STM_SWITCH_1, &CustomContext.CustomBagel_1Hdle, &CustomContext.CustomSwitch_1Hdle,&SizeSwitch_1, "SWITCH_1"},
+    {CUSTOM_STM_SWITCH_2, &CustomContext.CustomBagel_1Hdle, &CustomContext.CustomSwitch_2Hdle,&SizeSwitch_2, "SWITCH_2"},
+    {CUSTOM_STM_SWITCH_3, &CustomContext.CustomBagel_1Hdle, &CustomContext.CustomSwitch_3Hdle,&SizeSwitch_3, "SWITCH_3"},
+    {CUSTOM_STM_SWITCH_4, &CustomContext.CustomBagel_2Hdle, &CustomContext.CustomSwitch_4Hdle,&SizeSwitch_4, "SWITCH_4"},
+    {CUSTOM_STM_SWITCH_5, &CustomContext.CustomBagel_2Hdle, &CustomContext.CustomSwitch_5Hdle,&SizeSwitch_5, "SWITCH_5"},
+    {CUSTOM_STM_SWITCH_6, &CustomContext.CustomBagel_2Hdle, &CustomContext.CustomSwitch_6Hdle,&SizeSwitch_6, "SWITCH_6"},
+    {CUSTOM_STM_BATTERY_VOLTAGE, &CustomContext.CustomBagel_1Hdle, &CustomContext.CustomBattery_VoltageHdle,&SizeBattery_Voltage, "BATTERY_VOLTAGE"}
+  };
+
+  for (uint8_t i = 0; i < (sizeof(char_contexts) / sizeof(char_contexts[0])); i++)
+  {
+    const CharContext *context = &char_contexts[i];
+    if (context->CharOpcode == CharOpcode)
+    {
+      ret = aci_gatt_update_char_value(*context->ServiceHandle,
+                                       *context->CharHandle,
+                                       0,
+                                       *context->CharSize,
+                                       pPayload);
+      if (ret != BLE_STATUS_SUCCESS)
+      {
+        APP_DBG_MSG("  Fail   : aci_gatt_update_char_value %s command, result : 0x%x \n\r", context->ConsoleLogName, ret);
+      }
+      else
+      {
+        APP_DBG_MSG("  Success: aci_gatt_update_char_value %s command\n\r", context->ConsoleLogName);
+      }
+      break;
+    }
+  }
+
+  return ret;
+}
 
 /* USER CODE END PFD */
 
