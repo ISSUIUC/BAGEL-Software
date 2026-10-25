@@ -1,5 +1,6 @@
 #include "interface.h"
 #include "stm32wbxx_hal_gpio.h"
+#include <stddef.h>
 //#include "../../Middlewares/ST/STM32_WPAN/ble/core/auto/ble_types.h"
 //#include "../../STM32_WPAN/app/custom_app.h"
 //#include "../../STM32_WPAN/app/custom_stm.h"
@@ -146,70 +147,99 @@ uint8_t get_switch_status(int sw) {
 //};
 
 
-struct SingleSwitchStatusMonitor {
+typedef struct {
   Custom_STM_Char_Opcode_t char_opcode;
-  uint8_t switch_state;
-  uint8_t power_state;
-  uint8_t exp_state;
+  bool switch_state;
+  bool power_state;
+  bool exp_state;
+} SingleSwitchStatusMonitor;
 
-  SingleSwitchStatusMonitor(Custom_STM_Char_Opcode_t opcode) {
-	char_opcode = opcode;
-	switch_state = 0;
-	power_state = 0;
-	exp_state = 0;
-  }
-};
+static SingleSwitchStatusMonitor make_switch_status_monitor(
+		Custom_STM_Char_Opcode_t opcode) {
+	return (SingleSwitchStatusMonitor) {
+		.char_opcode = opcode,
+		.switch_state = false,
+		.power_state = false,
+		.exp_state = false
+	};
+}
 
 static SingleSwitchStatusMonitor switch_status_monitor[7];
 
-static SingleSwitchStatusMonitor *find_switch_status_monitor(Custom_STM_Char_Opcode_t CharOpCode){
-	for(int i = 0; i < 7; i++){
-		if(switch_status_monitor[i].char_opcode == CharOpCode){
+static SingleSwitchStatusMonitor *find_switch_status_monitor(
+		Custom_STM_Char_Opcode_t char_opcode) {
+	for (int i = 0; i < 7; i++) {
+		if (switch_status_monitor[i].char_opcode == char_opcode) {
 			return &switch_status_monitor[i];
 		}
 	}
-	return nullptr;
+	return NULL;
 }
 
-void init_switch_monitors(){
-		Custom_STM_Char_Opcode_t char_opcode[7] = {CUSTOM_STM_SWITCH_1, CUSTOM_STM_SWITCH_2, CUSTOM_STM_SWITCH_3, CUSTOM_STM_SWITCH_4, CUSTOM_STM_SWITCH_5, CUSTOM_STM_SWITCH_6, CUSTOM_STM_BATTERY_VOLTAGE};
-		for(int i = 0; i < 7; i++) {
-			switch_status_monitor[i] = SingleSwitchStatusMonitor(char_opcode[i]);
-		}
+void init_switch_monitors(void) {
+	const Custom_STM_Char_Opcode_t char_opcodes[7] = {
+		CUSTOM_STM_SWITCH_1,
+		CUSTOM_STM_SWITCH_2,
+		CUSTOM_STM_SWITCH_3,
+		CUSTOM_STM_SWITCH_4,
+		CUSTOM_STM_SWITCH_5,
+		CUSTOM_STM_SWITCH_6,
+		CUSTOM_STM_BATTERY_VOLTAGE
+	};
+
+	for (int i = 0; i < 7; i++) {
+		switch_status_monitor[i] = make_switch_status_monitor(char_opcodes[i]);
+	}
 }
 
-int store_states_monitor(Custom_STM_Char_Opcode_t CharOpCode, uint8_t *pPayload, enum SWITCH_STATUS_MONITER storeType){
-
-	if(storeType != SWITCH_STATE && storeType != POWER_STATE && storeType != EXP_STATE){
+int store_states_monitor(Custom_STM_Char_Opcode_t char_opcode,
+		const uint8_t *payload, enum SWITCH_STATUS_MONITOR store_type) {
+	if (payload == NULL ||
+			(store_type != SWITCH_STATE &&
+			store_type != POWER_STATE &&
+			store_type != EXP_STATE)) {
 		return 0;
 	}
 
-	SingleSwitchStatusMonitor *target_monitor = find_switch_status_monitor(CharOpCode);
-	if(target_monitor == nullptr){
+	SingleSwitchStatusMonitor *target_monitor =
+			find_switch_status_monitor(char_opcode);
+	if (target_monitor == NULL) {
 		return 1;
 	}
-	bool overwrite = false;
-	switch(storeType){
+
+	bool changed;
+	switch (store_type) {
 	case SWITCH_STATE:
-		overwrite = target_monitor->switch_state != *pPayload;
-		target_monitor->switch_state = *pPayload;
+		changed = target_monitor->switch_state != (*payload != 0);
+		target_monitor->switch_state = (*payload != 0);
 		break;
 	case POWER_STATE:
-		overwrite = target_monitor->power_state != *pPayload;
-		target_monitor->power_state = *pPayload;
+		changed = target_monitor->power_state != (*payload != 0);
+		target_monitor->power_state = (*payload != 0);
 		break;
 	case EXP_STATE:
-		overwrite = target_monitor->exp_state != *pPayload;
-		target_monitor->exp_state = *pPayload;
+		changed = target_monitor->exp_state != (*payload != 0);
+		target_monitor->exp_state = (*payload != 0);
 		break;
-
+	default:
+		return 0;
 	}
-	return overwrite ? 2 : 3;
+
+	return changed ? 2 : 3;
 }
 
-int push_configured_packet(CharOpCode){
-	SingleSwitchStatusMonitor monitor = find_switch_status_monitor(CharOpCode);
-	
-	int encoding = 
-	monitor
+int push_configured_packet(Custom_STM_Char_Opcode_t char_opcode,
+		char source_character) {
+	const SingleSwitchStatusMonitor *monitor =
+			find_switch_status_monitor(char_opcode);
+	if (monitor == NULL) {
+		return -1;
+	}
+
+	const int encoding =
+			((int)monitor->switch_state << 2) |
+			((int)monitor->power_state << 1) |
+			(int)monitor->exp_state;
+
+	return (int)(unsigned char)source_character + encoding;
 }

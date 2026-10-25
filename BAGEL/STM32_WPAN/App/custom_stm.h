@@ -22,6 +22,8 @@
 #ifndef CUSTOM_STM_H
 #define CUSTOM_STM_H
 
+#include "ble_types.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif

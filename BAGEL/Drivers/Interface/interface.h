@@ -9,6 +9,8 @@
 #define INTERFACE_INTERFACE_H_
 
 #include <stdint.h>
+#include "custom_stm.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -66,6 +68,12 @@ enum GPIO_OUTPUT {
 	OUTPUT_15
 };
 
+enum SWITCH_STATUS_MONITOR {
+	SWITCH_STATE,
+	POWER_STATE,
+	EXP_STATE
+};
+
 enum ports {
 	PORT_A = 0,
 	EXPANDER1 = 1,
@@ -113,6 +121,12 @@ uint8_t toggle_gpio_output(int gpio_output);
 //sw = switch
 uint8_t set_switch_status(int sw, bool newStatus);
 uint8_t get_switch_status(int sw);
+
+void init_switch_monitors(void);
+int store_states_monitor(Custom_STM_Char_Opcode_t char_opcode,
+		const uint8_t *payload, enum SWITCH_STATUS_MONITOR store_type);
+int push_configured_packet(Custom_STM_Char_Opcode_t char_opcode,
+		char source_character);
 
 
 #ifdef __cplusplus
