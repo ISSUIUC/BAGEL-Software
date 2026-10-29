@@ -123,11 +123,10 @@ uint8_t set_switch_status(int sw, bool newStatus);
 uint8_t get_switch_status(int sw);
 
 void init_switch_monitors(void);
-int store_states_monitor(Custom_STM_Char_Opcode_t char_opcode,
-		const uint8_t *payload, enum SWITCH_STATUS_MONITOR store_type);
-int push_configured_packet(Custom_STM_Char_Opcode_t char_opcode,
-		char source_character);
-
+char get_configured_packet(Custom_STM_Char_Opcode_t char_opcode);
+uint8_t push_configured_packet(Custom_STM_Char_Opcode_t char_opcode, char source_character);
+uint8_t store_state_monitor(Custom_STM_Char_Opcode_t char_opcode, uint8_t *payload_switch, uint8_t *payload_power, uint8_t *payload_exp);
+int push_packet(Custom_STM_Char_Opcode_t char_opcode);
 
 #ifdef __cplusplus
 }

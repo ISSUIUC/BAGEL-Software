@@ -195,12 +195,12 @@ uint8_t init_gpio_output_from_flipflops() {
  * Performs a 'Dino' test to check individual switch statuses, given their Q_not and the PG value, then the test iterates through all of the switches and updates 
 */
 uint8_t update_ble_values() {
-	uint8_t switch_1_status_q = read_gpio_input_qnot(SWITCH_1_Q) << 1; // reads Q_not
-	uint8_t switch_2_status_q = read_gpio_input_qnot(SWITCH_2_Q) << 1; // Reading Q_not as a single bit and then shifts it left
-	uint8_t switch_3_status_q = read_gpio_input_qnot(SWITCH_3_Q) << 1; // 00 -> 00
-	uint8_t switch_4_status_q = read_gpio_input_qnot(SWITCH_4_Q) << 1; // 01 -> 10
-	uint8_t switch_5_status_q = read_gpio_input_qnot(SWITCH_5_Q) << 1;
-	uint8_t switch_6_status_q = read_gpio_input_qnot(SWITCH_6_Q) << 1;
+	uint8_t switch_1_status_q = read_gpio_input_qnot(SWITCH_1_Q); // reads Q_not
+	uint8_t switch_2_status_q = read_gpio_input_qnot(SWITCH_2_Q);
+	uint8_t switch_3_status_q = read_gpio_input_qnot(SWITCH_3_Q);
+	uint8_t switch_4_status_q = read_gpio_input_qnot(SWITCH_4_Q);
+	uint8_t switch_5_status_q = read_gpio_input_qnot(SWITCH_5_Q);
+	uint8_t switch_6_status_q = read_gpio_input_qnot(SWITCH_6_Q);
 
 	uint8_t switch_1_status_pg = read_gpio_input_pg(SWITCH_1_PG); // reads PG
 	uint8_t switch_2_status_pg = read_gpio_input_pg(SWITCH_2_PG);
@@ -208,50 +208,22 @@ uint8_t update_ble_values() {
 	uint8_t switch_4_status_pg = read_gpio_input_pg(SWITCH_4_PG);
 	uint8_t switch_5_status_pg = read_gpio_input_pg(SWITCH_5_PG);
 	uint8_t switch_6_status_pg = read_gpio_input_pg(SWITCH_6_PG);
-	char disconnected = 'D';
-	char impossible   = 'I';
-	char nominal      = 'N';
-	char off          = 'O';
-	// the DINO protocol
 
-  struct switch_status { //Temp structure to hold the status and the corresponding opcode for each switch, makes iteration easier
-    uint8_t status;
-    Custom_STM_Char_Opcode_t OpCode;
-  };
-  switch_status switch_i_status[6] = {  //List is used for fast iteration of multiple inputs of same type, and to avoid repeating code for each switch
-    {static_cast<uint8_t>(switch_1_status_q + switch_1_status_pg), CUSTOM_STM_SWITCH_1},
-    {static_cast<uint8_t>(switch_2_status_q + switch_2_status_pg), CUSTOM_STM_SWITCH_2},
-    {static_cast<uint8_t>(switch_3_status_q + switch_3_status_pg), CUSTOM_STM_SWITCH_3},
-    {static_cast<uint8_t>(switch_4_status_q + switch_4_status_pg), CUSTOM_STM_SWITCH_4},
-    {static_cast<uint8_t>(switch_5_status_q + switch_5_status_pg), CUSTOM_STM_SWITCH_5},
-    {static_cast<uint8_t>(switch_6_status_q + switch_6_status_pg), CUSTOM_STM_SWITCH_6}
-  };
+  store_state_monitor(CUSTOM_STM_SWITCH_1, &switch_1_status_q, &switch_1_status_pg, NULL);
+  store_state_monitor(CUSTOM_STM_SWITCH_2, &switch_2_status_q, &switch_2_status_pg, NULL);
+  store_state_monitor(CUSTOM_STM_SWITCH_3, &switch_3_status_q, &switch_3_status_pg, NULL);
+  store_state_monitor(CUSTOM_STM_SWITCH_4, &switch_4_status_q, &switch_4_status_pg, NULL);
+  store_state_monitor(CUSTOM_STM_SWITCH_5, &switch_5_status_q, &switch_5_status_pg, NULL);
+  store_state_monitor(CUSTOM_STM_SWITCH_6, &switch_6_status_q, &switch_6_status_pg, NULL);
+  store_state_monitor(CUSTOM_STM_BATTERY_VOLTAGE, &battery_voltage, NULL, NULL);
 
-  for (switch_status switch_status_i : switch_i_status) { // Use for loop to iterate efficiently
-    uint8_t switch_status = switch_status_i.status;
-    Custom_STM_Char_Opcode_t CharOpcode = switch_status_i.OpCode;
-
-    switch (switch_status) {
-      case 0:
-        Custom_STM_App_Update_Char(CharOpcode, (uint8_t *)&disconnected);
-        break;
-      case 1:
-        Custom_STM_App_Update_Char(CharOpcode, (uint8_t *)&nominal);
-        break;
-      case 2:
-        Custom_STM_App_Update_Char(CharOpcode, (uint8_t *)&off);
-        break;
-      case 3:
-        Custom_STM_App_Update_Char(CharOpcode, (uint8_t *)&impossible);
-        break;
-      
-      default:
-        // Handle unexpected status here
-        break;
-    }
-  }
-
-	Custom_STM_App_Update_Char(CUSTOM_STM_BATTERY_VOLTAGE, (uint8_t*)&battery_voltage);
+  push_packet(CUSTOM_STM_SWITCH_1);
+  push_packet(CUSTOM_STM_SWITCH_2);
+  push_packet(CUSTOM_STM_SWITCH_3);
+  push_packet(CUSTOM_STM_SWITCH_4);
+  push_packet(CUSTOM_STM_SWITCH_5);
+  push_packet(CUSTOM_STM_SWITCH_6);
+  push_packet(CUSTOM_STM_BATTERY_VOLTAGE);
 
 	return 0;
 }
@@ -310,7 +282,7 @@ int main(void)
 
   interface_init(&huart1);
 
-
+  init_switch_monitors();
 
   uint8_t buffer[30];
   int len = sprintf((char*)buffer, "Hello World, BAGEL here\r\n");

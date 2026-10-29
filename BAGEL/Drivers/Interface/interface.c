@@ -149,13 +149,13 @@ uint8_t get_switch_status(int sw) {
 
 typedef struct {
   Custom_STM_Char_Opcode_t char_opcode;
-  bool switch_state;
-  bool power_state;
+  uint8_t switch_state;
+  uint8_t power_state;
   bool exp_state;
+  int battery_voltage; // reserved variable for battery voltage switch
 } SingleSwitchStatusMonitor;
 
-static SingleSwitchStatusMonitor make_switch_status_monitor(
-		Custom_STM_Char_Opcode_t opcode) {
+static SingleSwitchStatusMonitor make_switch_status_monitor(Custom_STM_Char_Opcode_t opcode) {
 	return (SingleSwitchStatusMonitor) {
 		.char_opcode = opcode,
 		.switch_state = false,
@@ -192,54 +192,64 @@ void init_switch_monitors(void) {
 	}
 }
 
-int store_states_monitor(Custom_STM_Char_Opcode_t char_opcode,
-		const uint8_t *payload, enum SWITCH_STATUS_MONITOR store_type) {
-	if (payload == NULL ||
-			(store_type != SWITCH_STATE &&
-			store_type != POWER_STATE &&
-			store_type != EXP_STATE)) {
-		return 0;
-	}
+
+//0: invalid target monitor, 1: valid write to all mandatory portions (emtpy or null payloads are replaced with a 0)
+uint8_t store_state_monitor(Custom_STM_Char_Opcode_t char_opcode, uint8_t *payload_switch, uint8_t *payload_power,uint8_t *payload_exp){
 
 	SingleSwitchStatusMonitor *target_monitor =
 			find_switch_status_monitor(char_opcode);
 	if (target_monitor == NULL) {
-		return 1;
-	}
-
-	bool changed;
-	switch (store_type) {
-	case SWITCH_STATE:
-		changed = target_monitor->switch_state != (*payload != 0);
-		target_monitor->switch_state = (*payload != 0);
-		break;
-	case POWER_STATE:
-		changed = target_monitor->power_state != (*payload != 0);
-		target_monitor->power_state = (*payload != 0);
-		break;
-	case EXP_STATE:
-		changed = target_monitor->exp_state != (*payload != 0);
-		target_monitor->exp_state = (*payload != 0);
-		break;
-	default:
 		return 0;
 	}
 
-	return changed ? 2 : 3;
+	if(char_opcode == CUSTOM_STM_BATTERY_VOLTAGE){ // editing the voltage requires only a single val I think
+		target_monitor->battery_voltage = payload_switch != NULL ? *payload_switch : 0;
+		return 1;
+	}
+
+	//If it's a real value then we write write it to the value of the payload
+	target_monitor->switch_state = payload_switch != NULL && *payload_switch != 0;
+	target_monitor->power_state  = payload_power  != NULL && *payload_power  != 0;
+	target_monitor->exp_state    = payload_exp    != NULL && *payload_exp    != 0;
+	return 1;
 }
 
-int push_configured_packet(Custom_STM_Char_Opcode_t char_opcode,
-		char source_character) {
+char get_configured_packet(Custom_STM_Char_Opcode_t char_opcode) {
 	const SingleSwitchStatusMonitor *monitor =
 			find_switch_status_monitor(char_opcode);
 	if (monitor == NULL) {
-		return -1;
+		return 0;
+	}
+
+	if(char_opcode == CUSTOM_STM_BATTERY_VOLTAGE){
+		return monitor->battery_voltage;
 	}
 
 	const int encoding =
 			((int)monitor->switch_state << 2) |
 			((int)monitor->power_state << 1) |
 			(int)monitor->exp_state;
+											//	switch	|	power	|	expected
+	char disconnected 			= 'D';		//	0		|	0		|	0
+	char impossible   			= 'I';		//	0		|	0		|	1
+	char nominal      			= 'N';		//	0		|	1		|	0
+	char off          			= 'O';		//	0		|	1		|	1
+	char disconnected_expected  = 'S';		//	1		|	0		|	0
+	char impossible_expected 	= 'A';		//	1		|	0		|	1
+	char nominal_expected		= 'U';		//	1		|	1		|	0
+	char off_expected 			= 'R';		//	1		|	1		|	1
 
-	return (int)(unsigned char)source_character + encoding;
+	return (char[]){disconnected,impossible,nominal,off,disconnected_expected,impossible_expected,nominal_expected,off_expected}[encoding];
+}
+
+int push_packet(Custom_STM_Char_Opcode_t char_opcode){
+	const SingleSwitchStatusMonitor *monitor =
+			find_switch_status_monitor(char_opcode);
+	if (monitor == NULL) {
+		return 0;
+	}
+
+	uint8_t packet = (uint8_t)get_configured_packet(char_opcode);
+	Custom_STM_App_Update_Char(char_opcode, &packet);
+	return 1;
 }
