@@ -202,12 +202,12 @@ uint8_t update_ble_values() {
 	uint8_t switch_5_status_q = read_gpio_input_qnot(SWITCH_5_Q);
 	uint8_t switch_6_status_q = read_gpio_input_qnot(SWITCH_6_Q);
 
-	uint8_t switch_1_status_pg = read_gpio_input_pg(SWITCH_1_PG); // reads PG
-	uint8_t switch_2_status_pg = read_gpio_input_pg(SWITCH_2_PG);
-	uint8_t switch_3_status_pg = read_gpio_input_pg(SWITCH_3_PG);
-	uint8_t switch_4_status_pg = read_gpio_input_pg(SWITCH_4_PG);
-	uint8_t switch_5_status_pg = read_gpio_input_pg(SWITCH_5_PG);
-	uint8_t switch_6_status_pg = read_gpio_input_pg(SWITCH_6_PG);
+	uint8_t switch_1_status_pg = read_gpio_input_pg(SWITCH_1); // reads PG
+	uint8_t switch_2_status_pg = read_gpio_input_pg(SWITCH_2);
+	uint8_t switch_3_status_pg = read_gpio_input_pg(SWITCH_3);
+	uint8_t switch_4_status_pg = read_gpio_input_pg(SWITCH_4);
+	uint8_t switch_5_status_pg = read_gpio_input_pg(SWITCH_5);
+	uint8_t switch_6_status_pg = read_gpio_input_pg(SWITCH_6);
 
   store_state_monitor(CUSTOM_STM_SWITCH_1, &switch_1_status_q, &switch_1_status_pg, NULL);
   store_state_monitor(CUSTOM_STM_SWITCH_2, &switch_2_status_q, &switch_2_status_pg, NULL);

@@ -166,8 +166,7 @@ static SingleSwitchStatusMonitor make_switch_status_monitor(Custom_STM_Char_Opco
 
 static SingleSwitchStatusMonitor switch_status_monitor[7];
 
-static SingleSwitchStatusMonitor *find_switch_status_monitor(
-		Custom_STM_Char_Opcode_t char_opcode) {
+static SingleSwitchStatusMonitor *find_switch_status_monitor(Custom_STM_Char_Opcode_t char_opcode) {
 	for (int i = 0; i < 7; i++) {
 		if (switch_status_monitor[i].char_opcode == char_opcode) {
 			return &switch_status_monitor[i];
@@ -196,8 +195,7 @@ void init_switch_monitors(void) {
 //0: invalid target monitor, 1: valid write to all mandatory portions (emtpy or null payloads are replaced with a 0)
 uint8_t store_state_monitor(Custom_STM_Char_Opcode_t char_opcode, uint8_t *payload_switch, uint8_t *payload_power,uint8_t *payload_exp){
 
-	SingleSwitchStatusMonitor *target_monitor =
-			find_switch_status_monitor(char_opcode);
+	SingleSwitchStatusMonitor *target_monitor = find_switch_status_monitor(char_opcode);
 	if (target_monitor == NULL) {
 		return 0;
 	}
@@ -215,8 +213,7 @@ uint8_t store_state_monitor(Custom_STM_Char_Opcode_t char_opcode, uint8_t *paylo
 }
 
 char get_configured_packet(Custom_STM_Char_Opcode_t char_opcode) {
-	const SingleSwitchStatusMonitor *monitor =
-			find_switch_status_monitor(char_opcode);
+	const SingleSwitchStatusMonitor *monitor = find_switch_status_monitor(char_opcode);
 	if (monitor == NULL) {
 		return 0;
 	}
@@ -231,20 +228,19 @@ char get_configured_packet(Custom_STM_Char_Opcode_t char_opcode) {
 			(int)monitor->exp_state;
 											//	switch	|	power	|	expected
 	char disconnected 			= 'D';		//	0		|	0		|	0
-	char impossible   			= 'I';		//	0		|	0		|	1
+	char disconnected_expected  = 'd';		//	0		|	0		|	1
 	char nominal      			= 'N';		//	0		|	1		|	0
-	char off          			= 'O';		//	0		|	1		|	1
-	char disconnected_expected  = 'S';		//	1		|	0		|	0
-	char impossible_expected 	= 'A';		//	1		|	0		|	1
-	char nominal_expected		= 'U';		//	1		|	1		|	0
-	char off_expected 			= 'R';		//	1		|	1		|	1
+	char nominal_expected       = 'n';		//	0		|	1		|	1
+	char off            		= 'O';		//	1		|	0		|	0
+	char off_expected       	= 'o';		//	1		|	0		|	1
+	char impossible				= 'I';		//	1		|	1		|	0
+	char impossible_expected  	= 'i';		//	1		|	1		|	1
 
-	return (char[]){disconnected,impossible,nominal,off,disconnected_expected,impossible_expected,nominal_expected,off_expected}[encoding];
+	return (char[]){disconnected,disconnected_expected,nominal,nominal_expected,off,off_expected,impossible,impossible_expected}[encoding];
 }
 
 int push_packet(Custom_STM_Char_Opcode_t char_opcode){
-	const SingleSwitchStatusMonitor *monitor =
-			find_switch_status_monitor(char_opcode);
+	const SingleSwitchStatusMonitor *monitor = find_switch_status_monitor(char_opcode);
 	if (monitor == NULL) {
 		return 0;
 	}
