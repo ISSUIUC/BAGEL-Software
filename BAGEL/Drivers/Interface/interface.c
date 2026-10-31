@@ -116,7 +116,7 @@ uint8_t get_switch_status(int sw) {
 	if (sw < 0 || sw >= 6) {
 		return 0;
 	}
-	return switches[sw].pg && !switches[sw].qnot;
+	return switches[sw].state;
 }
 
 //uint8_t init_gpio_inputs() {
@@ -149,10 +149,10 @@ uint8_t get_switch_status(int sw) {
 
 typedef struct {
   Custom_STM_Char_Opcode_t char_opcode;
-  uint8_t switch_state;
-  uint8_t power_state;
+  uint8_t switch_state; //qnot
+  uint8_t power_state;  //pg
   bool exp_state;
-  int battery_voltage; // reserved variable for battery voltage switch
+  int battery_voltage;  // reserved variable for battery voltage switch
 } SingleSwitchStatusMonitor;
 
 static SingleSwitchStatusMonitor make_switch_status_monitor(Custom_STM_Char_Opcode_t opcode) {
@@ -194,7 +194,7 @@ void init_switch_monitors(void) {
 
 //0: invalid target monitor, 1: valid write to all mandatory portions (emtpy or null payloads are replaced with a 0)
 uint8_t store_state_monitor(Custom_STM_Char_Opcode_t char_opcode, uint8_t *payload_switch, uint8_t *payload_power,uint8_t *payload_exp){
-
+	//payload_switch = q_not -- payload_power = pg
 	SingleSwitchStatusMonitor *target_monitor = find_switch_status_monitor(char_opcode);
 	if (target_monitor == NULL) {
 		return 0;

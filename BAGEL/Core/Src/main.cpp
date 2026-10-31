@@ -156,8 +156,6 @@ uint8_t read_gpio_input_pg(int gpio_input) {
 uint8_t write_gpio_output(int gpio_output, int value) {
 	GPIO_PinState real_val = (value == 1) ? GPIO_PIN_SET : GPIO_PIN_RESET;
 
-	//struct switch_t daSwitch = switches[gpio_output];
-
 	struct gpio_pin pin;
 	if (gpio_output < 6) {
     	pin = switches[gpio_output].output;
@@ -178,6 +176,19 @@ uint8_t write_gpio_output(int gpio_output, int value) {
 	return 0;
 }
 
+uint8_t read_switch_expected_state(int switch_num, uint8_t qnot) {
+
+	uint8_t commmanded = (uint8_t)(gpio_output_status[switch_num] != 0);
+	uint8_t actual = qnot == 0;
+	return commmanded == actual;
+	/*
+	 * Returns the DINOSAUR expected bit: 1 if the actual state matches the command (lowercase), 0 if not (uppercase).
+	 * qnot is inverted before comparing because it uses 1 = off, while gpio_output_status uses 1 = on.
+	 * With no power (PG = 0), qnot appears to always read 0, so 'd'/'D' only show commanded on/off.
+	 */
+}
+
+
 uint8_t init_gpio_output_from_flipflops() {
 	for (int i = 0; i < 6; i ++) {
 		uint8_t switch_q = read_gpio_input_qnot(i) << 1;
@@ -195,12 +206,12 @@ uint8_t init_gpio_output_from_flipflops() {
  * Performs a 'Dino' test to check individual switch statuses, given their Q_not and the PG value, then the test iterates through all of the switches and updates 
 */
 uint8_t update_ble_values() {
-	uint8_t switch_1_status_q = read_gpio_input_qnot(SWITCH_1_Q); // reads Q_not
-	uint8_t switch_2_status_q = read_gpio_input_qnot(SWITCH_2_Q);
-	uint8_t switch_3_status_q = read_gpio_input_qnot(SWITCH_3_Q);
-	uint8_t switch_4_status_q = read_gpio_input_qnot(SWITCH_4_Q);
-	uint8_t switch_5_status_q = read_gpio_input_qnot(SWITCH_5_Q);
-	uint8_t switch_6_status_q = read_gpio_input_qnot(SWITCH_6_Q);
+	uint8_t switch_1_status_q = read_gpio_input_qnot(SWITCH_1); // reads Q_not
+	uint8_t switch_2_status_q = read_gpio_input_qnot(SWITCH_2);
+	uint8_t switch_3_status_q = read_gpio_input_qnot(SWITCH_3);
+	uint8_t switch_4_status_q = read_gpio_input_qnot(SWITCH_4);
+	uint8_t switch_5_status_q = read_gpio_input_qnot(SWITCH_5);
+	uint8_t switch_6_status_q = read_gpio_input_qnot(SWITCH_6);
 
 	uint8_t switch_1_status_pg = read_gpio_input_pg(SWITCH_1); // reads PG
 	uint8_t switch_2_status_pg = read_gpio_input_pg(SWITCH_2);
@@ -209,12 +220,19 @@ uint8_t update_ble_values() {
 	uint8_t switch_5_status_pg = read_gpio_input_pg(SWITCH_5);
 	uint8_t switch_6_status_pg = read_gpio_input_pg(SWITCH_6);
 
-  store_state_monitor(CUSTOM_STM_SWITCH_1, &switch_1_status_q, &switch_1_status_pg, NULL);
-  store_state_monitor(CUSTOM_STM_SWITCH_2, &switch_2_status_q, &switch_2_status_pg, NULL);
-  store_state_monitor(CUSTOM_STM_SWITCH_3, &switch_3_status_q, &switch_3_status_pg, NULL);
-  store_state_monitor(CUSTOM_STM_SWITCH_4, &switch_4_status_q, &switch_4_status_pg, NULL);
-  store_state_monitor(CUSTOM_STM_SWITCH_5, &switch_5_status_q, &switch_5_status_pg, NULL);
-  store_state_monitor(CUSTOM_STM_SWITCH_6, &switch_6_status_q, &switch_6_status_pg, NULL);
+	uint8_t switch_1_expected_state = read_switch_expected_state(SWITCH_1, switch_1_status_q);
+	uint8_t switch_2_expected_state = read_switch_expected_state(SWITCH_2, switch_2_status_q);
+	uint8_t switch_3_expected_state = read_switch_expected_state(SWITCH_3, switch_3_status_q);
+	uint8_t switch_4_expected_state = read_switch_expected_state(SWITCH_4, switch_4_status_q);
+	uint8_t switch_5_expected_state = read_switch_expected_state(SWITCH_5, switch_5_status_q);
+	uint8_t switch_6_expected_state = read_switch_expected_state(SWITCH_6, switch_6_status_q);
+
+  store_state_monitor(CUSTOM_STM_SWITCH_1, &switch_1_status_q, &switch_1_status_pg, &switch_1_expected_state);
+  store_state_monitor(CUSTOM_STM_SWITCH_2, &switch_2_status_q, &switch_2_status_pg, &switch_2_expected_state);
+  store_state_monitor(CUSTOM_STM_SWITCH_3, &switch_3_status_q, &switch_3_status_pg, &switch_3_expected_state);
+  store_state_monitor(CUSTOM_STM_SWITCH_4, &switch_4_status_q, &switch_4_status_pg, &switch_4_expected_state);
+  store_state_monitor(CUSTOM_STM_SWITCH_5, &switch_5_status_q, &switch_5_status_pg, &switch_5_expected_state);
+  store_state_monitor(CUSTOM_STM_SWITCH_6, &switch_6_status_q, &switch_6_status_pg, &switch_6_expected_state);
   store_state_monitor(CUSTOM_STM_BATTERY_VOLTAGE, &battery_voltage, NULL, NULL);
 
   push_packet(CUSTOM_STM_SWITCH_1);
